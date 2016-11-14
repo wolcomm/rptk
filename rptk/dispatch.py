@@ -12,6 +12,6 @@ class Dispatcher(object):
         self.name = config.name
 
     def dispatch(self):
-        result = self._querier.query(object=self.object)
+        result = self._querier.query(obj=self.object)
         output = self._formatter.format(result=result, name=self.name)
         return output

@@ -12,8 +12,8 @@ class Parser(object):
         parser.add_argument('--config_path', '-f', action='store', type=str, help="path to configuration file")
         parser.add_argument('--host', action='store', type=str, help="irrd host to connect to")
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")
-        parser.add_argument('--name', action='store', type=str, help="prefix-list name (default: OBJECT)")
-        parser.add_argument('OBJECT', action='store', type=str, help="print prefix list for OBJECT and exit")
+        parser.add_argument('--name', action='store', type=str, help="prefix-list name (default: object)")
+        parser.add_argument('object', action='store', type=str, help="print prefix list for OBJECT and exit")
         self._parser = parser
         self._args = args
 

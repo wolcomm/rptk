@@ -1,5 +1,12 @@
+from rptk import parse, configuration, dispatch
+
+
 def main():
-    return "hello world!"
+    args = parse.Parser().args
+    config = configuration.Config(args=args)
+    dispatcher = dispatch.Dispatcher(config=config)
+    return dispatcher.dispatch()
+
 
 if __name__ == "__main__":
     result = main()

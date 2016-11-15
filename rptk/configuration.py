@@ -43,6 +43,10 @@ class Config(object):
                     cs.set(option, value)
         self.object = self._args.object
         self.name = self._args.name or self.object
+        if self._args.querier_class_name:
+            self.main.querier_class_name = self._args.querier_class_name
+        if self._args.formatter_class_name:
+            self.main.formatter_class_name = self._args.formatter_class_name
 
 
 class ConfigSection(object):

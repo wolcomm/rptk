@@ -7,8 +7,7 @@ class Parser(object):
         description = "tool for prefix filter list management operations"
         parser = argparse.ArgumentParser(prog=program_name, description=description)
         parser.add_argument('--querier_class_name', '-Q', action='store', type=str, help="querier class name")
-        parser.add_argument('--formatter_class', '-F', action='store', type=str, help="formatter class name")
-        parser.add_argument('--output_class_name', '-O', action='store', type=str, help="output class name")
+        parser.add_argument('--formatter_class_name', '-F', action='store', type=str, help="formatter class name")
         parser.add_argument('--config_path', '-f', action='store', type=str, help="path to configuration file")
         parser.add_argument('--host', action='store', type=str, help="irrd host to connect to")
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")

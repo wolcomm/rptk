@@ -27,6 +27,6 @@ class TestFormatter(BaseFormatter):
 
 class JsonFormatter(BaseFormatter):
     def format(self, result=None, name=None):
-        data = super(JsonFormatter, self).format(result=result, name=name)
-        output = json.dumps(data, indent=4)
+        super(JsonFormatter, self).format(result=result, name=name)
+        output = json.dumps({name: result}, indent=4)
         return output

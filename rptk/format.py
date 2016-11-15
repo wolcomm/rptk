@@ -35,7 +35,7 @@ class JsonFormatter(BaseFormatter):
 class IosFormatter(BaseFormatter):
     def format(self, result=None, name=None):
         super(IosFormatter, self).format(result=result, name=name)
-        output = str
+        output = str()
         for af in result:
             i = 0
             for entry in result[af]:

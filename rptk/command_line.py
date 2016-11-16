@@ -10,4 +10,5 @@ def main():
 
 if __name__ == "__main__":
     result = main()
-    exit(result)
+    print result
+    exit()

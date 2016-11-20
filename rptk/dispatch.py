@@ -1,11 +1,11 @@
-from rptk.configuration import Config, NewConfig
+from rptk.configuration import Config
 from rptk import query, format
 
 
-class NewDispatcher(object):
+class Dispatcher(object):
     def __init__(self, config=None):
-        if not isinstance(config, NewConfig):
-            raise TypeError("%s not of type %s" % (config, NewConfig))
+        if not isinstance(config, Config):
+            raise TypeError("%s not of type %s" % (config, Config))
         querier_class = getattr(query, config.args.querier)
         self._querier = querier_class(config=config)
         formatter_class = getattr(format, config.args.formatter)
@@ -32,19 +32,4 @@ class NewDispatcher(object):
     def dispatch(self):
         result = self.querier.query(obj=self.object)
         output = self.formatter.format(result=result, name=self.name)
-        return output
-
-
-class Dispatcher(object):
-    def __init__(self, config=None):
-        if not isinstance(config, Config):
-            raise TypeError("%s not of type %s" % (config, Config))
-        self._querier = getattr(query, config.main.querier_class_name)(config=config.querier)
-        self._formatter = getattr(format, config.main.formatter_class_name)(config=config.querier)
-        self.object = config.object
-        self.name = config.name
-
-    def dispatch(self):
-        result = self._querier.query(obj=self.object)
-        output = self._formatter.format(result=result, name=self.name)
         return output

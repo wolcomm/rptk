@@ -1,11 +1,11 @@
 import json
-from rptk.configuration import ConfigSection, NewConfig
+from rptk.configuration import Config
 
 
 class BaseFormatter(object):
     def __init__(self, config=None):
-        if not isinstance(config, NewConfig):
-            raise TypeError("%s not of type %s" % (config, NewConfig))
+        if not isinstance(config, Config):
+            raise TypeError("%s not of type %s" % (config, Config))
         self._config = config
 
     def format(self, result=None, name=None):

@@ -1,19 +1,10 @@
 import sys
-from rptk import parse, configuration, dispatch
-
-
-def old_main():
-    args = parse.Parser().args
-    config = configuration.Config(args=args)
-    dispatcher = dispatch.Dispatcher(config=config)
-    result = dispatcher.dispatch()
-    sys.stdout.write(result)
-    return
+from rptk import configuration, dispatch
 
 
 def main():
-    config = configuration.NewConfig()
-    dispatcher = dispatch.NewDispatcher(config=config)
+    config = configuration.Config(argv=sys.argv)
+    dispatcher = dispatch.Dispatcher(config=config)
     result = dispatcher.dispatch()
     sys.stdout.write(result)
     return

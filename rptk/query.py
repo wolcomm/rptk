@@ -1,13 +1,13 @@
 import json
 import subprocess
 from whichcraft import which
-from rptk.configuration import ConfigSection, NewConfig
+from rptk.configuration import Config
 
 
 class BaseQuerier(object):
     def __init__(self, config=None):
-        if not isinstance(config, NewConfig):
-            raise TypeError("%s not of type %s" % (config, NewConfig))
+        if not isinstance(config, Config):
+            raise TypeError("%s not of type %s" % (config, Config))
         self._config = config
 
     @property

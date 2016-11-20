@@ -4,7 +4,7 @@ from whichcraft import which
 
 
 class TestOutput(TestCase):
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests-defaults.ini')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests.conf')
 
     def test_01_dependency(self):
         path = which('bgpq3')

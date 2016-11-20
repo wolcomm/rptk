@@ -27,7 +27,7 @@ class Dispatcher(object):
 
     @property
     def name(self):
-        return self._name or self.object
+        return self._name
 
     def dispatch(self):
         result = self.querier.query(obj=self.object)

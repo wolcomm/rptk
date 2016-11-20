@@ -31,7 +31,12 @@ class Config(object):
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")
         parser.add_argument('--name', action='store', type=str, help="prefix-list name (default: object)")
         parser.add_argument('object', nargs='?', action='store', type=str, help="print prefix list for OBJECT and exit")
-        self._args = parser.parse_args(args=remaining_args)
+        args = parser.parse_args(args=remaining_args)
+        if not args.object:
+            raise RuntimeError("No default value provided for object")
+        if not args.name:
+            args.name = args.object
+        self._args = args
 
     @property
     def args(self):

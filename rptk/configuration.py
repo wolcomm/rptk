@@ -5,23 +5,20 @@ from argparse import Namespace
 
 
 class NewConfig(object):
-    def __init__(self, argv=None, opts=None):
+    def __init__(self, opts=None):
         parser = argparse.ArgumentParser()
         defaults_config = ConfigParser.SafeConfigParser()
-        defaults_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'new-defaults.ini')
+        default_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'new-defaults.ini')
         parser.add_argument(
             '--config_path', '-f', action='store', type=str,
-            help="path to configuration file", default=defaults_path
+            help="path to configuration file", default=default_config_path
         )
-        if argv:
-            if not isinstance(argv, list):
-                raise TypeError("%s not of type %s" % (argv, list))
-            partial_args, remaining_args = parser.parse_known_args(argv)
-            defaults_path = partial_args.config_file
-        else:
-            remaining_args = None
-        defaults_config.read(defaults_path)
-        defaults = dict(defaults_config.items("defaults"))
+        partial_args, remaining_args = parser.parse_known_args()
+        defaults_config.read(partial_args.config_path)
+        try:
+            defaults = dict(defaults_config.items("defaults"))
+        except ConfigParser.Error:
+            raise
         if opts:
             if not isinstance(opts, dict):
                 raise TypeError("%s not of type %s" % (opts, dict))

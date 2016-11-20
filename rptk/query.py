@@ -1,18 +1,18 @@
 import json
 import subprocess
 from whichcraft import which
-from rptk.configuration import ConfigSection
+from rptk.configuration import ConfigSection, NewConfig
 
 
 class BaseQuerier(object):
     def __init__(self, config=None):
-        if not isinstance(config, ConfigSection):
-            raise TypeError("%s not of type %s" % (config, ConfigSection))
-        self.config = config
+        if not isinstance(config, NewConfig):
+            raise TypeError("%s not of type %s" % (config, NewConfig))
+        self._config = config
 
     @property
     def target(self):
-        return "%s:%s" % (self.config.host, self.config.port)
+        return "%s:%s" % (self._config.args.host, self._config.args.port)
 
     def query(self, obj=None):
         if not isinstance(obj, str):
@@ -40,6 +40,6 @@ class Bgpq3Querier(BaseQuerier):
     @property
     def path(self):
         try:
-            return self.config.path
+            return self._config.args.bgpq3_path
         except AttributeError:
             return which("bgpq3")

@@ -3,7 +3,8 @@ from rptk import configuration, dispatch
 
 
 def main():
-    config = configuration.Config(argv=sys.argv)
+    argv = sys.argv[1:]
+    config = configuration.Config(argv=argv)
     dispatcher = dispatch.Dispatcher(config=config)
     result = dispatcher.dispatch()
     sys.stdout.write(result)

@@ -7,7 +7,7 @@ def main():
     config = configuration.Config(argv=argv)
     dispatcher = dispatch.Dispatcher(config=config)
     result = dispatcher.dispatch()
-    sys.stdout.write(result)
+    sys.stdout.write("%s\n" % result)
     return
 
 

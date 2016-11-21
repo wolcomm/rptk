@@ -9,8 +9,11 @@ with plugable modules for query and output handling.
 Features
 --------
 Query modules:
+
 * `bgpq3`_ shell wrapper
+
 Format modules:
+
 * JSON output
 * IOS classic/XE style prefix-lists
 

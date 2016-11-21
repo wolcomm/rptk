@@ -2,9 +2,16 @@
     :target: https://travis-ci.org/wolcomm/rptk
 
 RPTK - Routing Policy Tool Kit
-====
+==============================
+Python toolkit for prefix filter list management operations
+with plugable modules for query and output handling.
 
-Python tools for prefix filter list management operations
-based on `bgpq3`_
+Features
+--------
+Query modules:
+* `bgpq3`_ shell wrapper
+Format modules:
+* JSON output
+* IOS classic/XE style prefix-lists
 
 .. _bgpq3: https://github.com/snar/bgpq3

@@ -7,6 +7,8 @@ app = FlaskAPI(__name__)
 
 
 class TextRenderer(BaseRenderer):
+    media_type = 'text/plain'
+
     def render(self, data, media_type, **options):
         return "%s\n" % data
 

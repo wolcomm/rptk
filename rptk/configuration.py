@@ -8,7 +8,7 @@ class Config(object):
     def __init__(self, argv=None, opts=None):
         if not argv:
             argv = list()
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(add_help=False)
         config = ConfigParser.SafeConfigParser()
         default_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'rptk.conf')
         parser.add_argument(
@@ -39,7 +39,8 @@ class Config(object):
         parser.add_argument('--host', action='store', type=str, help="irrd host to connect to")
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")
         parser.add_argument('--name', action='store', type=str, help="prefix-list name (default: object)")
-        parser.add_argument('object', nargs='?', action='store', type=str, help="print prefix list for OBJECT and exit")
+        parser.add_argument('--help', action='help', help="print usage information and exit")
+        parser.add_argument('object', nargs='?', action='store', type=str, help="rpsl object name")
         args = parser.parse_args(args=remaining_args)
         if not args.object:
             raise RuntimeError("No default value provided for object")

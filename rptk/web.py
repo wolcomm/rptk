@@ -14,7 +14,7 @@ class TextRenderer(BaseRenderer):
 
 
 @app.route("/<string:fmt>/<string:obj>", methods=['GET'])
-@set_renderers(TextRenderer, BrowsableAPIRenderer)
+@set_renderers(TextRenderer)
 def get(fmt=None, obj=None):
     rptk = Rptk(object=obj, format=fmt)
     result = rptk.query()

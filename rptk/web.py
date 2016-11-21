@@ -1,5 +1,5 @@
 from flask_api import FlaskAPI
-from flask_api.renderers import BaseRenderer
+from flask_api.renderers import BaseRenderer, BrowsableAPIRenderer
 from flask_api.decorators import set_renderers
 from rptk.api import Rptk
 
@@ -14,7 +14,7 @@ class TextRenderer(BaseRenderer):
 
 
 @app.route("/<string:fmt>/<string:obj>", methods=['GET'])
-@set_renderers(TextRenderer)
+@set_renderers(TextRenderer, BrowsableAPIRenderer)
 def get(fmt=None, obj=None):
     rptk = Rptk(object=obj, format=fmt)
     result = rptk.query()

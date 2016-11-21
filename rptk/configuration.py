@@ -25,16 +25,16 @@ class Config(object):
             if not isinstance(opts, dict):
                 raise TypeError("%s not of type %s" % (opts, dict))
             defaults.update(opts)
-        queriers = self._register_classes(config.items("queriers"))
-        formatters = self._register_classes(config.items("formatters"))
+        query_classes = self._register_classes(config.items("query-classes"))
+        format_classes = self._register_classes(config.items("format-classes"))
         parser.set_defaults(**defaults)
         parser.add_argument(
-            '--querier', '-Q', action='store', type=str,
-            help="querier class", choices=queriers.keys()
+            '--query', '-Q', action='store', type=str,
+            help="query class", choices=query_classes.keys()
         )
         parser.add_argument(
-            '--formatter', '-F', action='store', type=str,
-            help="formatter class", choices=formatters.keys()
+            '--format', '-F', action='store', type=str,
+            help="format class", choices=format_classes.keys()
         )
         parser.add_argument('--host', action='store', type=str, help="irrd host to connect to")
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")
@@ -46,8 +46,8 @@ class Config(object):
             raise RuntimeError("No default value provided for object")
         if not args.name:
             args.name = args.object
-        args.querier = queriers[args.querier]
-        args.formatter = formatters[args.formatter]
+        args.query_class = query_classes[args.query]
+        args.format_class = format_classes[args.format]
         self._args = args
 
     @property

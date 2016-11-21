@@ -5,8 +5,8 @@ class Dispatcher(object):
     def __init__(self, config=None):
         if not isinstance(config, Config):
             raise TypeError("%s not of type %s" % (config, Config))
-        self._querier = config.args.querier(config=config)
-        self._formatter = config.args.formatter(config=config)
+        self._querier = config.args.query_class(config=config)
+        self._formatter = config.args.format_class(config=config)
         self._object = config.args.object
         self._name = config.args.name
 

@@ -6,12 +6,12 @@ class JunosFormat(BaseFormat):
         super(JunosFormat, self).format(result=result, name=name)
         output = str()
         output += \
-            "policy-options {" \
-            "replace:" \
-            "  prefix-list %s {" % name
+            "policy-options {\n" \
+            "replace:\n" \
+            "  prefix-list %s {\n" % name
         for af in result:
             for entry in result[af]:
                 output += "    %s;\n" % entry['prefix']
-        output += "  }" \
-                  "}"
+        output += "  }\n" \
+                  "}\n"
         return output

@@ -1,15 +1,12 @@
 from rptk.configuration import Config
-from rptk import query, format
 
 
 class Dispatcher(object):
     def __init__(self, config=None):
         if not isinstance(config, Config):
             raise TypeError("%s not of type %s" % (config, Config))
-        querier_class = getattr(query, config.args.querier)
-        self._querier = querier_class(config=config)
-        formatter_class = getattr(format, config.args.formatter)
-        self._formatter = formatter_class(config=config)
+        self._querier = config.args.querier(config=config)
+        self._formatter = config.args.formatter(config=config)
         self._object = config.args.object
         self._name = config.args.name
 

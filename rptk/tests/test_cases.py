@@ -18,8 +18,9 @@ class TestRptk(TestCase):
         self.config = config
 
     def test_03_dummy_query(self):
-        dispatcher = dispatch.Dispatcher(config=self.config)
+        config = configuration.Config(argv=self.argv)
+        dispatcher = dispatch.Dispatcher(config=config)
         result = dispatcher.dispatch()
         self.assertIsInstance(result, dict)
         self.assertIsInstance(result["test"], dict)
-        self.assertEqual(result["test"]["object"], self.config.args.object)
+        self.assertEqual(result["test"]["object"], config.args.object)

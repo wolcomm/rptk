@@ -21,6 +21,6 @@ class Bgpq3Query(BaseQuery):
     @property
     def path(self):
         try:
-            return self._config.args.bgpq3_path
+            return self.config.args.bgpq3_path
         except AttributeError:
             return which("bgpq3")

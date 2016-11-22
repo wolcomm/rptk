@@ -6,10 +6,12 @@ class IosFormat(BaseFormat):
         super(IosFormat, self).format(result=result, name=name)
         output = str()
         for af in result:
-            i = 0
-            for entry in result[af]:
-                i += 10
-                output += self.line(name=name, af=af, entry=entry, i=i)
+            if result[af]:
+                output += "no %s %s\n" % (self.af(af=af), name)
+                i = 0
+                for entry in result[af]:
+                    i += 10
+                    output += self.line(name=name, af=af, entry=entry, i=i)
         return output
 
     def line(self, name='Prefix-List', af=None, entry=None, i=None):

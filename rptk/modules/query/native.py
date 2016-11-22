@@ -27,7 +27,7 @@ class NativeQuery(BaseQuery):
             for af in routes:
                 sets[af].update(routes[af])
         for af in sets:
-            result[af] = list(sets[af])
+            result[af] = list([{'prefix': p, 'exact': True} for p in sets[af]])
         return result
 
     def _connect(self):

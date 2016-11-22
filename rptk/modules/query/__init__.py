@@ -29,9 +29,9 @@ class BaseQuery(object):
         return "%s:%s" % (self.config.args.host, self.config.args.port)
 
     def query(self, obj=None):
-        if not isinstance(obj, str):
-            raise TypeError("%s not of type %s" % (obj, str))
+        if not isinstance(obj, basestring):
+            raise TypeError("%s not of type %s" % (obj, basestring))
         result = {
-            'object': obj
+            u'object': unicode(obj)
         }
         return result

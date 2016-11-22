@@ -20,14 +20,14 @@ class NativeQuery(BaseQuery):
     def query(self, obj=None):
         super(NativeQuery, self).query(obj=obj)
         result = dict()
-        sets = {'ipv4': set(), 'ipv6': set()}
+        sets = {u'ipv4': set(), u'ipv6': set()}
         members = self._members(obj=obj)
         for member in members:
             routes = self._routes(obj=member)
             for af in routes:
-                sets[af].update(routes[af])
+                sets[af].update([unicode(route) for route in routes[af]])
         for af in sets:
-            result[af] = list([{'prefix': p, 'exact': True} for p in sets[af]])
+            result[af] = list([{u'prefix': p, u'exact': True} for p in sets[af]])
         return result
 
     def _connect(self):
@@ -107,7 +107,7 @@ class NativeQuery(BaseQuery):
 
     def _routes(self, obj=None):
         """ get routes for specified object """
-        proto = {'ipv4': '!g', 'ipv6': '!6'}
+        proto = {u'ipv4': '!g', u'ipv6': '!6'}
         routes = dict()
         for af in proto:
             q = "%s%s" % (proto[af], obj)

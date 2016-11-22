@@ -27,6 +27,6 @@ class BaseFormat(object):
     def format(self, result=None, name=None):
         if not isinstance(result, dict):
             raise TypeError("%s not of type %s" % (result, dict))
-        if not isinstance(name, str):
-            raise TypeError("%s not of type %s" % (name, str))
+        if not isinstance(name, basestring):
+            raise TypeError("%s not of type %s" % (name, basestring))
         return None

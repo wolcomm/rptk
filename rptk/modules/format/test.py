@@ -5,6 +5,6 @@ class TestFormat(BaseFormat):
     def format(self, result=None, name=None):
         super(TestFormat, self).format(result=result, name=name)
         output = {
-            name: result
+            unicode(name): result
         }
         return output

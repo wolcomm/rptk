@@ -1,4 +1,4 @@
-from rptk.modules.format import BaseFormat
+from rptk.modules.format import BaseFormat, JinjaFormat
 
 
 class IosFormat(BaseFormat):
@@ -35,3 +35,7 @@ class IosFormat(BaseFormat):
             return 'ipv6 prefix-list'
         else:
             raise ValueError("%s is not a valid address-family name" % af)
+
+
+class IosJinjaFormat(JinjaFormat):
+    template_name = 'ios.j2'

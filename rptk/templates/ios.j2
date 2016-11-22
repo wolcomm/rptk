@@ -1,0 +1,17 @@
+{# Cisco IOS prefix-list template #}
+!
+{% for af, entries in result.iteritems() %}
+{% if entries|count > 0 %}
+{% if af == "ipv4" %}
+{% set afi = "ip" %}
+{% else %}
+{% set afi = "ipv6" %}
+{% endif %}
+no {{ afi }} prefix-list {{ name }}
+{% for entry in entries %}
+{{ afi }} prefix-list {{ name }} permit {{ entry.prefix }}
+{% endfor %}
+{% endif %}
+!
+{% endfor %}
+!

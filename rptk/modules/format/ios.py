@@ -17,7 +17,7 @@ class IosFormat(BaseFormat):
             raise ValueError("%s not of type %s" % (entry, dict))
         if not isinstance(i, int):
             raise ValueError("%s not of type %s" % (i, int))
-        output = "%s %s seq %s permit %s\n" % (self.af(af=af), name, i, entry['prefix'])
+        output = "%s %s seq %s permit %s" % (self.af(af=af), name, i, entry['prefix'])
         if not entry['exact']:
             if 'greater-equal' in entry:
                 output += " ge %s" % entry['greater-equal']

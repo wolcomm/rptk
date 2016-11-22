@@ -2,6 +2,7 @@ import os
 import importlib
 import ConfigParser
 import argparse
+import logging
 
 
 class Config(object):
@@ -48,11 +49,16 @@ class Config(object):
             args.name = args.object
         args.query_class = query_classes[args.query]
         args.format_class = format_classes[args.format]
+        self._logging_handler = logging.StreamHandler()
         self._args = args
 
     @property
     def args(self):
         return self._args
+
+    @property
+    def logging_handler(self):
+        return self._logging_handler
 
     def _register_classes(self, entries=None):
         classes = dict()

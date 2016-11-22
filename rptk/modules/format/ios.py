@@ -17,7 +17,17 @@ class IosFormat(BaseFormat):
             raise ValueError("%s not of type %s" % (entry, dict))
         if not isinstance(i, int):
             raise ValueError("%s not of type %s" % (i, int))
-        return "%s %s seq %s permit %s\n" % (self.af(af=af), name, i, entry['prefix'])
+        ge, le = '', ''
+        if entry['exact']:
+            return "%s %s seq %s permit %s\n" % (self.af(af=af), name, i, entry['prefix'])
+        else:
+            if 'greater-equal' in entry:
+                ge = " %s" % entry['greater-equal']
+            if 'less-equal' in entry:
+                le = " %s" % entry['less-equal']
+            return "%s %s seq %s permit %s%s%s\n" % (
+                self.af(af=af), name, i, entry['prefix'], ge, le
+            )
 
     def af(self, af=None):
         if af == 'ipv4':

@@ -18,14 +18,21 @@ Features
 
 * Simple python api module
 
+* Flask-based web-query api
+
 * Query modules:
 
+  * native python query module
   * `bgpq3`_ shell wrapper
 
 * Format modules:
 
   * JSON output
   * IOS classic/XE style prefix-lists
+  * JunOS prefix-lists
+  * BIRD prefix-lists
+  * ...more coming soon
+
 
 Getting Started
 ===============

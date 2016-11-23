@@ -24,7 +24,7 @@ Features
   * native python query module
   * `bgpq3`_ shell wrapper
 
-* Format modules:
+* Format modules
 
   * JSON output
   * YAML output
@@ -33,18 +33,14 @@ Features
   * BIRD prefix-lists
   * ...more coming soon
 
-
 Getting Started
 ---------------
 
-1. Install from pip::
-  ``$ pip install rptk``
+1. Install from pip: ``$ pip install rptk``
 
-2. Run bgpq3 installer script::
-  ``$ ./install-bgpq3.sh``
+2. Run bgpq3 installer script: ``$ ./install-bgpq3.sh``
   
-3. Run tests::
-  ``$ python setup.py test``
+3. Run tests: ``$ python setup.py test``
   
 4. Customise defaults in ``rptk.conf``
 

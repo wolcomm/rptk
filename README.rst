@@ -21,16 +21,17 @@ Features
 
 * Query modules:
 
-    * native python query module
-    * `bgpq3`_ shell wrapper
+  * native python query module
+  * `bgpq3`_ shell wrapper
 
 * Format modules:
 
-    * JSON output
-    * IOS classic/XE style prefix-lists
-    * JunOS prefix-lists
-    * BIRD prefix-lists
-    * ...more coming soon
+  * JSON output
+  * YAML output
+  * IOS classic/XE style prefix-lists
+  * JunOS prefix-lists
+  * BIRD prefix-lists
+  * ...more coming soon
 
 
 Getting Started

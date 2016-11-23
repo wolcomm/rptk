@@ -15,9 +15,13 @@ no {{ afi }} prefix-list {{ name }}
 {% if entry.exact == false %}
 {% if entry['greater-equal'] is defined %}
 {% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
+{% else %}
+{% set ge = "" %}
 {% endif %}
 {% if entry['less-equal'] is defined %}
 {% set le %} le {{ entry['less-equal'] }}{% endset %}
+{% else %}
+{% set le = "" %}
 {% endif %}
 {% endif %}
 {{ afi }} prefix-list {{ name }} permit {{ entry.prefix }}{{ ge }}{{ le }}

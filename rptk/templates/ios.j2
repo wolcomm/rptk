@@ -12,7 +12,7 @@
 no {{ afi }} prefix-list {{ name }}
 {# loop through entries #}
 {% for entry in entries %}
-{% if entry.exact is false %}
+{% if entry.exact == false %}
 {% if entry['greater-equal'] is defined %}
 {% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
 {% endif %}

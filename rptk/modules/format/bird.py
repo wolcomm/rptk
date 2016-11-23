@@ -1,13 +1,6 @@
-from rptk.modules.format import BaseFormat
+from rptk.modules.format import JinjaFormat
 
 
-class BirdFormat(BaseFormat):
-    def format(self, result=None, name=None):
-        super(BirdFormat, self).format(result=result, name=name)
-        output = str()
-        output += "%s = [\n" % name
-        for af in result:
-            for entry in result[af]:
-                output += "  %s,\n" % entry['prefix']
-        output += "];\n"
-        return output
+class BirdFormat(JinjaFormat):
+    """ renders result object as a BIRD prefix-list """
+    template_name = 'bird.j2'

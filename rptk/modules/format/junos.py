@@ -1,17 +1,6 @@
-from rptk.modules.format import BaseFormat
+from rptk.modules.format import JinjaFormat
 
 
-class JunosFormat(BaseFormat):
-    def format(self, result=None, name=None):
-        super(JunosFormat, self).format(result=result, name=name)
-        output = str()
-        output += \
-            "policy-options {\n" \
-            "replace:\n" \
-            "  prefix-list %s {\n" % name
-        for af in result:
-            for entry in result[af]:
-                output += "    %s;\n" % entry['prefix']
-        output += "  }\n" \
-                  "}\n"
-        return output
+class JunosFormat(JinjaFormat):
+    """ renders result object as a Juniper JunOS prefix-list """
+    template_name = 'junos.j2'

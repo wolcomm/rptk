@@ -1,0 +1,11 @@
+{# BIRD prefix-list template #}
+{# start output #}
+{{ name }} = [
+{# outer-loop through address families #}
+{% for afi, entries in result.iteritems() %}
+{# inner-loop through entries #}
+{% for entry in entries %}
+    {{ entry.prefix }},
+{% endfor %}
+{% endfor %}
+];

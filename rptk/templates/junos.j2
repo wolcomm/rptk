@@ -1,0 +1,14 @@
+{# Juniper JunOS prefix-list template #}
+{# start output #}
+policy-options {
+replace:
+  prefix-list {{ name }} {
+{# outer-loop through address families #}
+{% for afi, entries in result.iteritems() %}
+{# inner-loop through entries #}
+{% for entry in entries %}
+    {{ entry.prefix }};
+{% endfor %}
+{% endfor %}
+  }
+}

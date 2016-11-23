@@ -1,13 +1,10 @@
 from setuptools import setup, find_packages
 
-
-def readme():
-    with open('README.rst') as f:
-        return f.read()
-
 version = open('packaging/VERSION').read().strip()
 requirements = open('packaging/requirements.txt').read().split("\n")
 test_requirements = open('packaging/requirements-test.txt').read().split("\n")
+with open('README.rst', encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='rptk',
@@ -15,7 +12,7 @@ setup(
     author='Workonline Communications',
     author_email='communications@workonkonline.co.za',
     description='Python tools for prefix filter list management operations',
-    long_description=readme(),
+    long_description=long_description,
     license='LICENSE',
     classifiers=[
         'Development Status :: 3 - Alpha',

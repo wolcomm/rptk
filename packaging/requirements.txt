@@ -1,3 +1,5 @@
 whichcraft
 daemonize
+Jinja2
+ipaddress
 Flask-API

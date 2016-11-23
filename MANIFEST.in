@@ -3,3 +3,4 @@ include LICENSE
 include packaging/VERSION
 recursive-include packaging *.txt
 recursive-include rptk *.conf
+recursive-include rptk/templates *.j2

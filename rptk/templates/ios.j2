@@ -6,12 +6,15 @@
 {% if afi == "ipv4" %}
 {% set afi = "ip" %}
 {% endif %}
+{# reset sequence number #}
+{% set i = 0 %}
 {# check that we have entries for this afi #}
 {% if entries|count > 0 %}
 {# remove existing prefix-list #}
 no {{ afi }} prefix-list {{ name }}
 {# loop through entries #}
 {% for entry in entries %}
+{% set i = i + 10 %}
 {% if entry['greater-equal'] is defined %}
 {% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
 {% else %}
@@ -22,7 +25,7 @@ no {{ afi }} prefix-list {{ name }}
 {% else %}
 {% set le = "" %}
 {% endif %}
-{{ afi }} prefix-list {{ name }} permit {{ entry.prefix }}{{ ge }}{{ le }}
+{{ afi }} prefix-list {{ name }} seq {{ i }} permit {{ entry.prefix }}{{ ge }}{{ le }}
 {% endfor %}
 {% endif %}
 !

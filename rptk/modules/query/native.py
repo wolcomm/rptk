@@ -1,5 +1,6 @@
 import socket
 import re
+import ipaddress
 from pkg_resources import get_distribution
 from rptk.modules.query import BaseQuery
 
@@ -25,9 +26,10 @@ class NativeQuery(BaseQuery):
         for member in members:
             routes = self._routes(obj=member)
             for af in routes:
-                sets[af].update([unicode(route) for route in routes[af]])
+                sets[af].update(routes[af])
         for af in sets:
-            result[af] = list([{u'prefix': p, u'exact': True} for p in sets[af]])
+            prefixes = sorted(list(sets[af]))
+            result[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]
         return result
 
     def _connect(self):
@@ -97,7 +99,7 @@ class NativeQuery(BaseQuery):
         raise RuntimeError("invalid response '%s'" % (response,))
 
     def _members(self, obj=None):
-        """ resolve an as-set to it's members """
+        """ resolve an as-set to its members """
         q = "!i%s,1" % obj
         members = self._query(q)
         if members:
@@ -107,9 +109,21 @@ class NativeQuery(BaseQuery):
 
     def _routes(self, obj=None):
         """ get routes for specified object """
-        proto = {u'ipv4': '!g', u'ipv6': '!6'}
+        proto = {
+            u'ipv4': {'cmd': '!g', 'class': ipaddress.IPv4Network},
+            u'ipv6': {'cmd': '!6', 'class': ipaddress.IPv6Network}
+        }
         routes = dict()
         for af in proto:
-            q = "%s%s" % (proto[af], obj)
-            routes[af] = self._query(q).split()
+            cmd = proto[af]['cmd']
+            cls = proto[af]['class']
+            q = "%s%s" % (cmd, obj)
+            routes[af] = list()
+            resp = self._query(q)
+            if resp:
+                for each in resp.split():
+                    try:
+                        routes[af].append(cls(unicode(each)))
+                    except ipaddress.AddressValueError, ipaddress.NetmaskValueError:
+                        self.log.warning("converting %s to %s failed" % (each, cls))
         return routes

@@ -12,7 +12,6 @@
 no {{ afi }} prefix-list {{ name }}
 {# loop through entries #}
 {% for entry in entries %}
-{% if entry.exact == false %}
 {% if entry['greater-equal'] is defined %}
 {% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
 {% else %}
@@ -22,7 +21,6 @@ no {{ afi }} prefix-list {{ name }}
 {% set le %} le {{ entry['less-equal'] }}{% endset %}
 {% else %}
 {% set le = "" %}
-{% endif %}
 {% endif %}
 {{ afi }} prefix-list {{ name }} permit {{ entry.prefix }}{{ ge }}{{ le }}
 {% endfor %}

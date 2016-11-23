@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from codecs import open
 
 version = open('packaging/VERSION').read().strip()
 requirements = open('packaging/requirements.txt').read().split("\n")

@@ -9,10 +9,6 @@ class Dispatcher(object):
         self._config = config
         self._log = logging.getLogger(__name__)
         self._log.addHandler(config.logging_handler)
-        self._query_class = config.args.query_class
-        self._format_class = config.args.format_class
-        self._object = config.args.object
-        self._name = config.args.name
 
     @property
     def config(self):

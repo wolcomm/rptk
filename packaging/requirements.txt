@@ -3,4 +3,4 @@ daemonize
 Jinja2
 ipaddress
 PyYAML
-Flask-API
+Flask

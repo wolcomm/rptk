@@ -1,5 +1,5 @@
 
-.. image:: https://img.shields.io/pypi/v/rptk.svg?maxAge=2592000
+.. image:: https://img.shields.io/pypi/v/rptk.svg
     :target: https://pypi.python.org/pypi/rptk
 .. image:: https://travis-ci.org/wolcomm/rptk.svg?branch=master
     :target: https://travis-ci.org/wolcomm/rptk

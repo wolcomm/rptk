@@ -9,8 +9,9 @@ class TestRptk(TestCase):
     argv = ['--config_path', config_path]
 
     def test_01_dependency_bgpq3(self):
-        path = which('bgpq3')
-        self.assertIsInstance(path, str, msg="bgpq3 executable not found in PATH")
+        if os.name == 'posix':
+            path = which('bgpq3')
+            self.assertIsInstance(path, str, msg="bgpq3 executable not found in PATH")
 
     def test_02_configure(self):
         config = configuration.Config(argv=self.argv)

@@ -6,7 +6,16 @@ import logging
 
 
 class Config(object):
-    def __init__(self, argv=None, opts=None):
+    def __init__(self, argv=None, opts=None, logging_handler=None):
+        if logging_handler:
+            if isinstance(logging_handler, logging.Handler):
+                self._logging_handler = logging_handler
+            else:
+                raise TypeError("%s not of type %s" % (logging_handler, logging.Handler))
+        else:
+            self._logging_handler = logging.NullHandler()
+        self._log = logging.getLogger(__name__)
+        self._log.addHandler(self.logging_handler)
         if not argv:
             argv = list()
         parser = argparse.ArgumentParser(add_help=False)
@@ -49,7 +58,6 @@ class Config(object):
             args.name = args.object
         args.query_class = query_classes[args.query]
         args.format_class = format_classes[args.format]
-        self._logging_handler = logging.StreamHandler()
         self._args = args
 
     @property
@@ -59,6 +67,10 @@ class Config(object):
     @property
     def logging_handler(self):
         return self._logging_handler
+
+    @property
+    def log(self):
+        return self._log
 
     def _register_classes(self, entries=None):
         classes = dict()

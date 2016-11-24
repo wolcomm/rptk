@@ -1,3 +1,4 @@
+---
 language: python
 python:
   - "2.7"
@@ -5,7 +6,10 @@ sudo: required
 before_install:
   - ./install-bgpq3.sh
 install:
-  - pip install -r packaging/requirements.txt
+  - pip install -r packaging/requirements-test.txt
   - pip install -e .
 script:
-  - python setup.py test
+  - nosetests --with-coverage
+after_success:
+  - codecov
+...

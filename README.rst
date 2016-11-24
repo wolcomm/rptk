@@ -3,6 +3,8 @@
     :target: https://pypi.python.org/pypi/rptk
 .. image:: https://travis-ci.org/wolcomm/rptk.svg?branch=master
     :target: https://travis-ci.org/wolcomm/rptk
+.. image:: https://codecov.io/gh/wolcomm/rptk/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/wolcomm/rptk
 
 RPTK - Routing Policy Tool Kit
 ==============================

@@ -28,9 +28,11 @@ class BaseFormat(object):
     def format(self, result=None, name=None):
         if not isinstance(result, dict):
             raise TypeError("%s not of type %s" % (result, dict))
+        if not name:
+            name = self.config.args.name
         if not isinstance(name, basestring):
             raise TypeError("%s not of type %s" % (name, basestring))
-        return None
+        return unicode(name)
 
 
 class JinjaFormat(BaseFormat):
@@ -53,7 +55,7 @@ class JinjaFormat(BaseFormat):
         self._template = self.env.get_template(self.template_name)
 
     def format(self, result=None, name=None):
-        super(JinjaFormat, self).format(result=result, name=name)
+        name = super(JinjaFormat, self).format(result=result, name=name)
         self.load_template()
         if isinstance(self.template, jinja2.Template):
             output = self.template.render(result=result, name=name)

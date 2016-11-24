@@ -18,9 +18,11 @@ class Dispatcher(object):
     def log(self):
         return self._log
 
-    def dispatch(self):
+    def dispatch(self, obj=None, name=None):
+        if obj and not name:
+            name = obj
         with self.config.args.query_class(config=self.config) as q:
-            result = q.query(obj=self.config.args.object)
+            result = q.query(obj=obj)
         with self.config.args.format_class(config=self.config) as f:
-            output = f.format(result=result, name=self.config.args.name)
+            output = f.format(result=result, name=name)
         return output

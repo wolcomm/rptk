@@ -24,14 +24,9 @@ class BaseQuery(object):
     def log(self):
         return self._log
 
-    @property
-    def target(self):
-        return "%s:%s" % (self.config.args.host, self.config.args.port)
-
     def query(self, obj=None):
+        if not obj:
+            obj = self.config.args.object
         if not isinstance(obj, basestring):
             raise TypeError("%s not of type %s" % (obj, basestring))
-        result = {
-            u'object': unicode(obj)
-        }
-        return result
+        return unicode(obj)

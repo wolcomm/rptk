@@ -19,7 +19,7 @@ class NativeQuery(BaseQuery):
         self._disconnect()
 
     def query(self, obj=None):
-        super(NativeQuery, self).query(obj=obj)
+        obj = super(NativeQuery, self).query(obj=obj)
         result = dict()
         sets = {u'ipv4': set(), u'ipv6': set()}
         members = self._members(obj=obj)

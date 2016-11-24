@@ -6,7 +6,7 @@ from whichcraft import which
 
 class Bgpq3Query(BaseQuery):
     def query(self, obj=None):
-        super(Bgpq3Query, self).query(obj=obj)
+        obj = super(Bgpq3Query, self).query(obj=obj)
         result = dict()
         if not self.path:
             raise RuntimeError("couldn't determine bgpq3 executable path")
@@ -24,3 +24,8 @@ class Bgpq3Query(BaseQuery):
             return self.config.args.bgpq3_path
         except AttributeError:
             return which("bgpq3")
+
+    @property
+    def target(self):
+        return "%s:%s" % (self.config.args.host, self.config.args.port)
+

@@ -53,7 +53,7 @@ class Config(object):
         parser.add_argument('object', nargs='?', action='store', type=str, help="rpsl object name")
         args = parser.parse_args(args=remaining_args)
         if not args.object:
-            raise RuntimeError("No default value provided for object")
+            args.object = None
         if not args.name:
             args.name = args.object
         args.query_class = query_classes[args.query]

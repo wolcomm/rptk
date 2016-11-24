@@ -7,11 +7,16 @@ from rptk import configuration, dispatch
 class TestRptk(TestCase):
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tests.conf')
     argv = ['--config_path', config_path]
+    if os.name == 'posix':
+        posix = True
+    else:
+        posix = False
 
     def test_01_dependency_bgpq3(self):
-        if os.name == 'posix':
+        if self.posix:
             path = which('bgpq3')
             self.assertIsInstance(path, str, msg="bgpq3 executable not found in PATH")
+        return
 
     def test_02_configure(self):
         config = configuration.Config(argv=self.argv)

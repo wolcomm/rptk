@@ -32,7 +32,13 @@ class BaseFormat(object):
             name = self.config.args.name
         if not isinstance(name, basestring):
             raise TypeError("%s not of type %s" % (name, basestring))
-        return unicode(name)
+        output = unicode(name)
+        return output
+
+    def validate(self, output=None):
+        if not isinstance(output, unicode):
+            raise TypeError("%s not of type %s" % (output, unicode))
+        return True
 
 
 class JinjaFormat(BaseFormat):

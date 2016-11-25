@@ -8,3 +8,7 @@ class TestFormat(BaseFormat):
             name: result
         }
         return output
+
+    def validate(self, output=None):
+        if not isinstance(output, dict):
+            raise TypeError("%s not of type %s" % (output, dict))

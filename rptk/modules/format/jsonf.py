@@ -10,3 +10,11 @@ class JsonFormat(BaseFormat):
             indent=4
         )
         return output
+
+    def validate(self, output=None):
+        super(JsonFormat, self).validate(output=output)
+        try:
+            json.loads(output)
+        except:
+            raise
+        return True

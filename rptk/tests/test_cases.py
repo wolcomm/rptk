@@ -2,7 +2,6 @@ import os
 import importlib
 import ConfigParser
 from unittest import TestCase
-from whichcraft import which
 from rptk import configuration, dispatch
 
 
@@ -17,19 +16,18 @@ class TestRptk(TestCase):
     def test_01_configure(self):
         config = configuration.Config(argv=self.argv)
         self.assertIsInstance(config, configuration.Config, msg="config object invalid")
-        self.config = config
 
     def test_02_query_classes(self):
         cfg = ConfigParser.SafeConfigParser()
         cfg.read(self.config_path)
-        classes = dict()
+        classes = {'query': {}, 'format': {}}
         for entry in cfg.items("query-classes"):
             name = entry[0]
             mod_path, cls_path = entry[1].rsplit(".", 1)
             cls = getattr(importlib.import_module(mod_path), cls_path)
-            classes.update({name: cls})
-        for name in classes:
-            if classes[name].posix_only and not self.posix:
+            classes['query'].update({name: cls})
+        for name in classes['query']:
+            if classes['query'][name].posix_only and not self.posix:
                 continue
             opts = {'query': name}
             config = configuration.Config(argv=self.argv, opts=opts)

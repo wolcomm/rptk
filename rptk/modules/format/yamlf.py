@@ -13,3 +13,11 @@ class YamlFormat(BaseFormat):
             default_flow_style=False,
         )
         return output
+
+    def validate(self, output=None):
+        super(YamlFormat, self).validate(output=output)
+        try:
+            yaml.load(output)
+        except:
+            raise
+        return True

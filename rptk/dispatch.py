@@ -18,11 +18,13 @@ class Dispatcher(object):
     def log(self):
         return self._log
 
-    def dispatch(self, obj=None, name=None):
+    def dispatch(self, obj=None, name=None, test=False):
         if obj and not name:
             name = obj
         with self.config.args.query_class(config=self.config) as q:
             result = q.query(obj=obj)
         with self.config.args.format_class(config=self.config) as f:
             output = f.format(result=result, name=name)
+            if test:
+                return f.validate(output=output)
         return output

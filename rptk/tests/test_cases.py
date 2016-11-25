@@ -2,7 +2,7 @@ import os
 import importlib
 import ConfigParser
 from unittest import TestCase
-from rptk import configuration, dispatch
+from rptk import configuration, dispatch, load
 
 
 class TestRptk(TestCase):
@@ -17,20 +17,18 @@ class TestRptk(TestCase):
         config = configuration.Config(argv=self.argv)
         self.assertIsInstance(config, configuration.Config, msg="config object invalid")
 
-    def test_02_query_classes(self):
+    def test_02_dispatch_to_classes(self):
         cfg = ConfigParser.SafeConfigParser()
         cfg.read(self.config_path)
-        classes = {'query': {}, 'format': {}}
-        for entry in cfg.items("query-classes"):
-            name = entry[0]
-            mod_path, cls_path = entry[1].rsplit(".", 1)
-            cls = getattr(importlib.import_module(mod_path), cls_path)
-            classes['query'].update({name: cls})
-        for name in classes['query']:
-            if classes['query'][name].posix_only and not self.posix:
+        query_class_loader = load.ClassLoader(items=cfg.items("query-classes"))
+        format_class_loader = load.ClassLoader(items=cfg.items("format-classes"))
+        for q in query_class_loader.class_names:
+            query_class = query_class_loader.get_class(name=q)
+            if query_class.posix_only and not self.posix:
                 continue
-            opts = {'query': name}
-            config = configuration.Config(argv=self.argv, opts=opts)
-            dispatcher = dispatch.Dispatcher(config=config)
-            result = dispatcher.dispatch()
-            self.assertIsInstance(result, dict)
+            for f in format_class_loader.class_names:
+                opts = {'query': q, 'format': f}
+                config = configuration.Config(argv=self.argv, opts=opts)
+                dispatcher = dispatch.Dispatcher(config=config)
+                result = dispatcher.dispatch(test=True)
+                self.assertTrue(result)

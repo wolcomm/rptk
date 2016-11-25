@@ -3,6 +3,7 @@ import importlib
 import ConfigParser
 import argparse
 import logging
+from rptk.load import ClassLoader
 
 
 class Config(object):
@@ -35,16 +36,16 @@ class Config(object):
             if not isinstance(opts, dict):
                 raise TypeError("%s not of type %s" % (opts, dict))
             defaults.update(opts)
-        query_classes = self._register_classes(config.items("query-classes"))
-        format_classes = self._register_classes(config.items("format-classes"))
+        query_class_loader = ClassLoader(items=config.items("query-classes"))
+        format_class_loader = ClassLoader(items=config.items("format-classes"))
         parser.set_defaults(**defaults)
         parser.add_argument(
             '--query', '-Q', action='store', type=str,
-            help="query class", choices=query_classes.keys()
+            help="query class", choices=query_class_loader.class_names
         )
         parser.add_argument(
             '--format', '-F', action='store', type=str,
-            help="format class", choices=format_classes.keys()
+            help="format class", choices=format_class_loader.class_names
         )
         parser.add_argument('--host', action='store', type=str, help="irrd host to connect to")
         parser.add_argument('--port', action='store', type=int, help="irrd service tcp port")
@@ -56,8 +57,8 @@ class Config(object):
             args.object = None
         if not args.name:
             args.name = args.object
-        args.query_class = query_classes[args.query]
-        args.format_class = format_classes[args.format]
+        args.query_class = query_class_loader.get_class(args.query)
+        args.format_class = format_class_loader.get_class(args.format)
         self._args = args
 
     @property
@@ -71,12 +72,3 @@ class Config(object):
     @property
     def log(self):
         return self._log
-
-    def _register_classes(self, entries=None):
-        classes = dict()
-        for entry in entries:
-            name = entry[0]
-            mod_path, cls_path = entry[1].rsplit(".", 1)
-            cls = getattr(importlib.import_module(mod_path), cls_path)
-            classes.update({name: cls})
-        return classes

@@ -3,6 +3,8 @@ from rptk.configuration import Config
 
 
 class BaseQuery(object):
+    posix_only = False
+
     def __init__(self, config=None):
         if not isinstance(config, Config):
             raise TypeError("%s not of type %s" % (config, Config))

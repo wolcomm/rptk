@@ -5,6 +5,8 @@ from whichcraft import which
 
 
 class Bgpq3Query(BaseQuery):
+    posix_only = True
+
     def query(self, obj=None):
         obj = super(Bgpq3Query, self).query(obj=obj)
         result = dict()

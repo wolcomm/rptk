@@ -14,26 +14,12 @@ class TestRptk(TestCase):
     else:
         posix = False
 
-    def test_01_dependency_bgpq3(self):
-        if self.posix:
-            path = which('bgpq3')
-            self.assertIsInstance(path, str, msg="bgpq3 executable not found in PATH")
-        return
-
-    def test_02_configure(self):
+    def test_01_configure(self):
         config = configuration.Config(argv=self.argv)
         self.assertIsInstance(config, configuration.Config, msg="config object invalid")
         self.config = config
 
-    def test_03_dummy_query(self):
-        config = configuration.Config(argv=self.argv)
-        dispatcher = dispatch.Dispatcher(config=config)
-        result = dispatcher.dispatch()
-        self.assertIsInstance(result, dict)
-        self.assertIsInstance(result["test"], dict)
-        self.assertEqual(result["test"]["object"], config.args.object)
-
-    def test_04_query_classes(self):
+    def test_02_query_classes(self):
         cfg = ConfigParser.SafeConfigParser()
         cfg.read(self.config_path)
         classes = dict()

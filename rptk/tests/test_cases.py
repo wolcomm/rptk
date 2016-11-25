@@ -1,8 +1,7 @@
 import os
-import importlib
 import ConfigParser
 from unittest import TestCase
-from rptk import configuration, dispatch, load
+from rptk import configuration, dispatch, load, api
 
 
 class TestRptk(TestCase):
@@ -17,7 +16,7 @@ class TestRptk(TestCase):
         config = configuration.Config(argv=self.argv)
         self.assertIsInstance(config, configuration.Config, msg="config object invalid")
 
-    def test_02_dispatch_to_classes(self):
+    def test_02_direct_dispatch(self):
         cfg = ConfigParser.SafeConfigParser()
         cfg.read(self.config_path)
         query_class_loader = load.ClassLoader(items=cfg.items("query-classes"))
@@ -31,4 +30,21 @@ class TestRptk(TestCase):
                 config = configuration.Config(argv=self.argv, opts=opts)
                 dispatcher = dispatch.Dispatcher(config=config)
                 result = dispatcher.dispatch(test=True)
+                self.assertTrue(result)
+
+    def test_03_api_query(self):
+        cfg = ConfigParser.SafeConfigParser()
+        cfg.read(self.config_path)
+        query_class_loader = load.ClassLoader(items=cfg.items("query-classes"))
+        format_class_loader = load.ClassLoader(items=cfg.items("format-classes"))
+        obj = cfg.get(section="defaults", option="object")
+        name = cfg.get(section="defaults", option="name")
+        for q in query_class_loader.class_names:
+            query_class = query_class_loader.get_class(name=q)
+            if query_class.posix_only and not self.posix:
+                continue
+            for f in format_class_loader.class_names:
+                opts = {'query': q, 'format': f}
+                rptk = api.Rptk(**opts)
+                result = rptk.query(obj=obj, name=name, test=True)
                 self.assertTrue(result)

@@ -36,8 +36,8 @@ class BaseFormat(object):
         return output
 
     def validate(self, output=None):
-        if not isinstance(output, unicode):
-            raise TypeError("%s not of type %s" % (output, unicode))
+        if not isinstance(output, basestring):
+            raise TypeError("%s not of type %s" % (output, basestring))
         return True
 
 

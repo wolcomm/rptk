@@ -9,7 +9,7 @@ install:
   - pip install -r packaging/requirements-test.txt
   - pip install -e .
 script:
-  - nosetests --with-coverage
+  - nosetests --with-coverage --cover-inclusive
 after_success:
   - codecov
 ...

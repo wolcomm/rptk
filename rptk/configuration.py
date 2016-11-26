@@ -1,15 +1,16 @@
 import os
 import ConfigParser
 import argparse
-import logging
+from rptk import _BaseObject
 from rptk.load import ClassLoader
 
 
-class Config(object):
+class Config(_BaseObject):
     def __init__(self, argv=None, opts=None):
-        self._log = logging.getLogger(__name__)
-        self.log.debug(msg="logging started")
+        super(Config, self).__init__()
+        self.log_init()
         if not argv:
+            self.log.debug(msg="no command line args received")
             argv = list()
         parser = argparse.ArgumentParser(add_help=False)
         config = ConfigParser.SafeConfigParser()
@@ -59,6 +60,7 @@ class Config(object):
         args.query_class = query_class_loader.get_class(args.query)
         args.format_class = format_class_loader.get_class(args.format)
         self._args = args
+        self.log_ready()
 
     @property
     def args(self):

@@ -8,7 +8,6 @@ class Dispatcher(object):
             raise TypeError("%s not of type %s" % (config, Config))
         self._config = config
         self._log = logging.getLogger(__name__)
-        self._log.addHandler(config.logging_handler)
 
     @property
     def config(self):

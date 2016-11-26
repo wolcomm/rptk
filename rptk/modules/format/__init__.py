@@ -5,11 +5,10 @@ from rptk.configuration import Config
 
 class BaseFormat(object):
     def __init__(self, config=None):
+        self._log = logging.getLogger(__name__)
         if not isinstance(config, Config):
             raise TypeError("%s not of type %s" % (config, Config))
         self._config = config
-        self._log = logging.getLogger(__name__)
-        self._log.addHandler(config.logging_handler)
 
     def __enter__(self):
         return self

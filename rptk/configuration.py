@@ -1,5 +1,4 @@
 import os
-import importlib
 import ConfigParser
 import argparse
 import logging
@@ -7,16 +6,9 @@ from rptk.load import ClassLoader
 
 
 class Config(object):
-    def __init__(self, argv=None, opts=None, logging_handler=None):
-        if logging_handler:
-            if isinstance(logging_handler, logging.Handler):
-                self._logging_handler = logging_handler
-            else:
-                raise TypeError("%s not of type %s" % (logging_handler, logging.Handler))
-        else:
-            self._logging_handler = logging.NullHandler()
+    def __init__(self, argv=None, opts=None):
         self._log = logging.getLogger(__name__)
-        self._log.addHandler(self.logging_handler)
+        self.log.debug(msg="logging started")
         if not argv:
             argv = list()
         parser = argparse.ArgumentParser(add_help=False)
@@ -27,6 +19,7 @@ class Config(object):
             help="path to configuration file", default=default_config_path
         )
         partial_args, remaining_args = parser.parse_known_args(args=argv)
+        self.log.debug(msg="using config file %s" % partial_args.config_path)
         config.read(partial_args.config_path)
         try:
             defaults = dict(config.items("defaults"))
@@ -35,8 +28,11 @@ class Config(object):
         if opts:
             if not isinstance(opts, dict):
                 raise TypeError("%s not of type %s" % (opts, dict))
+            self.log.debug(msg="reading opts dictionary")
             defaults.update(opts)
+        self.log.debug(msg="loading query classes")
         query_class_loader = ClassLoader(items=config.items("query-classes"))
+        self.log.debug(msg="loading format classes")
         format_class_loader = ClassLoader(items=config.items("format-classes"))
         parser.set_defaults(**defaults)
         parser.add_argument(
@@ -52,10 +48,13 @@ class Config(object):
         parser.add_argument('--name', action='store', type=str, help="prefix-list name (default: object)")
         parser.add_argument('--help', action='help', help="print usage information and exit")
         parser.add_argument('object', nargs='?', action='store', type=str, help="rpsl object name")
+        self.log.debug(msg="parsing %s command-line args" % len(remaining_args))
         args = parser.parse_args(args=remaining_args)
         if not args.object:
+            self.log.debug(msg="no object provided")
             args.object = None
         if not args.name:
+            self.log.debug(msg="no ouput name provided")
             args.name = args.object
         args.query_class = query_class_loader.get_class(args.query)
         args.format_class = format_class_loader.get_class(args.format)
@@ -64,10 +63,6 @@ class Config(object):
     @property
     def args(self):
         return self._args
-
-    @property
-    def logging_handler(self):
-        return self._logging_handler
 
     @property
     def log(self):

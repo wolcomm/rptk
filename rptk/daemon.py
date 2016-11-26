@@ -20,7 +20,7 @@ def init():
 def main():
     log_file = __name__ + ".log"
     logging_handler = FileHandler(log_file)
-    rptk = Rptk(logging_handler=logging_handler, format="ios")
+    rptk = Rptk(format="ios")
     while True:
         print rptk.query(obj="AS37271")
         sleep(3)

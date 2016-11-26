@@ -1,8 +1,10 @@
+import logging
 import importlib
 
 
 class ClassLoader(object):
     def __init__(self, items=None):
+        self._log = logging.getLogger(__name__)
         if not isinstance(items, list):
             raise TypeError("%s not of type %s" % (items, list))
         self._classes = dict()
@@ -22,3 +24,7 @@ class ClassLoader(object):
     @property
     def classes(self):
         return [self.get_class(name) for name in self.class_names]
+
+    @property
+    def log(self):
+        return self._log

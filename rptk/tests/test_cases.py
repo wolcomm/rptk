@@ -1,7 +1,7 @@
 import os
 import ConfigParser
 from unittest import TestCase
-from rptk import configuration, dispatch, load, api
+from rptk import load, api
 
 
 class TestRptk(TestCase):
@@ -12,27 +12,7 @@ class TestRptk(TestCase):
     else:
         posix = False
 
-    def test_01_configure(self):
-        config = configuration.Config(argv=self.argv)
-        self.assertIsInstance(config, configuration.Config, msg="config object invalid")
-
-    def test_02_direct_dispatch(self):
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.read(self.config_path)
-        query_class_loader = load.ClassLoader(items=cfg.items("query-classes"))
-        format_class_loader = load.ClassLoader(items=cfg.items("format-classes"))
-        for q in query_class_loader.class_names:
-            query_class = query_class_loader.get_class(name=q)
-            if query_class.posix_only and not self.posix:
-                continue
-            for f in format_class_loader.class_names:
-                opts = {'query': q, 'format': f}
-                config = configuration.Config(argv=self.argv, opts=opts)
-                dispatcher = dispatch.Dispatcher(config=config)
-                result = dispatcher.dispatch(test=True)
-                self.assertTrue(result)
-
-    def test_03_api_query(self):
+    def test_api(self):
         cfg = ConfigParser.SafeConfigParser()
         cfg.read(self.config_path)
         query_class_loader = load.ClassLoader(items=cfg.items("query-classes"))
@@ -48,3 +28,5 @@ class TestRptk(TestCase):
                 rptk = api.Rptk(**opts)
                 result = rptk.query(obj=obj, name=name, test=True)
                 self.assertTrue(result)
+                if result:
+                    print "api query with query=%s format=%s passed" % (q, f)

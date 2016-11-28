@@ -1,24 +1,30 @@
 import sys
 import logging
+import argparse
 from rptk import configuration, dispatch
 
 
 def main():
     log = logging.getLogger(__name__)
     try:
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument(
+            '--debug', '-d', action='store_const', const=logging.DEBUG, dest='log_level',
+            help="print debug logging output", default=logging.WARNING
+        )
+        args, argv = parser.parse_known_args()
         lh = logging.StreamHandler()
         lf = logging.Formatter(fmt="%(asctime)s %(name)s: %(levelname)s %(message)s")
         lh.setFormatter(lf)
         logging.getLogger().addHandler(lh)
-        logging.getLogger().setLevel(logging.DEBUG)
+        logging.getLogger().setLevel(args.log_level)
     except Exception as e:
         log.error(msg=e.message)
         return 1
     try:
         log.debug(msg="started")
-        argv = sys.argv[1:]
         log.debug(msg="have %s arguments" % len(argv))
-        config = configuration.Config(argv=argv)
+        config = configuration.Config(argv=argv, parser=parser)
         log.debug(msg="configuration done")
         dispatcher = dispatch.Dispatcher(config=config)
         log.debug(msg="dispatcher ready")

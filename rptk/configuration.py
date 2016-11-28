@@ -1,18 +1,20 @@
 import os
 import ConfigParser
 import argparse
+import logging
 from rptk import _BaseObject
 from rptk.load import ClassLoader
 
 
 class Config(_BaseObject):
-    def __init__(self, argv=None, opts=None):
+    def __init__(self, argv=None, opts=None, parser=None):
         super(Config, self).__init__()
         self.log_init()
         if not argv:
             self.log.debug(msg="no command line args received")
             argv = list()
-        parser = argparse.ArgumentParser(add_help=False)
+        if not parser:
+            parser = argparse.ArgumentParser(add_help=False)
         config = ConfigParser.SafeConfigParser()
         default_config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'rptk.conf')
         parser.add_argument(
@@ -24,8 +26,9 @@ class Config(_BaseObject):
         config.read(partial_args.config_path)
         try:
             defaults = dict(config.items("defaults"))
-        except ConfigParser.Error:
-            raise
+        except ConfigParser.Error as e:
+            self.log.error(msg=e.message)
+            raise e
         if opts:
             if not isinstance(opts, dict):
                 self.raise_type_error(arg=opts, cls=dict)

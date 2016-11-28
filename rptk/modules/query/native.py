@@ -10,13 +10,18 @@ class NativeQuery(BaseQuery):
         super(NativeQuery, self).__init__(config=config)
         self._regexp = re.compile('(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$')
         self._keepalive = True
+        self.log_init_done()
 
     def __enter__(self):
+        self.log_ready_start()
         self._connect()
+        self.log_ready_done()
         return self
 
     def __exit__(self, typ, value, traceback):
+        self.log_exit_start()
         self._disconnect()
+        self.log_exit_done()
 
     def query(self, obj=None):
         obj = super(NativeQuery, self).query(obj=obj)
@@ -33,7 +38,7 @@ class NativeQuery(BaseQuery):
             prefixes = sorted(list(sets[af]))
             result[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]
             self.log.debug(msg="found %s %s prefixes for object %s" % (len(result[af]), af, obj))
-        self.log_exit(method=self.current_method)
+        self.log_method_exit(method=self.current_method)
         return result
 
     def _connect(self):

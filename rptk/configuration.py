@@ -28,13 +28,13 @@ class Config(_BaseObject):
             raise
         if opts:
             if not isinstance(opts, dict):
-                raise TypeError("%s not of type %s" % (opts, dict))
+                self.raise_type_error(arg=opts, cls=dict)
             self.log.debug(msg="reading opts dictionary")
             defaults.update(opts)
         self.log.debug(msg="loading query classes")
-        query_class_loader = ClassLoader(items=config.items("query-classes"))
+        query_class_loader = self._get_loader(items=config.items("query-classes"))
         self.log.debug(msg="loading format classes")
-        format_class_loader = ClassLoader(items=config.items("format-classes"))
+        format_class_loader = self._get_loader(items=config.items("format-classes"))
         parser.set_defaults(**defaults)
         parser.add_argument(
             '--query', '-Q', action='store', type=str,
@@ -60,7 +60,7 @@ class Config(_BaseObject):
         args.query_class = query_class_loader.get_class(args.query)
         args.format_class = format_class_loader.get_class(args.format)
         self._args = args
-        self.log_ready()
+        self.log_init_done()
 
     @property
     def args(self):
@@ -69,3 +69,6 @@ class Config(_BaseObject):
     @property
     def log(self):
         return self._log
+
+    def _get_loader(self, items=None):
+        return ClassLoader(items=items)

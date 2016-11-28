@@ -10,6 +10,18 @@ class _BaseObject(object):
     def __init__(self):
         self._log = logging.getLogger(self.__module__)
 
+    def __repr__(self):
+        return "%s() object" % self.cls_name
+
+    def __enter__(self):
+        self.log_ready_start()
+        self.log_ready_done()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.log_exit_start()
+        self.log_exit_done()
+
     @property
     def log(self):
         return self._log
@@ -25,14 +37,30 @@ class _BaseObject(object):
     def log_init(self):
         self.log.debug(msg="initialising %s instance" % self.cls_name)
 
-    def log_ready(self):
-        self.log.debug(msg="%s instance ready" % self.cls_name)
+    def log_init_done(self):
+        caller = inspect.currentframe().f_back.f_back.f_code.co_name
+        if caller == '__init__':
+            self.log.debug(msg="still initialising %s instance" % self.cls_name)
+        else:
+            self.log.debug(msg="%s instance initialised" % self.cls_name)
 
-    def log_enter(self, method=None):
+    def log_method_enter(self, method=None):
         self.log.debug(msg="entering method %s.%s" % (self.cls_name, method))
 
-    def log_exit(self, method=None):
+    def log_method_exit(self, method=None):
         self.log.debug(msg="leaving method %s.%s" % (self.cls_name, method))
+
+    def log_ready_start(self):
+        self.log.debug(msg="preparing %s for use" % self)
+
+    def log_ready_done(self):
+        self.log.debug(msg="%s ready for use" % self)
+
+    def log_exit_start(self):
+        self.log.debug(msg="cleaning up %s" % self)
+
+    def log_exit_done(self):
+        self.log.debug(msg="finished cleaning up %s" % self)
 
     def raise_type_error(self, arg=None, cls=None):
         msg = "argument %s (%s) not of type %s" % (

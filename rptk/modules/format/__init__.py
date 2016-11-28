@@ -1,42 +1,41 @@
-import logging
 import jinja2
+from rptk import _BaseObject
 from rptk.configuration import Config
 
 
-class BaseFormat(object):
+class BaseFormat(_BaseObject):
     def __init__(self, config=None):
-        self._log = logging.getLogger(__name__)
+        super(BaseFormat, self).__init__()
+        self.log_init()
         if not isinstance(config, Config):
-            raise TypeError("%s not of type %s" % (config, Config))
+            self.raise_type_error(arg=config, cls=Config)
+        self.log.debug("initialising with config object %s" % config)
         self._config = config
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.log_init_done()
 
     @property
     def config(self):
         return self._config
 
-    @property
-    def log(self):
-        return self._log
-
     def format(self, result=None, name=None):
+        self.log_method_enter(method=self.current_method)
         if not isinstance(result, dict):
-            raise TypeError("%s not of type %s" % (result, dict))
+            self.raise_type_error(arg=result, cls=dict)
         if not name:
+            self.log.debug(msg="using name from configuration")
             name = self.config.args.name
         if not isinstance(name, basestring):
-            raise TypeError("%s not of type %s" % (name, basestring))
+            self.raise_type_error(arg=name, cls=basestring)
         output = unicode(name)
+        self.log_method_exit(method=self.current_method)
         return output
 
     def validate(self, output=None):
+        self.log_method_enter(method=self.current_method)
         if not isinstance(output, basestring):
-            raise TypeError("%s not of type %s" % (output, basestring))
+            self.raise_type_error(arg=output, cls=basestring)
+        self.log.debug(msg="validation successful")
+        self.log_method_exit(method=self.current_method)
         return True
 
 
@@ -45,25 +44,46 @@ class JinjaFormat(BaseFormat):
 
     def __init__(self, config=None):
         super(JinjaFormat, self).__init__(config=config)
-        self.env = jinja2.Environment(
-            loader=jinja2.PackageLoader('rptk')
-        )
-        self.env.trim_blocks = True
-        self.env.lstrip_blocks = True
+        self.log.debug("configuring jinja2 environment")
+        try:
+            self.env = jinja2.Environment(
+                loader=jinja2.PackageLoader('rptk')
+            )
+            self.env.trim_blocks = True
+            self.env.lstrip_blocks = True
+        except Exception as e:
+            self.raise_runtime_error(e.message)
         self._template = None
+        self.log_init_done()
+
+    def __enter__(self):
+        self.log_ready_start()
+        self._load_template()
+        self.log_ready_done()
+        return self
 
     @property
     def template(self):
         return self._template
 
-    def load_template(self):
-        self._template = self.env.get_template(self.template_name)
+    def _load_template(self):
+        try:
+            self._template = self.env.get_template(self.template_name)
+        except jinja2.TemplateError as e:
+            self.log.error(msg=e.message)
+            raise
+        self.log.debug("template loaded successfully")
 
     def format(self, result=None, name=None):
+        self.log_method_enter(method=self.current_method)
         name = super(JinjaFormat, self).format(result=result, name=name)
-        self.load_template()
         if isinstance(self.template, jinja2.Template):
-            output = self.template.render(result=result, name=name)
+            try:
+                output = self.template.render(result=result, name=name)
+                self.log_method_exit(method=self.current_method)
+                return output
+            except Exception as e:
+                self.log.error(msg=e.message)
+                raise
         else:
-            raise TypeError("%s not of type %s" % (self.template, jinja2.Template))
-        return output
+            self.raise_type_error(arg=self.template, cls=jinja2.Template)

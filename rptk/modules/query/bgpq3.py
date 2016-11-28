@@ -21,7 +21,7 @@ class Bgpq3Query(BaseQuery):
         for key in cmds:
             self.log.debug(msg="running %s" % ' '.join(cmds[key]))
             result.update(json.loads(subprocess.check_output(cmds[key])))
-        self.log_exit(method=self.current_method)
+        self.log_method_exit(method=self.current_method)
         return result
 
     @property

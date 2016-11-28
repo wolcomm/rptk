@@ -10,7 +10,7 @@ class Dispatcher(_BaseObject):
             raise TypeError("%s not of type %s" % (config, Config))
         self.log.debug("initialising with config object %s" % config)
         self._config = config
-        self.log_ready()
+        self.log_init_done()
 
     @property
     def config(self):
@@ -21,7 +21,7 @@ class Dispatcher(_BaseObject):
         return self._log
 
     def dispatch(self, obj=None, name=None, test=False):
-        self.log_enter(method=self.current_method)
+        self.log_method_enter(method=self.current_method)
         if obj and not name:
             self.log.debug(msg="name not provided using object (%s)" % obj)
             name = obj
@@ -41,5 +41,5 @@ class Dispatcher(_BaseObject):
         except Exception as e:
             self.log.error(msg=e.message)
             raise e
-        self.log_exit(method=self.current_method)
+        self.log_method_exit(method=self.current_method)
         return output

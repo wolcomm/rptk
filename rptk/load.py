@@ -22,7 +22,7 @@ class ClassLoader(_BaseObject):
             except Exception as e:
                 self.log.warning(msg=e.message)
         self.log.debug(msg="loaded %s classes" % count)
-        self.log_ready()
+        self.log_init_done()
 
     def get_class(self, name=None):
         return self._classes[name]

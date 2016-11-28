@@ -8,6 +8,7 @@ class Dispatcher(_BaseObject):
         self.log_init()
         if not isinstance(config, Config):
             raise TypeError("%s not of type %s" % (config, Config))
+        self.log.debug("initialising with config object %s" % config)
         self._config = config
         self.log_ready()
 

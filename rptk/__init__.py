@@ -33,3 +33,14 @@ class _BaseObject(object):
 
     def log_exit(self, method=None):
         self.log.debug(msg="leaving method %s.%s" % (self.cls_name, method))
+
+    def raise_type_error(self, arg=None, cls=None):
+        msg = "argument %s (%s) not of type %s" % (
+            arg.__name__, arg, cls
+            )
+        self.log.error(msg=msg)
+        raise TypeError(msg)
+
+    def raise_runtime_error(self, msg=None):
+        self.log.error(msg=msg)
+        raise RuntimeError(msg)

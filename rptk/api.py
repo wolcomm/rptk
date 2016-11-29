@@ -9,3 +9,6 @@ class Rptk(object):
 
     def query(self, obj=None, name=None, test=False):
         return self.dispatcher.dispatch(obj=obj, name=name, test=test)
+
+    def formats(self):
+        return

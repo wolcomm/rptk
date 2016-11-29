@@ -58,7 +58,7 @@ class Config(_BaseObject):
             self.log.debug(msg="no object provided")
             args.object = None
         if not args.name:
-            self.log.debug(msg="no ouput name provided")
+            self.log.debug(msg="no output name provided")
             args.name = args.object
         args.query_class = query_class_loader.get_class(args.query)
         args.format_class = format_class_loader.get_class(args.format)

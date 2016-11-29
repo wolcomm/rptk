@@ -16,10 +16,6 @@ class Dispatcher(_BaseObject):
     def config(self):
         return self._config
 
-    @property
-    def log(self):
-        return self._log
-
     def dispatch(self, obj=None, name=None, test=False):
         self.log_method_enter(method=self.current_method)
         if obj and not name:

@@ -1,7 +1,6 @@
 import os
 import ConfigParser
 import argparse
-import logging
 from rptk import _BaseObject
 from rptk.load import ClassLoader
 
@@ -68,10 +67,6 @@ class Config(_BaseObject):
     @property
     def args(self):
         return self._args
-
-    @property
-    def log(self):
-        return self._log
 
     def _get_loader(self, items=None):
         return ClassLoader(items=items)

@@ -32,8 +32,3 @@ class Bgpq3Query(BaseQuery):
         except AttributeError:
             self.log.debug(msg="no configured path, using system default")
             return which("bgpq3")
-
-    @property
-    def target(self):
-        return "%s:%s" % (self.config.args.host, self.config.args.port)
-

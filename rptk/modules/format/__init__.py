@@ -4,18 +4,24 @@ from rptk.configuration import Config
 
 
 class BaseFormat(_BaseObject):
-    def __init__(self, config=None):
+    def __init__(self, config=None, **opts):
         super(BaseFormat, self).__init__()
         self.log_init()
-        if not isinstance(config, Config):
-            self.raise_type_error(arg=config, cls=Config)
-        self.log.debug("initialising with config object %s" % config)
-        self._config = config
+        self._opts = opts
+        if config:
+            if not isinstance(config, Config):
+                self.raise_type_error(arg=config, cls=Config)
+            self.log.debug("initialising with config object %s" % config)
+            self._config = config
         self.log_init_done()
 
     @property
     def config(self):
-        return self._config
+        try:
+            return self._config
+        except AttributeError as e:
+            self.log.warning(msg=e.message)
+            return None
 
     def format(self, result=None, name=None):
         self.log_method_enter(method=self.current_method)
@@ -23,7 +29,10 @@ class BaseFormat(_BaseObject):
             self.raise_type_error(arg=result, cls=dict)
         if not name:
             self.log.debug(msg="using name from configuration")
-            name = self.config.args.name
+            if self.config:
+                name = self.config.args.name
+            else:
+                name = self.name
         if not isinstance(name, basestring):
             self.raise_type_error(arg=name, cls=basestring)
         output = unicode(name)
@@ -38,12 +47,16 @@ class BaseFormat(_BaseObject):
         self.log_method_exit(method=self.current_method)
         return True
 
+    @property
+    def name(self):
+        return self.opts["name"]
+
 
 class JinjaFormat(BaseFormat):
     template_name = None
 
-    def __init__(self, config=None):
-        super(JinjaFormat, self).__init__(config=config)
+    def __init__(self, config=None, **opts):
+        super(JinjaFormat, self).__init__(config=config, **opts)
         self.log.debug("configuring jinja2 environment")
         try:
             self.env = jinja2.Environment(

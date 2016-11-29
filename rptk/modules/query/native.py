@@ -6,8 +6,8 @@ from rptk.modules.query import BaseQuery
 
 
 class NativeQuery(BaseQuery):
-    def __init__(self, config=None):
-        super(NativeQuery, self).__init__(config=config)
+    def __init__(self, config=None, **opts):
+        super(NativeQuery, self).__init__(config=config, **opts)
         self._regexp = re.compile('(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$')
         self._keepalive = True
         self.log_init_done()
@@ -44,11 +44,12 @@ class NativeQuery(BaseQuery):
     def _connect(self):
         self.log.debug(msg="creating socket")
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.log.debug(msg="trying to connect to %s:%s" % (
-            self.config.args.host, self.config.args.port)
-            )
+        self.log.debug(msg="trying to connect to %s" % self.target)
         try:
-            self._socket.connect((self.config.args.host, self.config.args.port))
+            if self.config:
+                self._socket.connect((self.config.args.host, self.config.args.port))
+            else:
+                self._socket.connect((self.host, self.port))
         except socket.error as e:
             self.log.error(msg=e.message)
             raise

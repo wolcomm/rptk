@@ -23,6 +23,10 @@ class _BaseObject(object):
         self.log_exit_done()
 
     @property
+    def opts(self):
+        return getattr(self, "_opts", None)
+
+    @property
     def log(self):
         return self._log
 

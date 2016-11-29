@@ -4,8 +4,17 @@ from rptk.api import Rptk
 app = Flask(__name__)
 
 
+@app.route("/formats")
+def get_formats():
+    opts = request.args.to_dict()
+    rptk = Rptk(**opts)
+    formats = rptk.available_formats()
+    response = make_response("\n".join(formats))
+    response.headers['Content-Type'] = "text/plain"
+    return response
+
 @app.route("/<string:fmt>/<string:obj>")
-def get(fmt=None, obj=None):
+def get_prefix_list(fmt=None, obj=None):
     opts = request.args.to_dict()
     rptk = Rptk(object=obj, format=fmt, **opts)
     result = rptk.query()

@@ -11,15 +11,34 @@ class Rptk(object):
     def available_formats(self):
         return self._dispatcher.format_class_loader.class_names
 
+    def update_opts(self, **opts):
+        try:
+            self._dispatcher.update(**opts)
+        except Exception as e:
+            raise e
+        return self
+
+    @property
+    def query_class_loader(self):
+        return self._dispatcher.query_class_loader
+
+    @property
+    def format_class_loader(self):
+        return self._dispatcher.format_class_loader
+
     @property
     def opts(self):
         return self._dispatcher.opts
 
     def __getattribute__(self, name):
-        if name in self.opts:
-            return self.opts[name]
-        else:
+        try:
             return super(Rptk, self).__getattribute__(name)
+        except AttributeError as e:
+            try:
+                return self.opts[name]
+            except KeyError:
+                pass
+            raise e
 
     def __setattr__(self, name, value):
         try:

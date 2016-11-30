@@ -102,14 +102,14 @@ class Dispatcher(_BaseObject):
                 name = self.opts["object"]
         self.log.debug(msg="trying to begin query")
         try:
-            with self.query_class(config=None, **self.opts) as q:
+            with self.query_class(**self.opts) as q:
                 result = q.query(obj=obj)
         except Exception as e:
             self.log.error(msg=e.message)
             raise e
         self.log.debug(msg="trying to format result for output")
         try:
-            with self.format_class(config=None, **self.opts) as f:
+            with self.format_class(**self.opts) as f:
                 output = f.format(result=result, name=name)
                 if test:
                     return f.validate(output=output)

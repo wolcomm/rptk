@@ -1,7 +1,7 @@
 import json
 import subprocess
-from rptk.modules.query import BaseQuery
 from whichcraft import which
+from rptk.modules.query import BaseQuery
 
 
 class Bgpq3Query(BaseQuery):
@@ -28,7 +28,7 @@ class Bgpq3Query(BaseQuery):
     def path(self):
         self.log.debug(msg="determining bgpq3 executable path")
         try:
-            return self.config.args.bgpq3_path
-        except AttributeError:
+            return self.opts["bgpq3_path"]
+        except KeyError:
             self.log.debug(msg="no configured path, using system default")
             return which("bgpq3")

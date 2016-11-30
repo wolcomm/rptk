@@ -25,6 +25,8 @@ def main():
         if args.debug:
             logging.getLogger().setLevel(logging.DEBUG)
             log.debug(msg="debug logging started")
+    except AttributeError:
+        pass
     except Exception as e:
         log.error(msg=e.message)
         return 1

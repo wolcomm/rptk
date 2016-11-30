@@ -1,6 +1,6 @@
+import logging
 from time import sleep
-from rptk.api import Rptk
-from logging import FileHandler
+from rptk import RptkAPI
 try:
     from daemonize import Daemonize
     can_daemonize = True
@@ -18,9 +18,15 @@ def init():
 
 
 def main():
+    # start logging
     log_file = __name__ + ".log"
-    logging_handler = FileHandler(log_file)
-    rptk = Rptk(format="ios")
+    lh = logging.FileHandler(log_file)
+    lf = logging.Formatter(fmt="%(asctime)s %(name)s: %(levelname)s %(message)s")
+    lh.setFormatter(lf)
+    logging.getLogger().addHandler(lh)
+    # setup rptk api
+    rptk = RptkAPI(format="ios")
+    # begin loop
     while True:
         print rptk.query(obj="AS37271")
         sleep(3)

@@ -12,4 +12,6 @@ script:
   - nosetests --with-coverage --cover-inclusive
 after_success:
   - codecov
+notifications:
+  slack: wolcomm:yFzhM9JrnJsYw11xMcStIuZU
 ...

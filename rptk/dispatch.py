@@ -1,10 +1,10 @@
 import os
 import ConfigParser
-from rptk import _BaseObject
+from rptk.base import BaseObject
 from rptk.load import ClassLoader
 
 
-class Dispatcher(_BaseObject):
+class Dispatcher(BaseObject):
     def __init__(self, **kwargs):
         super(Dispatcher, self).__init__()
         self.log_init()

@@ -1,7 +1,7 @@
-from rptk import _BaseObject
+from rptk.base import BaseObject
 
 
-class BaseQuery(_BaseObject):
+class BaseQuery(BaseObject):
     posix_only = False
 
     def __init__(self, **opts):

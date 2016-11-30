@@ -1,8 +1,8 @@
 import jinja2
-from rptk import _BaseObject
+from rptk.base import BaseObject
 
 
-class BaseFormat(_BaseObject):
+class BaseFormat(BaseObject):
     def __init__(self, **opts):
         super(BaseFormat, self).__init__()
         self.log_init()

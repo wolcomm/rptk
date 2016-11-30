@@ -1,6 +1,6 @@
 import os
+from rptk import API
 from unittest import TestCase
-from rptk import api
 
 
 class TestRptk(TestCase):
@@ -11,7 +11,7 @@ class TestRptk(TestCase):
         posix = False
 
     def test_api(self):
-        rptk = api.Rptk(config_file=self.config_file)
+        rptk = API(config_file=self.config_file)
         for q in rptk.query_class_loader.class_names:
             query_class = rptk.query_class_loader.get_class(name=q)
             if query_class.posix_only and not self.posix:

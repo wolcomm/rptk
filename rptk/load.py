@@ -1,8 +1,8 @@
 import importlib
-from rptk import _BaseObject
+from rptk.base import BaseObject
 
 
-class ClassLoader(_BaseObject):
+class ClassLoader(BaseObject):
     def __init__(self, items=None):
         super(ClassLoader, self).__init__()
         self.log_init()

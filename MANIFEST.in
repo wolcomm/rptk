@@ -1,6 +1,8 @@
 include README.rst
 include LICENSE
 include packaging/VERSION
+include wiki
 recursive-include packaging *.txt
 recursive-include rptk *.conf
 recursive-include rptk/templates *.j2
+recursive-include rptk/wiki *.md *.json

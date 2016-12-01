@@ -1,6 +1,7 @@
 import json
 import subprocess
 from whichcraft import which
+from rptk.modules import PrefixSet
 from rptk.modules.query import BaseQuery
 
 
@@ -9,7 +10,7 @@ class Bgpq3Query(BaseQuery):
 
     def query(self, obj=None):
         obj = super(Bgpq3Query, self).query(obj=obj)
-        result = dict()
+        tmp = dict()
         if not self.path:
             msg = "couldn't determine bgpq3 executable path"
             self.log.error(msg=msg)
@@ -20,7 +21,8 @@ class Bgpq3Query(BaseQuery):
         }
         for key in cmds:
             self.log.debug(msg="running %s" % ' '.join(cmds[key]))
-            result.update(json.loads(subprocess.check_output(cmds[key])))
+            tmp.update(json.loads(subprocess.check_output(cmds[key])))
+        result = PrefixSet(results=tmp)
         self.log_method_exit(method=self.current_method)
         return result
 

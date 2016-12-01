@@ -6,7 +6,7 @@ class TestFormat(BaseFormat):
         self.log_method_enter(method=self.current_method)
         name = super(TestFormat, self).format(result=result, name=name)
         output = {
-            name: result
+            name: result.dict()
         }
         self.log_method_exit(method=self.current_method)
         return output

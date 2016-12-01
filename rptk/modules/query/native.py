@@ -2,6 +2,7 @@ import socket
 import re
 import ipaddress
 from pkg_resources import get_distribution
+from rptk.modules import PrefixSet
 from rptk.modules.query import BaseQuery
 
 
@@ -25,7 +26,7 @@ class NativeQuery(BaseQuery):
 
     def query(self, obj=None):
         obj = super(NativeQuery, self).query(obj=obj)
-        result = dict()
+        tmp = dict()
         sets = {u'ipv4': set(), u'ipv6': set()}
         self.log.debug(msg="trying to get members of %s" % obj)
         members = self._members(obj=obj)
@@ -36,8 +37,9 @@ class NativeQuery(BaseQuery):
                 sets[af].update(routes[af])
         for af in sets:
             prefixes = sorted(list(sets[af]))
-            result[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]
-            self.log.debug(msg="found %s %s prefixes for object %s" % (len(result[af]), af, obj))
+            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]
+            self.log.debug(msg="found %s %s prefixes for object %s" % (len(tmp[af]), af, obj))
+        result = PrefixSet(results=tmp)
         self.log_method_exit(method=self.current_method)
         return result
 

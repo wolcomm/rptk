@@ -1,5 +1,3 @@
-![](/logo.svg)
-
 RPTK Web API Usage
 ==================
 

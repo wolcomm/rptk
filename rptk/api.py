@@ -9,7 +9,7 @@ class Rptk(object):
         return self._dispatcher.dispatch(obj=obj, name=name, test=test)
 
     def available_formats(self):
-        return self._dispatcher.format_class_loader.class_names
+        return self._dispatcher.format_class_loader.class_info
 
     def update_opts(self, **opts):
         try:

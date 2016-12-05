@@ -4,6 +4,8 @@ from rptk.modules import PrefixSet
 
 
 class BaseFormat(BaseObject):
+    description = None
+
     def __init__(self, **opts):
         super(BaseFormat, self).__init__()
         self.log_init()

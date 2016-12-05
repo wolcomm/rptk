@@ -3,6 +3,8 @@ from rptk.modules.format import BaseFormat
 
 
 class JsonFormat(BaseFormat):
+    description = "JSON object"
+
     def format(self, result=None, name=None):
         self.log_method_enter(method=self.current_method)
         name = super(JsonFormat, self).format(result=result, name=name)

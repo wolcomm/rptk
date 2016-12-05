@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, make_response
 from rptk import RptkAPI
 
@@ -9,8 +10,8 @@ def get_formats():
     opts = request.args.to_dict()
     rptk = RptkAPI(**opts)
     formats = rptk.available_formats()
-    response = make_response("\n".join(formats))
-    response.headers['Content-Type'] = "text/plain"
+    response = make_response(json.dumps(formats))
+    response.headers['Content-Type'] = "application/json"
     return response
 
 

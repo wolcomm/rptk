@@ -36,5 +36,18 @@ class ClassLoader(BaseObject):
         return [self.get_class(name) for name in self.class_names]
 
     @property
-    def log(self):
-        return self._log
+    def class_info(self):
+        info = dict()
+        for name in self._classes:
+            descr = None
+            try:
+                descr = self.get_class(name=name).description
+            except AttributeError as e:
+                self.log.debug(msg=e.message)
+            except Exception as e:
+                self.log.error(msg=e.message)
+                raise e
+            info.update({name: {
+                'description': descr
+            }})
+        return info

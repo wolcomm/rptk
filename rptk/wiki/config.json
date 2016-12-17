@@ -1,7 +1,7 @@
 {
     "title": "Workonline Communications RPTK Usage",
     "useSideMenu": false,
-    "lineBreaks": "gfm",
+    "lineBreaks": "original",
     "additionalFooterText": "All content and images &copy; by Workonline Communications (Pty) Ltd. ",
     "anchorCharacter": "#"
 }

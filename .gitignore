@@ -93,3 +93,4 @@ ENV/
 
 # Rope project settings
 .ropeproject
+/rptk/rptk-local.conf

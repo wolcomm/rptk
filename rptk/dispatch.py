@@ -9,7 +9,12 @@ class Dispatcher(BaseObject):
         super(Dispatcher, self).__init__()
         self.log_init()
         self._opts = dict()
-        default_config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'rptk.conf')
+        default_path = os.path.dirname(os.path.realpath(__file__))
+        if os.path.isfile(os.path.join(default_path, 'rptk-local.conf')):
+            self.log.debug(msg="found local config file")
+            default_config_file = os.path.join(default_path, 'rptk-local.conf')
+        else:
+            default_config_file = os.path.join(default_path, 'rptk.conf')
         self._config_file = kwargs.pop("config_file", default_config_file)
         self.log.debug(msg="reading config file")
         reader = self._read_config()

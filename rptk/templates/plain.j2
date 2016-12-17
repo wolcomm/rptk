@@ -1,0 +1,26 @@
+{# Plaintext LOA prefix-list template #}
+{# start output #}
+irr object: {{ name }}
+{# loop through address families #}
+{% for afi, entries in result.iteritems() %}
+{{ afi }} prefixes:
+{# check that we have entries for this afi #}
+{% if entries|count > 0 %}
+{# loop through entries #}
+{% for entry in entries %}
+{% if entry['greater-equal'] is defined %}
+{% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
+{% else %}
+{% set ge = "" %}
+{% endif %}
+{% if entry['less-equal'] is defined %}
+{% set le %} le {{ entry['less-equal'] }}{% endset %}
+{% else %}
+{% set le = "" %}
+{% endif %}
+ {{ entry.prefix }}{{ ge }}{{ le }}
+{% endfor %}
+{% else %}
+ none
+{% endif %}
+{% endfor %}

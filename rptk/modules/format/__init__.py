@@ -14,7 +14,8 @@ class BaseFormat(BaseObject):
 
     def format(self, result=None, name=None):
         self.log_method_enter(method=self.current_method)
-        if not isinstance(result, PrefixSet):
+        # if not isinstance(result, PrefixSet):
+        if not isinstance(result, dict):
             self.raise_type_error(arg=result, cls=PrefixSet)
         if not name:
             self.log.debug(msg="using name from configuration")
@@ -78,7 +79,7 @@ class JinjaFormat(BaseFormat):
         name = super(JinjaFormat, self).format(result=result, name=name)
         if isinstance(self.template, jinja2.Template):
             try:
-                output = self.template.render(result=result.dict(), name=name)
+                output = self.template.render(result=result, name=name)
                 self.log_method_exit(method=self.current_method)
                 return output
             except Exception as e:

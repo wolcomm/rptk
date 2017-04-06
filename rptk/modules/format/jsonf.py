@@ -11,7 +11,7 @@ class JsonFormat(BaseFormat):
         self.log.debug(msg="creating json output")
         try:
             output = json.dumps(
-                {name: result.dict()},
+                {name: result},
                 indent=4
             )
             self.log_method_exit(method=self.current_method)

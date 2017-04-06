@@ -11,7 +11,7 @@ class YamlFormat(BaseFormat):
         self.log.debug(msg="creating json output")
         try:
             output = yaml.dump(
-                {name: result.dict()},
+                {name: result},
                 indent=4,
                 explicit_start=True,
                 explicit_end=True,

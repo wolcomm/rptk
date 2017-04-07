@@ -14,6 +14,14 @@ def get_formats():
     response.headers['Content-Type'] = "application/json"
     return response
 
+@app.route("/policies")
+def get_policies():
+    opts = request.args.to_dict()
+    rptk = RptkAPI(**opts)
+    policies = rptk.available_policies()
+    response = make_response(json.dumps(policies))
+    response.headers['Content-Type'] = "application/json"
+    return response
 
 @app.route("/<string:fmt>/<string:obj>")
 def get_prefix_list(fmt=None, obj=None):

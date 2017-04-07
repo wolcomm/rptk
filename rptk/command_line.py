@@ -48,6 +48,10 @@ def main():
             '--format', '-F', help="format class",
             choices=dispatcher.format_class_loader.class_names
         )
+        parser.add_argument(
+            '--policy', '-P', type=str, help="resolution policy",
+            choices=('strict', 'loose')
+        )
         parser.add_argument('--host', '-h', type=str, help="irrd host to connect to")
         parser.add_argument('--port', '-p', type=int, help="irrd service tcp port")
         parser.add_argument('--name', '-n', type=str, help="prefix-list name (default: object)")

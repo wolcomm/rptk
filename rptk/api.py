@@ -11,6 +11,9 @@ class Rptk(object):
     def available_formats(self):
         return self._dispatcher.format_class_loader.class_info
 
+    def available_policies(self):
+        return ('strict', 'loose',)
+
     def update_opts(self, **opts):
         try:
             self._dispatcher.update(**opts)

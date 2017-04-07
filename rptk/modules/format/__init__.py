@@ -1,4 +1,5 @@
 import jinja2
+from datetime import datetime
 from rptk.base import BaseObject
 from rptk.modules import PrefixSet
 
@@ -79,7 +80,7 @@ class JinjaFormat(BaseFormat):
         name = super(JinjaFormat, self).format(result=result, name=name)
         if isinstance(self.template, jinja2.Template):
             try:
-                output = self.template.render(result=result, name=name)
+                output = self.template.render(result=result, name=name, now=datetime.now())
                 self.log_method_exit(method=self.current_method)
                 return output
             except Exception as e:

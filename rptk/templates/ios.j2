@@ -12,6 +12,8 @@
 {% if entries|count > 0 %}
 {# remove existing prefix-list #}
 no {{ afi }} prefix-list {{ name }}
+{# add prefix list description #}
+{{ afi }} prefix-list {{ name }} description built by rptk at {{ now }}
 {# loop through entries #}
 {% for entry in entries %}
 {% set i = i + 10 %}

@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import re
 import ipaddress
 from collections import Set
+from operator import itemgetter
 from rptk.base import BaseObject
 
 
@@ -30,8 +31,8 @@ class PrefixSet(BaseObject, Set):
             except ValueError:
                 self.log.warning(msg="invalid address-family %s" % af)
             self.log.debug(msg="adding %s prefixes to set" % af)
-            # get a reference to the correct set
-            s = self.sets(af)
+            # create a temporary list to hold index ranges
+            temp = list()
             for entry in data[af]:
                 # calculate the index of the base prefix
                 # we'll be calulating a breadth-first index
@@ -70,13 +71,31 @@ class PrefixSet(BaseObject, Set):
                     if d >= m - l:
                         # add a tuple giving the lower and upper bounds of the
                         # indices of the subtree's nodes at this level
-                        s.add((left, right + 1))
+                        temp.append((left, right + 1))
                         self.log.debug(msg="added %d indices at depth %d" % (left - right + 1, d))
                     # get the lower and upper bounds at the next level
                     left *= 2
                     right = 2*right + 1
                 self.log.debug(msg="indexing %s^%d-%d complete" % (prefix, m, n))
-            # TODO: iterate through each cbt level and aggregate the set of range tuples
+            # sort temp list by lower bound values
+            temp.sort(key=itemgetter(1))
+            # get reference to the correct set
+            s = self.sets(af)
+            # loop through the resulting range entries and
+            # merge into the smallest set of entries
+            lower, upper = None, None
+            for next_lower, next_upper in temp:
+                if lower is None:
+                    lower = next_lower
+                    upper = next_upper
+                    continue
+                if upper < next_lower:
+                    s.add((lower, upper))
+                    lower = next_lower
+                upper = next_upper
+            else:
+                if upper is not None:
+                    s.add((lower, upper))
         self.log_init_done()
 
     def __contains__(self, item):
@@ -129,6 +148,11 @@ class PrefixSet(BaseObject, Set):
                         it.append((v, l, u))
         return self._from_iterable(it)
 
+    def __or__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        return super(PrefixSet, self).__or__(other)
+
     @classmethod
     def _from_iterable(cls, it):
         self = cls({})
@@ -140,7 +164,7 @@ class PrefixSet(BaseObject, Set):
             except IndexError:
                 upper = lower + 1
             try:
-                self._sets[af].add((lower, upper))
+                self.sets(af).add((lower, upper))
             except KeyError as e:
                 self.log.error(msg=e.message)
                 raise e

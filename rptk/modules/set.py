@@ -9,33 +9,47 @@ class PrefixSet(BaseObject, Set):
     def __init__(self, data=None, **kwargs):
         super(PrefixSet, self).__init__()
         self.log_init()
+        # if we weren't given a dict, try and parse it out
+        # as prefix/len^min-max into the expected dict structure
         if not isinstance(data, dict):
             try:
                 data = self.parse_prefix_range(expr=data)
             except ValueError as e:
                 self.log.error(msg=e.message)
                 raise e
+        # save meta information
         self._meta = kwargs
         self.log.debug(msg="creating prefix sets")
+        # create sets per address family to hold prefix range tuples as
+        # lower and upper bounds for prefix indices
         self._sets = {'ipv4': set(), 'ipv6': set()}
         for af in data:
+            # determine the ip address version that we're dealing with
             try:
                 version = int(re.match(r'^ipv(\d)', af).group(1))
             except ValueError:
                 self.log.warning(msg="invalid address-family %s" % af)
             self.log.debug(msg="adding %s prefixes to set" % af)
-            s = self._sets[af]
+            # get a reference to the correct set
+            s = self.sets(af)
             for entry in data[af]:
+                # calculate the index of the base prefix
+                # we'll be calulating a breadth-first index
+                # of the CBT sub-tree rooted at this node
                 try:
                     prefix, root = self.index_of(entry["prefix"])
                 except ValueError as e:
                     self.log.warning(msg=e.message)
+                # check that the prefix has the correct address version
                 if prefix.version != version:
                     self.log.warning(msg="prefix %s not of version %d" % (prefix, version))
                     continue
+                # get the length of the base prefix and the maximum prefix length
+                # for the given address family
                 l = prefix.prefixlen
                 h = prefix.max_prefixlen
                 self.log.debug(msg="setting base index of prefix: %s = %d" % (prefix, root))
+                # check if we have been given min and max prefix-lengths
                 try:
                     m = max(int(entry["greater-equal"]), l)
                 except (KeyError, ValueError):
@@ -47,15 +61,22 @@ class PrefixSet(BaseObject, Set):
                     n = m
                 self.log.debug(msg="max-length set to %d" % n)
                 self.log.debug(msg="traversing subtree from index %d" % root)
+                # calculate the total depth of the iteration
                 depth = n - l
                 left = right = root
                 for d in range(0, depth + 1):
+                    # check whether we're yet at the depth corresponding to the
+                    # minimum prefix-length provided
                     if d >= m - l:
+                        # add a tuple giving the lower and upper bounds of the
+                        # indices of the subtree's nodes at this level
                         s.add((left, right + 1))
                         self.log.debug(msg="added %d indices at depth %d" % (left - right + 1, d))
+                    # get the lower and upper bounds at the next level
                     left *= 2
                     right = 2*right + 1
                 self.log.debug(msg="indexing %s^%d-%d complete" % (prefix, m, n))
+            # TODO: iterate through each cbt level and aggregate the set of range tuples
         self.log_init_done()
 
     def __contains__(self, item):

@@ -77,7 +77,6 @@ class PrefixSet(BaseObject, Set):
     def __iter__(self):
         for version in (4, 6):
             for lower, upper in self.sets(version):
-                # for index in range(lower, upper):
                 index = lower
                 while index < upper:
                     yield (version, index)
@@ -89,15 +88,38 @@ class PrefixSet(BaseObject, Set):
             for lower, upper in self.sets(version):
                 count += upper - lower
         return count
-        # return sum([len(self.sets(v)) for v in (4, 6)])
+
+    def _iter_ranges(self):
+        for version in (4, 6):
+            for lower, upper in self.sets(version):
+                yield (version, lower, upper)
+
+    def __and__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        it = list()
+        for i_version, i_lower, i_upper in other._iter_ranges():
+            for j_version, j_lower, j_upper in self._iter_ranges():
+                if i_version == j_version:
+                    v = i_version
+                    l = max(i_lower, j_lower)
+                    u = min(i_upper, j_upper)
+                    if l <= u:
+                        it.append((v, l, u))
+        return self._from_iterable(it)
 
     @classmethod
     def _from_iterable(cls, it):
         self = cls({})
         for item in it:
             af = "ipv%d" % item[0]
+            lower = item[1]
             try:
-                self._sets[af].add((item[1], item[1] + 1))
+                upper = item[2]
+            except IndexError:
+                upper = lower + 1
+            try:
+                self._sets[af].add((lower, upper))
             except KeyError as e:
                 self.log.error(msg=e.message)
                 raise e

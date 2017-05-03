@@ -93,4 +93,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# rptk local settings file
 /rptk/rptk-local.conf
+
+# bgpq3 build artifacts
+bgpq3-*/

@@ -10,15 +10,23 @@ Basic Usage
 -----------
 
 ### Get available formats
-To list the available output formats query:
+To list the available output formats, query:
 ```
 /formats
 ```
 e.g. [`/formats`](/formats)
 
+### Get available policies
+To list the available resolution policies, query:
+```
+/policies
+```
+e.g. [`/policies`](/policies)
+
 ### Get prefix-list
-To get a prefix-list for object `<obj>` in format `<fmt>`:
+To get a prefix-list for object `<obj>` in format `<fmt>`
+optionally providing a resolution policy `<policy>`:
 ```
-/<fmt>/<object>
+/<fmt>/<object>[/<policy>]
 ```
-e.g. [`/ios/AS-WOLCOMM`](/ios/AS-WOLCOMM)
+e.g. [`/ios/AS-WOLCOMM`](/ios/AS-WOLCOMM) or [`/ios/AS-WOLCOMM/loose`](/ios/AS-WOLCOMM/loose)

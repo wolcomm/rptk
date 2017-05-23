@@ -1,0 +1,41 @@
+{# Cisco IOS prefix-list null template #}
+!
+{# loop through address families #}
+{% for afi, entries in result.iteritems() %}
+{# change 'ipv4' to 'ip' and define "any" #}
+{% if afi == "ipv4" %}
+{% set afi = "ip" %}
+{% set any = "0.0.0.0/0 le 32" %}
+{% else %}
+{% set any = "::/0 le 128" %}
+{% endif %}
+{# reset sequence number #}
+{% set i = 0 %}
+{# remove existing prefix-list #}
+no {{ afi }} prefix-list {{ name }}
+{# add prefix list description #}
+{{ afi }} prefix-list {{ name }} description built by rptk at {{ now }}
+{# check that we have entries for this afi #}
+{% if entries|count > 0 %}
+{# loop through entries #}
+{% for entry in entries %}
+{% set i = i + 10 %}
+{% if entry['greater-equal'] is defined %}
+{% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
+{% else %}
+{% set ge = "" %}
+{% endif %}
+{% if entry['less-equal'] is defined %}
+{% set le %} le {{ entry['less-equal'] }}{% endset %}
+{% else %}
+{% set le = "" %}
+{% endif %}
+{{ afi }} prefix-list {{ name }} seq {{ i }} permit {{ entry.prefix }}{{ ge }}{{ le }}
+{% endfor %}
+{% else %}
+{# no entries - deny everything #}
+{{ afi }} prefix-list {{ name }} deny {{ any }}
+{% endif %}
+!
+{% endfor %}
+end

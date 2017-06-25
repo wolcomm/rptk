@@ -26,13 +26,13 @@ setup(
         include=[
             'rptk',
             'rptk.*'
-        ],
-        exclude=[]
+        ]
     ),
     entry_points={
         'console_scripts': ['rptk=rptk.command_line:main']
     },
     include_package_data=True,
+    data_files=[('etc/rptk', ['rptk/rptk.conf'])],
 
     url='https://github.com/wolcomm/rptk',
     download_url='https://github.com/wolcomm/rptk/%s' % version,

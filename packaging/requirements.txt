@@ -1,6 +1,5 @@
 whichcraft
-daemonize
-Jinja2
+Jinja2<2.9
 ipaddress
 PyYAML
 Flask

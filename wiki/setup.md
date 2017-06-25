@@ -12,7 +12,7 @@ your `rptk` installation.
 1.  Download [mdwiki.html](http://dynalon.github.io/mdwiki/) into the webserver
     root directory:
     ```
-    wget -O $WEBROOT/index.html http://dynalon.github.io/mdwiki/mdwiki-latest.html
+    $ wget -O $WEBROOT/index.html http://dynalon.github.io/mdwiki/mdwiki-latest.html
     ```
 2.  Edit your webserver config to serve index.html by default before
     proxying to your WSGI server, e.g.:

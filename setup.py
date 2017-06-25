@@ -31,7 +31,10 @@ setup(
         'console_scripts': ['rptk=rptk.command_line:main']
     },
     include_package_data=True,
-    data_files=[('etc/rptk', ['rptk/rptk.conf'])],
+    data_files=[
+        ('etc/rptk', ['rptk/rptk.conf.example']),
+        ('share/rptk/html', ['wiki/config.json', 'wiki/*.md'])
+    ],
     url='https://github.com/wolcomm/rptk',
     download_url='https://github.com/wolcomm/rptk/%s' % version,
     install_requires=requirements,

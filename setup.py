@@ -3,7 +3,6 @@ from codecs import open
 
 version = open('packaging/VERSION').read().strip()
 requirements = open('packaging/requirements.txt').read().split("\n")
-test_requirements = open('packaging/requirements-test.txt').read().split("\n")
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
 
@@ -33,11 +32,7 @@ setup(
     },
     include_package_data=True,
     data_files=[('etc/rptk', ['rptk/rptk.conf'])],
-
     url='https://github.com/wolcomm/rptk',
     download_url='https://github.com/wolcomm/rptk/%s' % version,
-
     install_requires=requirements,
-    tests_require=test_requirements,
-    test_suite='nose.collector'
 )

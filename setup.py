@@ -38,7 +38,7 @@ setup(
         ('etc/rptk', ['rptk/rptk.conf.example']),
         ('share/rptk/html', ['wiki/config.json', 'wiki/index.md',
                              'wiki/navigation.md', 'wiki/setup.md']),
-        ('share/rptk/utils' ['utils/install-bgpq3.sh'])
+        ('share/rptk/utils', ['utils/install-bgpq3.sh'])
     ],
     url='https://github.com/wolcomm/rptk',
     download_url='https://github.com/wolcomm/rptk/%s' % version,

@@ -35,5 +35,8 @@ def get_prefix_list(fmt=None, obj=None, policy=None):
     response.headers['Content-Type'] = "text/plain"
     return response
 
-if __name__ == "__main__":
+def main():
     app.run(host='::', port=8080)
+
+if __name__ == "__main__":
+    main()

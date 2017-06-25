@@ -28,7 +28,10 @@ setup(
         ]
     ),
     entry_points={
-        'console_scripts': ['rptk=rptk.command_line:main']
+        'console_scripts': [
+            'rptk=rptk.command_line:main',
+            'rptk-web=rptk.web:main'
+        ]
     },
     include_package_data=True,
     data_files=[

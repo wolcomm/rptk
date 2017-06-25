@@ -38,12 +38,30 @@ Features
 Getting Started
 ---------------
 
-1. Install from pip: ``$ pip install rptk``
+1.  Install from pip::
 
-2. Run bgpq3 installer script: ``$ ./install-bgpq3.sh``
-  
-3. Run tests: ``$ python setup.py test``
-  
-4. Customise defaults in ``rptk.conf``
+      $ pip install rptk
+
+2.  Run `bgpq3`_ installer script, if not already installed::
+
+      $ ./install-bgpq3.sh
+
+4.  Customise settings in ``rptk.conf`` as necessary::
+
+      $ cd $PREFIX/etc/rptk
+      $ cp rptk.conf.example rptk.conf
+      $ vi rptk.conf
+
+5.  Check that test queries are working on the command line::
+
+      $ rptk -F ios -Q bgpq3 AS-WOLCOMM
+
+6.  Check that test queries are working on the web API::
+
+      $ rptk-web
+      $ curl http://localhost:8080/ios/AS-WOLCOMM
+
+Refer to `setup.md`_ for addtional steps to setup the online web-api help pages.
 
 .. _bgpq3: https://github.com/snar/bgpq3
+.. _setup.md: https://github.com/wolcomm/rptk/blob/master/wiki/setup.md

@@ -1,25 +1,27 @@
-Help Page Setup
-===============
+RPTK Web API Help Page Setup
+============================
 
 Follow the below steps to make the web api help page available
 at the root of the rptk web api server.
-The documented steps assume that you are using [nginx](http://nginx.org).
+The following steps assume that you are using [nginx](http://nginx.org) as your
+webserver.
+`$PREFIX` is the installation prefix (as determined by Python's `sys.prefix`) of
+your `rptk` installation.
+`$WEBROOT` is the `root` directory of your webserver, by default `/usr/share/nginx/html`.
 
-1.  Download [mdwiki.html](http://dynalon.github.io/mdwiki/) into the
-    root directory (`$WEBROOT`) of your webserver.
-2.  Rename the mdwiki file:
+1.  Download [mdwiki.html](http://dynalon.github.io/mdwiki/) into the webserver
+    root directory:
     ```
-    $ cd $WEBROOT
-    $ mv mdwiki.html index.html
+    wget -O $WEBROOT/index.html http://dynalon.github.io/mdwiki/mdwiki-latest.html
     ```
-3.  Edit your webserver config to serve index.html by default before
+2.  Edit your webserver config to serve index.html by default before
     proxying to your WSGI server, e.g.:
     ```
     location / {
     try_files $uri $uri/index.html @uwsgi;
     }
     ```
-4.  Symlink the contents of the rptk/wiki directory to `$WEBROOT`:
+3.  Symlink the contents of the `share/rptk/html` directory to `$WEBROOT`:
     ```
-    ls -s $PATH/rptk/wiki/* $WEBROOT/
+    $ ln -s $PREFIX/share/rptk/html/* $WEBROOT/
     ```

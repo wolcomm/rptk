@@ -33,7 +33,8 @@ setup(
     include_package_data=True,
     data_files=[
         ('etc/rptk', ['rptk/rptk.conf.example']),
-        ('share/rptk/html', ['wiki/config.json', 'wiki/*.md'])
+        ('share/rptk/html', ['wiki/config.json', 'wiki/index.md',
+                             'wiki/navigation.md', 'wiki/setup.md'])
     ],
     url='https://github.com/wolcomm/rptk',
     download_url='https://github.com/wolcomm/rptk/%s' % version,

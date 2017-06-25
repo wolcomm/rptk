@@ -1,4 +1,5 @@
 import os
+import sys
 import ConfigParser
 from rptk.base import BaseObject
 from rptk.load import ClassLoader
@@ -9,12 +10,7 @@ class Dispatcher(BaseObject):
         super(Dispatcher, self).__init__()
         self.log_init()
         self._opts = dict()
-        default_path = os.path.dirname(os.path.realpath(__file__))
-        if os.path.isfile(os.path.join(default_path, 'rptk-local.conf')):
-            self.log.debug(msg="found local config file")
-            default_config_file = os.path.join(default_path, 'rptk-local.conf')
-        else:
-            default_config_file = os.path.join(default_path, 'rptk.conf')
+        default_config_file = self._find_config_file()
         self._config_file = kwargs.pop("config_file", default_config_file)
         self.log.debug(msg="reading config file")
         reader = self._read_config()
@@ -96,6 +92,18 @@ class Dispatcher(BaseObject):
         except Exception as e:
             self.log.error(msg=e.message)
             raise e
+
+    @staticmethod
+    def _find_config_file():
+        dirs = [
+            os.path.join(os.path.join(sys.prefix, "etc"), "rptk"),
+            os.path.dirname(os.path.realpath(__file__))
+        ]
+        for dir in dirs:
+            path = os.path.join(dir, "rptk.conf")
+            if os.path.isfile(path):
+                return path
+        return None
 
     def dispatch(self, obj=None, name=None, test=False):
         self.log_method_enter(method=self.current_method)

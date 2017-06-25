@@ -44,11 +44,12 @@ Getting Started
 
 2.  Run `bgpq3`_ installer script, if not already installed::
 
+      $ cd $PREFIX/share/rptk/utils/
       $ ./install-bgpq3.sh
 
 4.  Customise settings in ``rptk.conf`` as necessary::
 
-      $ cd $PREFIX/etc/rptk
+      $ cd $PREFIX/etc/rptk/
       $ cp rptk.conf.example rptk.conf
       $ vi rptk.conf
 

@@ -1,6 +1,6 @@
-whichcraft
-Jinja2<2.9
-ipaddress
-PyYAML
+Jinja2 >= 2.8, < 2.9
+PyYAML >= 3.11, < 4
 Flask
 py-radix
+whichcraft
+ipaddress >= 1.0.6, < 2; python_version < '3.3'

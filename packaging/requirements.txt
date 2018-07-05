@@ -1,6 +1,6 @@
-Jinja2 >= 2.8, < 2.9
-PyYAML >= 3.11, < 4
-Flask
-py-radix
-whichcraft
+Jinja2 >= 2.8, < 3.0
+PyYAML >= 3.11, < 4.0
+Flask >= 1.0.2, < 2.0
+py-radix >= 0.10.0, < 0.11
+whichcraft >= 0.4.1, < 0.5
 ipaddress >= 1.0.6, < 2; python_version < '3.3'

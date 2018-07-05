@@ -50,6 +50,7 @@ def parse(parser, args_remaining, dispatcher):
 def main():
     # setup logger
     log = logging_init()
+    rc = 2
     try:
         # get config_file and debug options
         parser, args, args_remaining = pre_parse()
@@ -75,12 +76,12 @@ def main():
         result = dispatcher.dispatch()
         log.debug(msg="got result length %s" % len(result))
         sys.stdout.write("%s\n" % result)
-        return 0
+        rc = 0
     except Exception as e:
         log.error(msg=e.message)
-        return 1
+        rc = 1
+    exit(rc)
 
 
 if __name__ == "__main__":
-    exit_code = main()
-    exit(exit_code)
+    main()

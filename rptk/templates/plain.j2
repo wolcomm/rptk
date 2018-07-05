@@ -15,7 +15,7 @@ the License.
 {# start output #}
 irr object: {{ name }}
 {# loop through address families #}
-{% for afi, entries in result.iteritems() %}
+{% for afi, entries in result.items() %}
 {{ afi }} prefixes:
 {# check that we have entries for this afi #}
 {% if entries|count > 0 %}

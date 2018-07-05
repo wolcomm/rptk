@@ -15,7 +15,7 @@ the License.
 {# start output #}
 {{ name }} = [
 {# outer-loop through address families #}
-{% for afi, entries in result.iteritems() %}
+{% for afi, entries in result.items() %}
 {# inner-loop through entries #}
 {% for entry in entries %}
     {{ entry.prefix }},

@@ -6,8 +6,7 @@ matrix:
   fast_finish: true
 before_install:
 - sudo apt-get -qq update
-# - "./utils/install-bgpq3.sh"
-- sudo apt-get install bgpq3
+- "./utils/install-bgpq3.sh"
 install:
 - pip install -U pip
 - pip install -U setuptools

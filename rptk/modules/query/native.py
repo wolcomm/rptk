@@ -1,12 +1,30 @@
-import socket
-import re
+# Copyright (c) 2018 Workonline Communications (Pty) Ltd. All rights reserved.
+#
+# The contents of this file are licensed under the Apache License version 2.0
+# (the "License"); you may not use this file except in compliance with the
+# License.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+"""rptk module.query.native module."""
+
 import ipaddress
-from pkg_resources import get_distribution
+import re
+import socket
+
+import pkg_resources
+
 from rptk.modules.query import BaseQuery
 
 
 class NativeQuery(BaseQuery):
+    """Performs queries directly over python sockets."""
+
     def __init__(self, **opts):
+        """Initialise new object."""
         super(NativeQuery, self).__init__(**opts)
         self._regexp = re.compile(
             r'(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$'
@@ -15,17 +33,20 @@ class NativeQuery(BaseQuery):
         self.log_init_done()
 
     def __enter__(self):
+        """Set up a TCP connection."""
         self.log_ready_start()
         self._connect()
         self.log_ready_done()
         return self
 
     def __exit__(self, typ, value, traceback):
+        """Tear down the connection."""
         self.log_exit_start()
         self._disconnect()
         self.log_exit_done()
 
     def query(self, obj=None):
+        """Execute a query."""
         obj = super(NativeQuery, self).query(obj=obj)
         tmp = dict()
         sets = {u'ipv4': set(), u'ipv6': set()}
@@ -46,6 +67,7 @@ class NativeQuery(BaseQuery):
         return result
 
     def _connect(self):
+        """Establish a TCP connection to the IRR server."""
         self.log.debug(msg="creating socket")
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.log.debug(msg="trying to connect to %s" % self.target)
@@ -57,9 +79,11 @@ class NativeQuery(BaseQuery):
         self.log.debug(msg="socket connected")
         if self._keepalive:
             self._socket.send('!!\n')
-        self._query('!nRPTK-%s' % get_distribution('rptk').version)
+        self._query('!nRPTK-%s'
+                    % pkg_resources.get_distribution('rptk').version)
 
     def _disconnect(self):
+        """Tear the TCP connection down."""
         self.log.debug(msg="disconnecting socket")
         self._socket.shutdown(socket.SHUT_RDWR)
         self._socket.close()
@@ -109,7 +133,7 @@ class NativeQuery(BaseQuery):
         return ''.join(chunks)
 
     def _parse_response(self, response):
-        """ check response code and return response data length """
+        """Check response code and return response data length."""
         self.log.debug("received response %s", response)
         match = self._regexp.match(response)
         if not match:
@@ -135,7 +159,7 @@ class NativeQuery(BaseQuery):
         raise RuntimeError("invalid response '%s'" % (response,))
 
     def _members(self, obj=None):
-        """ resolve an as-set to its members """
+        """Resolve an as-set to its members."""
         q = "!i%s,1" % obj
         members = self._query(q, skip_errors=(KeyNotFoundError,))
         if members:
@@ -147,7 +171,7 @@ class NativeQuery(BaseQuery):
             return [obj]
 
     def _routes(self, obj=None):
-        """ get routes for specified object """
+        """Get routes for specified object."""
         proto = {
             u'ipv4': {'cmd': '!g', 'class': ipaddress.IPv4Network},
             u'ipv6': {'cmd': '!6', 'class': ipaddress.IPv6Network}
@@ -173,19 +197,28 @@ class NativeQuery(BaseQuery):
 
 
 class IRRQueryError(RuntimeError):
+    """Exception raised during query execution."""
+
     proto_msg = ''
 
     def __init__(self, *args, **kwargs):
+        """Initialise the Exception instance."""
         super(IRRQueryError, self).__init__(self.proto_msg, *args, **kwargs)
 
 
 class KeyNotFoundError(IRRQueryError):
+    """The RPSL key was not found."""
+
     proto_msg = "Key not found. (D)"
 
 
 class KeyNotUniqueError(IRRQueryError):
+    """There are multiple copies of the key in one database. (E)."""
+
     proto_msg = "There are multiple copies of the key in one database. (E)"
 
 
 class OtherError(IRRQueryError):
+    """An unknown error occured during query execution."""
+
     proto_msg = "Some other error, see the <optional message> for details."

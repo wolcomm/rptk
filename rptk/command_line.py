@@ -1,10 +1,25 @@
-import sys
-import logging
+# Copyright (c) 2018 Workonline Communications (Pty) Ltd. All rights reserved.
+#
+# The contents of this file are licensed under the Apache License version 2.0
+# (the "License"); you may not use this file except in compliance with the
+# License.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+"""rptk command_line module."""
+
 import argparse
+import logging
+import sys
+
 from rptk import dispatch
 
 
 def logging_init():
+    """Set up logger."""
     log = logging.getLogger(__name__)
     lh = logging.StreamHandler()
     lf = logging.Formatter(
@@ -16,6 +31,7 @@ def logging_init():
 
 
 def pre_parse():
+    """Parse pre-configuration options."""
     parser = argparse.ArgumentParser(add_help=False,
                                      argument_default=argparse.SUPPRESS)
     parser.add_argument('--debug', '-d', action='store_true',
@@ -27,6 +43,7 @@ def pre_parse():
 
 
 def parse(parser, args_remaining, dispatcher):
+    """Parse configuration options."""
     parser.add_argument('--query', '-Q', help="query class",
                         choices=dispatcher.query_class_loader.class_names)
     parser.add_argument('--format', '-F', help="format class",
@@ -48,6 +65,7 @@ def parse(parser, args_remaining, dispatcher):
 
 
 def main():
+    """Execute a query."""
     # setup logger
     log = logging_init()
     rc = 2

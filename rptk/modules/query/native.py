@@ -41,7 +41,6 @@ class NativeQuery(BaseQuery):
             tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]  # noqa: E501
             self.log.debug(msg="found %s %s prefixes for object %s"
                                % (len(tmp[af]), af, obj))
-        # result = PrefixSet(results=tmp)
         result = tmp
         self.log_method_exit(method=self.current_method)
         return result

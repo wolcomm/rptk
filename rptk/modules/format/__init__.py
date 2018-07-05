@@ -1,7 +1,6 @@
 import jinja2
 from datetime import datetime
 from rptk.base import BaseObject
-from rptk.modules import PrefixSet
 
 
 class BaseFormat(BaseObject):
@@ -15,9 +14,8 @@ class BaseFormat(BaseObject):
 
     def format(self, result=None, name=None):
         self.log_method_enter(method=self.current_method)
-        # if not isinstance(result, PrefixSet):
         if not isinstance(result, dict):
-            self.raise_type_error(arg=result, cls=PrefixSet)
+            self.raise_type_error(arg=result, cls=dict)
         if not name:
             self.log.debug(msg="using name from configuration")
             name = self.name

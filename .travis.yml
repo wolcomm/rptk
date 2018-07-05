@@ -1,19 +1,23 @@
----
 language: python
 python:
-  - "2.7"
+- '2.7'
 sudo: required
+matrix:
+  fast_finish: true
 before_install:
-  - ./utils/install-bgpq3.sh
+- sudo apt-get -qq update
+# - "./utils/install-bgpq3.sh"
+- sudo apt-get install bgpq3
 install:
-  - pip install -U pip
-  - pip install -U setuptools
-  - pip install tox-travis
-  - pip install codecov
+- pip install -U pip
+- pip install -U setuptools
+- pip install tox-travis codecov
 script:
-  - tox
+- tox
 after_success:
-  - codecov
+- codecov
 notifications:
-  slack: wolcomm:yFzhM9JrnJsYw11xMcStIuZU
-...
+  email: false
+  slack:
+    rooms:
+      secure: UB3qyc1GSdnH1nQ9kSWgl31rWVW0t/9Dy8VVluHM3wIYG3JYFuZEPKBjjWlbo9J3q7rqP0WFsdRJDcBqzexzgtZ/auGRpAwiUYYjbBkMQ8Nkv0L7XSsBPrGOHqALw2xuZeaAPKJUWv4F61Tdj3bt+uTNJKuWf/LeD8/Er961bxQ7Ey6Fj+k75bsQ9IxFnEhJWcumb7a4k9E/S4h88/z1fOr7CIByOHo4rLjBmKsnzb/GrsqbZzyawEqn0+rD0rwQhUGYVMovCxWoq4biq9cQWn/KrlLgfPM3+7bm5JJCzPu0Y8S/Hs4EsyGAXy7xmyXDk/ySGYiNt7xbrjXzKQD1cX79IZ0TffT23Vwn+xQAg2Hg/PMikapFGR5rPTWcY3NnuGAbEo1a7GTkhGvZ5kgFM3k0Ap5aiSb50G/tCo/CMtmGDxkZIrl287z3LvPLyv3WTK2UxfSBACC69qkKFiLD9ljbtDL1VenMlrUo2KQ3MvuD8WP8sBmE30NW2xv7SdE7aoCiemZRMSEQU8dgdLbATxe8+dUBG0HmLxkhCr6bHwpvlIzJ5DnAQu6js7AuYTtTo7i+MWC/nTayQQyqNl8fj9G2F4UNSJX6U0RxMaXZ0Ca7zs+qSxQzTxErYo59GTBhtw/mYEOZqxtC9a++VUFWRfhGZpoInNJREmNF55+IKBE=

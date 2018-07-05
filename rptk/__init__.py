@@ -11,6 +11,9 @@
 # the License.
 """rptk Package."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import logging
 
 import rptk.__meta__  # noqa: W0611

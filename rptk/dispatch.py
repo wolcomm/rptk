@@ -11,6 +11,9 @@
 # the License.
 """rptk dispatch module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import ConfigParser
 import os
 import sys

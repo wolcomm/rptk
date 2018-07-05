@@ -11,6 +11,9 @@
 # the License.
 """rptk module.query.native module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import ipaddress
 import re
 import socket

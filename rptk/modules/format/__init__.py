@@ -11,6 +11,9 @@
 # the License.
 """rptk module.format module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import datetime
 
 import jinja2

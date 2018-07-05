@@ -11,6 +11,9 @@
 # the License.
 """rptk command_line module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import argparse
 import logging
 import sys

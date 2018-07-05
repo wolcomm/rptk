@@ -11,6 +11,9 @@
 # the License.
 """rptk test cases."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import unittest
 
@@ -40,4 +43,4 @@ class TestRptk(unittest.TestCase):
                 result = rptk.query(test=True)
                 self.assertTrue(result)
                 if result:
-                    print "api query with query=%s format=%s passed" % (q, f)
+                    print("api query with query=%s format=%s passed" % (q, f))

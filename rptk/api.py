@@ -11,6 +11,9 @@
 # the License.
 """rptk API module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from rptk import dispatch
 
 

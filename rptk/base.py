@@ -11,6 +11,9 @@
 # the License.
 """rptk base module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import inspect
 import logging
 

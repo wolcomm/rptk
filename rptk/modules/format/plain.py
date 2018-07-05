@@ -11,6 +11,9 @@
 # the License.
 """rptk module.format.plain module."""
 
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from rptk.modules.format import JinjaFormat
 
 

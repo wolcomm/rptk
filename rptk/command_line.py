@@ -95,8 +95,8 @@ def main():
         # dispatch query and print formatted result
         log.debug(msg="dispatching query")
         result = dispatcher.dispatch()
-        log.debug(msg="got result length %s" % len(result))
-        sys.stdout.write("%s\n" % result)
+        log.debug(msg="got result length {}".format(len(result)))
+        sys.stdout.write("{}\n".format(result))
         rc = 0
     except Exception as e:
         log.error(msg=e.message)

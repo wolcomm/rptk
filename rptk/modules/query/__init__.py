@@ -52,4 +52,4 @@ class BaseQuery(BaseObject):
     @property
     def target(self):
         """Construct a hostname:port pair for the IRR server."""
-        return "%s:%s" % (self.host, self.port)
+        return "{}:{}".format(self.host, self.port)

@@ -43,4 +43,5 @@ class TestRptk(unittest.TestCase):
                 result = rptk.query(test=True)
                 self.assertTrue(result)
                 if result:
-                    print("api query with query=%s format=%s passed" % (q, f))
+                    print("api query with query={} format={} passed"
+                          .format(q, f))

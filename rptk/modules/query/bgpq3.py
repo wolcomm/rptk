@@ -70,7 +70,7 @@ class Bgpq3Query(BaseQuery):
                 ]
             }
         for key in cmds:
-            self.log.debug(msg="running %s" % ' '.join(cmds[key]))
+            self.log.debug(msg="running {}".format(" ".join(cmds[key])))
             tmp.update(json.loads(subprocess.check_output(cmds[key])))
         result = tmp
         self.log_method_exit(method=self.current_method)

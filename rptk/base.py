@@ -27,7 +27,7 @@ class BaseObject(object):
 
     def __repr__(self):
         """Provide generic string representation."""
-        return "%s() object" % self.cls_name
+        return "{}() object".format(self.cls_name)
 
     def __enter__(self):
         """Log context manager entry."""
@@ -62,45 +62,46 @@ class BaseObject(object):
 
     def log_init(self):
         """Log entry into the __init__ method."""
-        self.log.debug(msg="initialising %s instance" % self.cls_name)
+        self.log.debug(msg="initialising {} instance".format(self.cls_name))
 
     def log_init_done(self):
         """Log exit from an __init__ method."""
         caller = inspect.currentframe().f_back.f_back.f_code.co_name
         if caller == '__init__':
-            self.log.debug(msg="still initialising %s instance" % self.cls_name)  # noqa: E501
+            self.log.debug(msg="still initialising {} instance"
+                               .format(self.cls_name))
         else:
-            self.log.debug(msg="%s instance initialised" % self.cls_name)
+            self.log.debug(msg="{} instance initialised".format(self.cls_name))
 
     def log_method_enter(self, method=None):
         """Log entry into a class method."""
-        self.log.debug(msg="entering method %s.%s" % (self.cls_name, method))
+        self.log.debug(msg="entering method {}.{}"
+                           .format(self.cls_name, method))
 
     def log_method_exit(self, method=None):
         """Log exit from a class method."""
-        self.log.debug(msg="leaving method %s.%s" % (self.cls_name, method))
+        self.log.debug(msg="leaving method {}.{}"
+                           .format(self.cls_name, method))
 
     def log_ready_start(self):
         """Log start of object initialisation."""
-        self.log.debug(msg="preparing %s for use" % self)
+        self.log.debug(msg="preparing {} for use".format(self))
 
     def log_ready_done(self):
         """Log end of object initialisation."""
-        self.log.debug(msg="%s ready for use" % self)
+        self.log.debug(msg="{} ready for use".format(self))
 
     def log_exit_start(self):
         """Log start of object cleanup."""
-        self.log.debug(msg="cleaning up %s" % self)
+        self.log.debug(msg="cleaning up {}".format(self))
 
     def log_exit_done(self):
         """Log end of object cleanup."""
-        self.log.debug(msg="finished cleaning up %s" % self)
+        self.log.debug(msg="finished cleaning up {}".format(self))
 
     def raise_type_error(self, arg=None, cls=None):
         """Raise a TypeError with useful logging."""
-        msg = "argument %s (%s) not of type %s" % (
-            arg.__name__, arg, cls
-            )
+        msg = "argument {} ({}) not of type {}".format(arg.__name__, arg, cls)
         self.log.error(msg=msg)
         raise TypeError(msg)
 

@@ -70,7 +70,8 @@ class Dispatcher(BaseObject):
         self.log_method_enter(method=self.current_method)
         reader = ConfigParser.SafeConfigParser()
         self.log.debug(
-            msg="trying to read configuration from file %s" % self.config_file
+            msg="trying to read configuration from file {}"
+                .format(self.config_file)
         )
         try:
             reader.read(self.config_file)
@@ -87,10 +88,11 @@ class Dispatcher(BaseObject):
         for key in self.opts:
             try:
                 if key[0] == '_':
-                    raise ValueError("illegal option key: %s" % key)
+                    raise ValueError("illegal option key: {}".format(key))
                 val = self.opts[key]
                 if val:
-                    self.log.debug(msg="updating option: %s = %s" % (key, val))
+                    self.log.debug(msg="updating option: {} = {}"
+                                       .format(key, val))
                     setattr(self, key, val)
             except Exception as e:
                 self.log.error(msg=e.message)
@@ -139,7 +141,8 @@ class Dispatcher(BaseObject):
         """Dispatch a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
         if not name:
-            self.log.debug(msg="name not provided using object (%s)" % obj)
+            self.log.debug(msg="name not provided using object ({})"
+                               .format(obj))
             if obj:
                 name = obj
             else:

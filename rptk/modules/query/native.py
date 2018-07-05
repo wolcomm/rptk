@@ -18,8 +18,7 @@ import ipaddress
 import re
 import socket
 
-import pkg_resources
-
+from rptk.__meta__ import __version__ as version
 from rptk.modules.query import BaseQuery
 
 
@@ -53,18 +52,19 @@ class NativeQuery(BaseQuery):
         obj = super(NativeQuery, self).query(obj=obj)
         tmp = dict()
         sets = {u'ipv4': set(), u'ipv6': set()}
-        self.log.debug(msg="trying to get members of %s" % obj)
+        self.log.debug(msg="trying to get members of {}".format(obj))
         members = self._members(obj=obj)
         for member in members:
-            self.log.debug(msg="trying to get routes for %s" % member)
+            self.log.debug(msg="trying to get routes for {}".format(member))
             routes = self._routes(obj=member)
             for af in routes:
                 sets[af].update(routes[af])
         for af in sets:
             prefixes = sorted(list(sets[af]))
-            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]  # noqa: E501
-            self.log.debug(msg="found %s %s prefixes for object %s"
-                               % (len(tmp[af]), af, obj))
+            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True}
+                       for p in prefixes]
+            self.log.debug(msg="found {} {} prefixes for object {}"
+                               .format(len(tmp[af]), af, obj))
         result = tmp
         self.log_method_exit(method=self.current_method)
         return result
@@ -73,7 +73,7 @@ class NativeQuery(BaseQuery):
         """Establish a TCP connection to the IRR server."""
         self.log.debug(msg="creating socket")
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.log.debug(msg="trying to connect to %s" % self.target)
+        self.log.debug(msg="trying to connect to {}".format(self.target))
         try:
             self._socket.connect((self.host, self.port))
         except socket.error as e:
@@ -82,8 +82,7 @@ class NativeQuery(BaseQuery):
         self.log.debug(msg="socket connected")
         if self._keepalive:
             self._socket.send('!!\n')
-        self._query('!nRPTK-%s'
-                    % pkg_resources.get_distribution('rptk').version)
+        self._query('!nRPTK-{}'.format(version))
 
     def _disconnect(self):
         """Tear the TCP connection down."""
@@ -101,8 +100,8 @@ class NativeQuery(BaseQuery):
             if not sent:
                 self.raise_runtime_error(msg="socket connection broken")
             total_sent += sent
-        self.log.debug(msg="sent query %s (length %d bytes)"
-                           % (q.rstrip(), total_sent))
+        self.log.debug(msg="sent query {} (length {} bytes)"
+                           .format(q.rstrip(), total_sent))
         chunks = []
         chunk_size = 4096
         chunk = self._socket.recv(chunk_size)
@@ -121,30 +120,31 @@ class NativeQuery(BaseQuery):
         total_rcvd = len(chunk) or 0
         chunks.append(chunk)
         while total_rcvd <= response_length:
-            self.log.debug(msg="received %d of %d bytes"
-                               % (total_rcvd, response_length))
+            self.log.debug(msg="received {} of {} bytes"
+                               .format(total_rcvd, response_length))
             chunk = self._socket.recv(chunk_size)
             if chunk == '':
                 self.raise_runtime_error(msg="socket connection broken")
             chunks.append(chunk)
             total_rcvd += len(chunk)
-        self.log.debug(msg="received %d of %d bytes"
-                           % (total_rcvd, response_length))
+        self.log.debug(msg="received {} of {} bytes"
+                           .format(total_rcvd, response_length))
         suffix = chunks[-1][-(total_rcvd - response_length):]
         chunks[-1] = chunks[-1][:-len(suffix)]
-        self.log.debug("suffix length: %d", len(suffix))
+        self.log.debug("suffix length: {}".format(len(suffix)))
         return ''.join(chunks)
 
     def _parse_response(self, response):
         """Check response code and return response data length."""
-        self.log.debug("received response %s", response)
+        self.log.debug("received response {}".format(response))
         match = self._regexp.match(response)
         if not match:
-            self.raise_runtime_error("invalid response '%s'" % (response,))
+            self.raise_runtime_error("invalid response '{}'".format(response))
         state = match.group('state')
         if state == 'A':
             length = int(match.group('len'))
-            self.log.debug(msg="query successful: %d bytes of data" % length)
+            self.log.debug(msg="query successful: {} bytes of data"
+                               .format(length))
             return length
         elif state == 'C':
             self.log.debug(msg="query successful. no data.")
@@ -159,18 +159,19 @@ class NativeQuery(BaseQuery):
             else:
                 msg = 'unknown error'
             raise OtherError(msg)
-        raise RuntimeError("invalid response '%s'" % (response,))
+        raise RuntimeError("invalid response '{}'".format(response))
 
     def _members(self, obj=None):
         """Resolve an as-set to its members."""
-        q = "!i%s,1" % obj
+        q = "!i{},1".format(obj)
         members = self._query(q, skip_errors=(KeyNotFoundError,))
         if members:
             members = members.split()
-            self.log.debug("found %d members of %s" % (len(members), obj))
+            self.log.debug("found {} members of {}".format(len(members), obj))
             return members
         else:
-            self.log.debug("no members of %s found. treating as autnum." % obj)
+            self.log.debug("no members of {} found. treating as autnum."
+                           .format(obj))
             return [obj]
 
     def _routes(self, obj=None):
@@ -183,7 +184,7 @@ class NativeQuery(BaseQuery):
         for af in proto:
             cmd = proto[af]['cmd']
             cls = proto[af]['class']
-            q = "%s%s" % (cmd, obj)
+            q = "{}{}".format(cmd, obj)
             routes[af] = list()
             resp = self._query(q, skip_errors=(KeyNotFoundError,))
             if resp:
@@ -192,10 +193,10 @@ class NativeQuery(BaseQuery):
                         routes[af].append(cls(unicode(each)))
                     except (ipaddress.AddressValueError,
                             ipaddress.NetmaskValueError):
-                        self.log.warning(msg="converting %s to %s failed"
-                                             % (each, cls))
-            self.log.debug(msg="found %d %s prefixes for object %s"
-                               % (len(routes[af]), af, obj))
+                        self.log.warning(msg="converting {} to {} failed"
+                                             .format(each, cls))
+            self.log.debug(msg="found {} {} prefixes for object {}"
+                               .format(len(routes[af]), af, obj))
         return routes
 
 

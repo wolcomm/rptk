@@ -1,7 +1,6 @@
 import json
 import subprocess
 from whichcraft import which
-from rptk.modules import PrefixSet
 from rptk.modules.query import BaseQuery
 
 
@@ -21,13 +20,33 @@ class Bgpq3Query(BaseQuery):
             policy = None
         if policy == "loose":
             cmds = {
-                'ipv4': [self.path, "-h", self.target, "-l", "ipv4", "-m", "24", "-r", "8", "-R", "24", "-4Aj", obj],
-                'ipv6': [self.path, "-h", self.target, "-l", "ipv6", "-m", "48", "-r", "16", "-R", "48",  "-6Aj", obj]
+                'ipv4': [
+                    self.path,
+                    "-h", self.target,
+                    "-l", "ipv4", "-m", "24", "-r", "8", "-R", "24",
+                    "-4Aj", obj
+                ],
+                'ipv6': [
+                    self.path,
+                    "-h", self.target,
+                    "-l", "ipv6", "-m", "48", "-r", "16", "-R", "48",
+                    "-6Aj", obj
+                ]
             }
         else:
             cmds = {
-                'ipv4': [self.path, "-h", self.target, "-l", "ipv4", "-m", "24", "-4Aj", obj],
-                'ipv6': [self.path, "-h", self.target, "-l", "ipv6", "-m", "48", "-6Aj", obj]
+                'ipv4': [
+                    self.path,
+                    "-h", self.target,
+                    "-l", "ipv4", "-m", "24",
+                    "-4Aj", obj
+                ],
+                'ipv6': [
+                    self.path,
+                    "-h", self.target,
+                    "-l", "ipv6", "-m", "48",
+                    "-6Aj", obj
+                ]
             }
         for key in cmds:
             self.log.debug(msg="running %s" % ' '.join(cmds[key]))

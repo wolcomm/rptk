@@ -35,7 +35,9 @@ class Dispatcher(BaseObject):
     def _read_config(self):
         self.log_method_enter(method=self.current_method)
         reader = ConfigParser.SafeConfigParser()
-        self.log.debug(msg="trying to read configuration from file %s" % self.config_file)
+        self.log.debug(
+            msg="trying to read configuration from file %s" % self.config_file
+        )
         try:
             reader.read(self.config_file)
         except Exception as e:

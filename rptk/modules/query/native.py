@@ -2,14 +2,15 @@ import socket
 import re
 import ipaddress
 from pkg_resources import get_distribution
-from rptk.modules import PrefixSet
 from rptk.modules.query import BaseQuery
 
 
 class NativeQuery(BaseQuery):
     def __init__(self, **opts):
         super(NativeQuery, self).__init__(**opts)
-        self._regexp = re.compile('(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$')
+        self._regexp = re.compile(
+            r'(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$'
+        )
         self._keepalive = True
         self.log_init_done()
 
@@ -37,8 +38,9 @@ class NativeQuery(BaseQuery):
                 sets[af].update(routes[af])
         for af in sets:
             prefixes = sorted(list(sets[af]))
-            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]
-            self.log.debug(msg="found %s %s prefixes for object %s" % (len(tmp[af]), af, obj))
+            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True} for p in prefixes]  # noqa: E501
+            self.log.debug(msg="found %s %s prefixes for object %s"
+                               % (len(tmp[af]), af, obj))
         # result = PrefixSet(results=tmp)
         result = tmp
         self.log_method_exit(method=self.current_method)
@@ -73,7 +75,8 @@ class NativeQuery(BaseQuery):
             if not sent:
                 self.raise_runtime_error(msg="socket connection broken")
             total_sent += sent
-        self.log.debug("sent query %s (length %d bytes)", q.rstrip(), total_sent)
+        self.log.debug(msg="sent query %s (length %d bytes)"
+                           % (q.rstrip(), total_sent))
         chunks = []
         chunk_size = 4096
         chunk = self._socket.recv(chunk_size)
@@ -92,13 +95,15 @@ class NativeQuery(BaseQuery):
         total_rcvd = len(chunk) or 0
         chunks.append(chunk)
         while total_rcvd <= response_length:
-            self.log.debug("received %d of %d bytes", total_rcvd, response_length)
+            self.log.debug(msg="received %d of %d bytes"
+                               % (total_rcvd, response_length))
             chunk = self._socket.recv(chunk_size)
             if chunk == '':
                 self.raise_runtime_error(msg="socket connection broken")
             chunks.append(chunk)
             total_rcvd += len(chunk)
-        self.log.debug("received %d of %d bytes", total_rcvd, response_length)
+        self.log.debug(msg="received %d of %d bytes"
+                           % (total_rcvd, response_length))
         suffix = chunks[-1][-(total_rcvd - response_length):]
         chunks[-1] = chunks[-1][:-len(suffix)]
         self.log.debug("suffix length: %d", len(suffix))
@@ -159,9 +164,12 @@ class NativeQuery(BaseQuery):
                 for each in resp.split():
                     try:
                         routes[af].append(cls(unicode(each)))
-                    except ipaddress.AddressValueError, ipaddress.NetmaskValueError:
-                        self.log.warning("converting %s to %s failed" % (each, cls))
-            self.log.debug("found %d %s prefixes for object %s" % (len(routes[af]), af, obj))
+                    except (ipaddress.AddressValueError,
+                            ipaddress.NetmaskValueError):
+                        self.log.warning(msg="converting %s to %s failed"
+                                             % (each, cls))
+            self.log.debug(msg="found %d %s prefixes for object %s"
+                               % (len(routes[af]), af, obj))
         return routes
 
 

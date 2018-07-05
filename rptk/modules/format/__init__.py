@@ -80,7 +80,8 @@ class JinjaFormat(BaseFormat):
         name = super(JinjaFormat, self).format(result=result, name=name)
         if isinstance(self.template, jinja2.Template):
             try:
-                output = self.template.render(result=result, name=name, now=datetime.now())
+                output = self.template.render(result=result, name=name,
+                                              now=datetime.now())
                 self.log_method_exit(method=self.current_method)
                 return output
             except Exception as e:

@@ -46,5 +46,5 @@ class Rptk(object):
     def __setattr__(self, name, value):
         try:
             self._dispatcher.update(**{name: value})
-        except Exception as e:
+        except Exception:
             super(Rptk, self).__setattr__(name, value)

@@ -40,7 +40,7 @@ class BaseObject(object):
     def log_init_done(self):
         caller = inspect.currentframe().f_back.f_back.f_code.co_name
         if caller == '__init__':
-            self.log.debug(msg="still initialising %s instance" % self.cls_name)
+            self.log.debug(msg="still initialising %s instance" % self.cls_name)  # noqa: E501
         else:
             self.log.debug(msg="%s instance initialised" % self.cls_name)
 

@@ -1,8 +1,8 @@
+<!--description: A python toolkit for prefix filter list management operations. -->
 [![image](https://img.shields.io/pypi/v/rptk.svg)](https://pypi.python.org/pypi/rptk)
-
 [![image](https://travis-ci.org/wolcomm/rptk.svg?branch=master)](https://travis-ci.org/wolcomm/rptk)
-
-![image](https://codecov.io/gh/wolcomm/rptk/branch/master/graph/badge.svg%0A%C2%A0%C2%A0:target:%20https://codecov.io/gh/wolcomm/rptk)
+[![image](https://codecov.io/gh/wolcomm/rptk/branch/master/graph/badge.svg)](https://codecov.io/gh/wolcomm/rptk)
+[![Requirements Status](https://requires.io/github/wolcomm/rptk/requirements.svg?branch=master)](https://requires.io/github/wolcomm/rptk/requirements/?branch=master)
 
 # RPTK - Routing Policy Tool Kit
 

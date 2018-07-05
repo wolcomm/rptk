@@ -17,6 +17,18 @@ from __future__ import unicode_literals
 from rptk.base import BaseObject
 
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 class BaseQuery(BaseObject):
     """Base class for the definition of query execution classes."""
 

@@ -40,7 +40,7 @@ class YamlFormat(BaseFormat):
             self.log_method_exit(method=self.current_method)
             return output
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise
 
     def validate(self, output=None):
@@ -50,7 +50,7 @@ class YamlFormat(BaseFormat):
         try:
             yaml.load(output)
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise
         self.log_method_exit(method=self.current_method)
         return True

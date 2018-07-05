@@ -14,7 +14,10 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 import os
 import sys
 
@@ -48,7 +51,7 @@ class Dispatcher(BaseObject):
                 items=reader.items(section="format-classes")
             )
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
         self.log_init_done()
 
@@ -68,7 +71,7 @@ class Dispatcher(BaseObject):
     def _read_config(self):
         """Read the config file."""
         self.log_method_enter(method=self.current_method)
-        reader = ConfigParser.SafeConfigParser()
+        reader = configparser.SafeConfigParser()
         self.log.debug(
             msg="trying to read configuration from file {}"
                 .format(self.config_file)
@@ -76,7 +79,7 @@ class Dispatcher(BaseObject):
         try:
             reader.read(self.config_file)
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
         self.log_method_exit(method=self.current_method)
         return reader
@@ -95,7 +98,7 @@ class Dispatcher(BaseObject):
                                        .format(key, val))
                     setattr(self, key, val)
             except Exception as e:
-                self.log.error(msg=e.message)
+                self.log.error(msg="{}".format(e))
                 raise e
         self.log_method_exit(method=self.current_method)
         return self
@@ -123,7 +126,7 @@ class Dispatcher(BaseObject):
                 name=self.query
             )
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
 
     @property
@@ -134,7 +137,7 @@ class Dispatcher(BaseObject):
                 name=self.format
             )
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
 
     def dispatch(self, obj=None, name=None, test=False):
@@ -152,7 +155,7 @@ class Dispatcher(BaseObject):
             with self.query_class(**self.opts) as q:
                 result = q.query(obj=obj)
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
         self.log.debug(msg="trying to format result for output")
         try:
@@ -161,7 +164,7 @@ class Dispatcher(BaseObject):
                 if test:
                     return f.validate(output=output)
         except Exception as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise e
         self.log_method_exit(method=self.current_method)
         return output

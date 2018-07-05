@@ -40,7 +40,7 @@ class ClassLoader(BaseObject):
                 self._classes.update({name: cls})
                 count += 1
             except Exception as e:
-                self.log.warning(msg=e.message)
+                self.log.warning(msg="{}".format(e))
         self.log.debug(msg="loaded {} classes".format(count))
         self.log_init_done()
 
@@ -67,9 +67,9 @@ class ClassLoader(BaseObject):
             try:
                 descr = self.get_class(name=name).description
             except AttributeError as e:
-                self.log.debug(msg=e.message)
+                self.log.debug(msg="{}".format(e))
             except Exception as e:
-                self.log.error(msg=e.message)
+                self.log.error(msg="{}".format(e))
                 raise e
             info.update({name: {
                 'description': descr

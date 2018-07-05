@@ -22,6 +22,12 @@ from rptk.__meta__ import __version__ as version
 from rptk.modules.query import BaseQuery
 
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 class NativeQuery(BaseQuery):
     """Performs queries directly over python sockets."""
 
@@ -77,11 +83,11 @@ class NativeQuery(BaseQuery):
         try:
             self._socket.connect((self.host, self.port))
         except socket.error as e:
-            self.log.error(msg=e.message)
+            self.log.error(msg="{}".format(e))
             raise
         self.log.debug(msg="socket connected")
         if self._keepalive:
-            self._socket.send('!!\n')
+            self._socket.send(b'!!\n')
         self._query('!nRPTK-{}'.format(version))
 
     def _disconnect(self):
@@ -93,6 +99,7 @@ class NativeQuery(BaseQuery):
 
     def _query(self, q, skip_errors=None):
         q += '\n'
+        q = q.encode()
         total_sent = 0
         query_length = len(q)
         while total_sent < query_length:
@@ -105,15 +112,15 @@ class NativeQuery(BaseQuery):
         chunks = []
         chunk_size = 4096
         chunk = self._socket.recv(chunk_size)
-        response, chunk = chunk.split('\n', 1)
+        response, chunk = chunk.split(b'\n', 1)
         try:
             response_length = self._parse_response(response)
         except IRRQueryError as e:
             if type(e) in skip_errors:
-                self.log.debug(msg=e.message)
+                self.log.debug(msg="{}".format(e))
                 response_length = False
             else:
-                self.log.error(msg=e.message)
+                self.log.error(msg="{}".format(e))
                 raise
         if not response_length:
             return
@@ -123,7 +130,7 @@ class NativeQuery(BaseQuery):
             self.log.debug(msg="received {} of {} bytes"
                                .format(total_rcvd, response_length))
             chunk = self._socket.recv(chunk_size)
-            if chunk == '':
+            if chunk == b'':
                 self.raise_runtime_error(msg="socket connection broken")
             chunks.append(chunk)
             total_rcvd += len(chunk)
@@ -132,11 +139,12 @@ class NativeQuery(BaseQuery):
         suffix = chunks[-1][-(total_rcvd - response_length):]
         chunks[-1] = chunks[-1][:-len(suffix)]
         self.log.debug("suffix length: {}".format(len(suffix)))
-        return ''.join(chunks)
+        return ''.join(c.decode() for c in chunks)
 
     def _parse_response(self, response):
         """Check response code and return response data length."""
         self.log.debug("received response {}".format(response))
+        response = response.decode()
         match = self._regexp.match(response)
         if not match:
             self.raise_runtime_error("invalid response '{}'".format(response))

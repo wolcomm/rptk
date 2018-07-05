@@ -99,7 +99,7 @@ def main():
         sys.stdout.write("{}\n".format(result))
         rc = 0
     except Exception as e:
-        log.error(msg=e.message)
+        log.error(msg="{}".format(e))
         rc = 1
     exit(rc)
 

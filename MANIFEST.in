@@ -1,5 +1,7 @@
 include README.md
 include LICENSE
+include rptk/rptk.conf.example
 recursive-include packaging *.txt
-recursive-include rptk *.conf
 recursive-include rptk/templates *.j2
+recursive-include wiki *.json *.md
+recursive-include test *.conf

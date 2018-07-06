@@ -17,9 +17,9 @@ from __future__ import unicode_literals
 import json
 import subprocess
 
-from whichcraft import which
-
 from rptk.modules.query import BaseQuery
+
+from whichcraft import which
 
 
 class Bgpq3Query(BaseQuery):
@@ -69,9 +69,11 @@ class Bgpq3Query(BaseQuery):
                     "-6Aj", obj
                 ]
             }
-        for key in cmds:
-            self.log.debug(msg="running {}".format(" ".join(cmds[key])))
-            tmp.update(json.loads(subprocess.check_output(cmds[key])))
+        for af in cmds:
+            self.log.debug(msg="running {}".format(" ".join(cmds[af])))
+            cmd_output = subprocess.check_output(cmds[af],
+                                                 universal_newlines=True)
+            tmp.update(json.loads(cmd_output))
         result = tmp
         self.log_method_exit(method=self.current_method)
         return result

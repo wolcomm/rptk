@@ -14,7 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from rptk.modules.format import JinjaFormat
+from rptk.format import JinjaFormat
 
 
 class IosNullFormat(JinjaFormat):

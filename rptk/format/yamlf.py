@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 
 import yaml
 
-from rptk.modules.format import BaseFormat
+from rptk.format import BaseFormat
 
 
 class YamlFormat(BaseFormat):

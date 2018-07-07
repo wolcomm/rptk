@@ -9,16 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""rptk module.format.plain module."""
+"""rptk module.format.bird module."""
 
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from rptk.modules.format import JinjaFormat
+from rptk.format import JinjaFormat
 
 
-class PlainFormat(JinjaFormat):
-    """Renders result object as a plain-text LOA-style prefix-list."""
+class BirdFormat(JinjaFormat):
+    """Renders result object as a BIRD prefix-list."""
 
-    description = "Plaintext (LOA) prefix-list"
-    template_name = 'plain.j2'
+    description = "BIRD prefix-list"
+    template_name = 'bird.j2'

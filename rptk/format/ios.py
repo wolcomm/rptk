@@ -9,7 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""rptk modules sub-package."""
+"""rptk module.format.ios module."""
 
 from __future__ import print_function
 from __future__ import unicode_literals
+
+from rptk.format import JinjaFormat
+
+
+class IosFormat(JinjaFormat):
+    """Renders result object as a Cisco IOS prefix-list."""
+
+    description = "Cisco IOS Classic / XE prefix-list"
+    template_name = 'ios.j2'

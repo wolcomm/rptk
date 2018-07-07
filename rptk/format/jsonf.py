@@ -9,33 +9,45 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""rptk module.format.test module."""
+"""rptk module.format.jsonf module."""
 
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from rptk.modules.format import BaseFormat
+import json
+
+from rptk.format import BaseFormat
 
 
-class TestFormat(BaseFormat):
-    """Returns result object as a python dict object."""
+class JsonFormat(BaseFormat):
+    """Renders result object as a JSON document."""
 
-    description = "Test output format"
+    description = "JSON object"
 
     def format(self, result=None, name=None):
-        """Construct and return output dict."""
+        """Render output as JSON."""
         self.log_method_enter(method=self.current_method)
-        name = super(TestFormat, self).format(result=result, name=name)
-        output = {
-            name: result
-        }
-        self.log_method_exit(method=self.current_method)
-        return output
+        name = super(JsonFormat, self).format(result=result, name=name)
+        self.log.debug(msg="creating json output")
+        try:
+            output = json.dumps(
+                {name: result},
+                indent=4
+            )
+            self.log_method_exit(method=self.current_method)
+            return output
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise
 
     def validate(self, output=None):
-        """Validate output dict object."""
+        """Validate JSON document."""
         self.log_method_enter(method=self.current_method)
-        if not isinstance(output, dict):
-            self.raise_type_error(arg=output, cls=dict)
+        super(JsonFormat, self).validate(output=output)
+        try:
+            json.loads(output)
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise
         self.log_method_exit(method=self.current_method)
         return True

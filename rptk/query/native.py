@@ -19,7 +19,7 @@ import re
 import socket
 
 from rptk.__meta__ import __version__ as version
-from rptk.modules.query import BaseQuery
+from rptk.query import BaseQuery
 
 
 try:

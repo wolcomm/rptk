@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 import json
 import subprocess
 
-from rptk.modules.query import BaseQuery
+from rptk.query import BaseQuery
 
 from whichcraft import which
 

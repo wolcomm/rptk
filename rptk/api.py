@@ -14,65 +14,172 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from rptk import dispatch
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+import os
+import sys
+
+from rptk.base import BaseObject
+from rptk.load import ClassLoader
 
 
-class Rptk(object):
+class Rptk(BaseObject):
     """rptk API class."""
 
-    def __init__(self, **opts):
+    def __init__(self, **kwargs):
         """Initialise API object."""
-        self._dispatcher = dispatch.Dispatcher(**opts)
+        super(self.__class__, self).__init__()
+        self.log_init()
+        self._opts = dict()
+        default_config_file = self._find_config_file()
+        self._config_file = kwargs.pop("config_file", default_config_file)
+        self.log.debug(msg="reading config file")
+        reader = self._read_config()
+        self.log.debug(msg="getting default options")
+        opts = dict(reader.items("defaults"))
+        self.log.debug(msg="updating options with user supplied values")
+        opts.update(kwargs)
+        self.update(**opts)
+        self.log.debug(msg="getting dynamic class loaders")
+        try:
+            self._query_class_loader = ClassLoader(
+                items=reader.items(section="query-classes")
+            )
+            self._format_class_loader = ClassLoader(
+                items=reader.items(section="format-classes")
+            )
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+        self.log_init_done()
+
+    @staticmethod
+    def _find_config_file():
+        """Search for a config file at default locations."""
+        dirs = [
+            os.path.join(os.path.join(sys.prefix, "etc"), "rptk"),
+            os.path.dirname(os.path.realpath(__file__))
+        ]
+        for dir in dirs:
+            path = os.path.join(dir, "rptk.conf")
+            if os.path.isfile(path):
+                return path
+        return None
+
+    def _read_config(self):
+        """Read the config file."""
+        self.log_method_enter(method=self.current_method)
+        reader = configparser.SafeConfigParser()
+        self.log.debug(
+            msg="trying to read configuration from file {}"
+                .format(self.config_file)
+        )
+        try:
+            reader.read(self.config_file)
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+        self.log_method_exit(method=self.current_method)
+        return reader
+
+    @property
+    def config_file(self):
+        """Get config file path."""
+        return self._config_file
+
+    def update(self, **opts):
+        """Update self.opts from keyword args."""
+        self.log_method_enter(method=self.current_method)
+        self._opts.update(opts)
+        self.log_method_exit(method=self.current_method)
+        return self
 
     def query(self, obj=None, name=None, test=False):
-        """Perform query."""
-        return self._dispatcher.dispatch(obj=obj, name=name, test=test)
+        """Perform a query and return the formatted output."""
+        self.log_method_enter(method=self.current_method)
+        if not name:
+            self.log.debug(msg="name not provided using object ({})"
+                               .format(obj))
+            if obj:
+                name = obj
+            else:
+                name = self.opts["object"]
+        self.log.debug(msg="trying to begin query")
+        try:
+            with self.query_class(**self.opts) as q:
+                result = q.query(obj=obj)
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+        self.log.debug(msg="trying to format result for output")
+        try:
+            with self.format_class(**self.opts) as f:
+                output = f.format(result=result, name=name)
+                if test:
+                    return f.validate(output=output)
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+        self.log_method_exit(method=self.current_method)
+        return output
+
+    @property
+    def query_class_loader(self):
+        """Get query class loader object."""
+        return self._query_class_loader
+
+    @property
+    def format_class_loader(self):
+        """Get format class loader object."""
+        return self._format_class_loader
+
+    @property
+    def query_class(self):
+        """Get the configured query class."""
+        try:
+            return self.query_class_loader.get_class(
+                name=self.opts["query"]
+            )
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+
+    @property
+    def format_class(self):
+        """Get the configured format class."""
+        try:
+            return self.format_class_loader.get_class(
+                name=self.opts["format"]
+            )
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
 
     def available_formats(self):
         """Get list of available formats."""
-        return self._dispatcher.format_class_loader.class_info
+        return self.format_class_loader.class_info
 
     def available_policies(self):
         """Get list of available resolution policies."""
         return ('strict', 'loose',)
 
-    def update_opts(self, **opts):
-        """Update API options from keyword args."""
-        try:
-            self._dispatcher.update(**opts)
-        except Exception as e:
-            raise e
-        return self
-
-    @property
-    def query_class_loader(self):
-        """Get the query class loader object."""
-        return self._dispatcher.query_class_loader
-
-    @property
-    def format_class_loader(self):
-        """Get the format class loader object."""
-        return self._dispatcher.format_class_loader
-
     @property
     def opts(self):
         """Get the current options."""
-        return self._dispatcher.opts
+        return self._opts
 
-    def __getattribute__(self, name):
+    def __getattr__(self, name):
         """Return value from self.opts dict."""
         try:
-            return super(Rptk, self).__getattribute__(name)
-        except AttributeError as e:
-            try:
-                return self.opts[name]
-            except KeyError:
-                pass
-            raise e
+            return self.opts[name]
+        except KeyError as e:
+            raise AttributeError(e)
 
     def __setattr__(self, name, value):
-        """Set value on Dispatcher object."""
+        """Set value on self.opts object."""
         try:
-            self._dispatcher.update(**{name: value})
+            self.update(**{name: value})
         except Exception:
             super(Rptk, self).__setattr__(name, value)

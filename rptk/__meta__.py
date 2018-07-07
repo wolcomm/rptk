@@ -15,7 +15,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-__version__ = "0.1.7"
+__version__ = "0.2.0-dev.1"
 __author__ = "Workonline Communications"
 __author_email__ = "communications@workonline.co.za"
 __licence__ = "Apache License 2.0"

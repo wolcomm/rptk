@@ -18,7 +18,7 @@ import argparse
 import logging
 import sys
 
-from rptk import dispatch
+from rptk import RptkAPI
 
 
 def logging_init():
@@ -45,12 +45,12 @@ def pre_parse():
     return parser, args, args_remaining
 
 
-def parse(parser, args_remaining, dispatcher):
+def parse(parser, args_remaining, api):
     """Parse configuration options."""
     parser.add_argument('--query', '-Q', help="query class",
-                        choices=dispatcher.query_class_loader.class_names)
+                        choices=api.query_class_loader.class_names)
     parser.add_argument('--format', '-F', help="format class",
-                        choices=dispatcher.format_class_loader.class_names)
+                        choices=api.format_class_loader.class_names)
     parser.add_argument('--policy', '-P', type=str,
                         help="resolution policy",
                         choices=('strict', 'loose'))
@@ -83,18 +83,17 @@ def main():
         except AttributeError:
             pass
         # set up dispatcher with default options
-        log.debug(msg="creating dispatcher object")
-        dispatcher = dispatch.Dispatcher(**vars(args))
+        log.debug(msg="creating RptkAPI object")
+        api = RptkAPI(**vars(args))
         log.debug(msg="dispatcher ready")
         # parse remaining args and update dispatcher options
         log.debug(msg="parsing command-line arguments")
-        args = parse(parser=parser, args_remaining=args_remaining,
-                     dispatcher=dispatcher)
+        args = parse(parser=parser, args_remaining=args_remaining, api=api)
         log.debug(msg="updating dispatcher options")
-        dispatcher.update(**vars(args))
+        api.update(**vars(args))
         # dispatch query and print formatted result
         log.debug(msg="dispatching query")
-        result = dispatcher.dispatch()
+        result = api.query()
         log.debug(msg="got result length {}".format(len(result)))
         sys.stdout.write("{}\n".format(result))
         rc = 0

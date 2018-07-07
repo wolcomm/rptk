@@ -82,17 +82,17 @@ def main():
                 log.debug(msg="debug logging started")
         except AttributeError:
             pass
-        # set up dispatcher with default options
+        # set up api with default options
         log.debug(msg="creating RptkAPI object")
         api = RptkAPI(**vars(args))
-        log.debug(msg="dispatcher ready")
-        # parse remaining args and update dispatcher options
+        log.debug(msg="RptkAPI instance ready")
+        # parse remaining args and update api options
         log.debug(msg="parsing command-line arguments")
         args = parse(parser=parser, args_remaining=args_remaining, api=api)
-        log.debug(msg="updating dispatcher options")
+        log.debug(msg="updating RptkAPI options")
         api.update(**vars(args))
-        # dispatch query and print formatted result
-        log.debug(msg="dispatching query")
+        # execute query and print formatted result
+        log.debug(msg="executing query")
         result = api.query()
         log.debug(msg="got result length {}".format(len(result)))
         sys.stdout.write("{}\n".format(result))

@@ -49,6 +49,6 @@ class TestAPI(object):
         """Test rptk python API."""
         if api.query_class_loader.get_class(name=q).posix_only and not posix:
             pytest.skip("skipping posix only test")
-        api.update_opts(query=q, format=f)
+        api.update(query=q, format=f)
         result = api.query(test=True)
         assert result

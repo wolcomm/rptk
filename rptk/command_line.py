@@ -55,7 +55,7 @@ def parse(parser, args_remaining, api):
                         choices=api.format_class_loader.class_names)
     parser.add_argument('--policy', '-P', dest='query_policy', type=str,
                         help="resolution policy",
-                        choices=('strict', 'loose'))
+                        choices=api.available_policies)
     parser.add_argument('--host', '-h', dest='query_host', type=str,
                         help="irrd host to connect to")
     parser.add_argument('--port', '-p', dest='query_port', type=int,

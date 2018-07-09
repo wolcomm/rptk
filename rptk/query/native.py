@@ -31,14 +31,8 @@ except NameError:
 class NativeQuery(BaseQuery):
     """Performs queries directly over python sockets."""
 
-    def __init__(self, **opts):
-        """Initialise new object."""
-        super(NativeQuery, self).__init__(**opts)
-        self._regexp = re.compile(
-            r'(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$'
-        )
-        self._keepalive = True
-        self.log_init_done()
+    _regexp = re.compile(r'(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$')
+    _keepalive = True
 
     def __enter__(self):
         """Set up a TCP connection."""

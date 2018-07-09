@@ -31,9 +31,8 @@ class ClassLoader(BaseObject):
         self._classes = dict()
         count = 0
         self.log.debug(msg="trying to load classes")
-        for item in items:
-            name = item[0]
-            mod_path, cls_path = item[1].rsplit(".", 1)
+        for name, path in items:
+            mod_path, cls_path = path.rsplit(".", 1)
             self.log.debug(msg="loading class {}".format(cls_path))
             try:
                 cls = getattr(importlib.import_module(mod_path), cls_path)

@@ -14,6 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import argparse
 try:
     import configparser
 except ImportError:
@@ -28,20 +29,29 @@ from rptk.load import ClassLoader
 class Rptk(BaseObject):
     """rptk API class."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, config_file=None, **kwargs):
         """Initialise API object."""
         super(self.__class__, self).__init__()
         self.log_init()
-        self._opts = dict()
-        default_config_file = self._find_config_file()
-        self._config_file = kwargs.pop("config_file", default_config_file)
-        self.log.debug(msg="reading config file")
+        self.log.debug(msg="creating options namespaces")
+        self._options = {
+            "query_": argparse.Namespace(),
+            "format_": argparse.Namespace()
+        }
+        self.log.debug(msg="determining config file location")
+        self._config_file = config_file or self._find_config_file()
+        self.log.debug(msg="reading config file at {}"
+                           .format(self.config_file))
         reader = self._read_config()
-        self.log.debug(msg="getting default options")
-        opts = dict(reader.items("defaults"))
+        self.log.debug(msg="setting configuration file options")
+        for key, value in reader.items("query"):
+            self.log.debug(msg="setting query_{} = {}".format(key, value))
+            setattr(self.query_options, key, value)
+        for key, value in reader.items("format"):
+            self.log.debug(msg="setting format_{} = {}".format(key, value))
+            setattr(self.format_options, key, value)
         self.log.debug(msg="updating options with user supplied values")
-        opts.update(kwargs)
-        self.update(**opts)
+        self.update(**kwargs)
         self.log.debug(msg="getting dynamic class loaders")
         try:
             self._query_class_loader = ClassLoader(
@@ -54,6 +64,48 @@ class Rptk(BaseObject):
             self.log.error(msg="{}".format(e))
             raise e
         self.log_init_done()
+
+    @property
+    def query_options(self):
+        """Get query_options."""
+        return self._options["query_"]
+
+    @property
+    def format_options(self):
+        """Get format opts."""
+        return self._options["format_"]
+
+    @property
+    def query_class_loader(self):
+        """Get query class loader object."""
+        return self._query_class_loader
+
+    @property
+    def format_class_loader(self):
+        """Get format class loader object."""
+        return self._format_class_loader
+
+    @property
+    def query_class(self):
+        """Get the configured query class."""
+        try:
+            return self.query_class_loader.get_class(
+                name=self.query_options.class_name
+            )
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+
+    @property
+    def format_class(self):
+        """Get the configured format class."""
+        try:
+            return self.format_class_loader.get_class(
+                name=self.format_options.class_name
+            )
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
 
     @staticmethod
     def _find_config_file():
@@ -89,10 +141,14 @@ class Rptk(BaseObject):
         """Get config file path."""
         return self._config_file
 
-    def update(self, **opts):
+    def update(self, **kwargs):
         """Update self.opts from keyword args."""
         self.log_method_enter(method=self.current_method)
-        self._opts.update(opts)
+        for key, value in kwargs.items():
+            for prefix, namespace in self._options.items():
+                if key.startswith(prefix):
+                    self.log.debug(msg="setting {} = {}".format(key, value))
+                    setattr(namespace, key.lstrip(prefix), value)
         self.log_method_exit(method=self.current_method)
         return self
 
@@ -105,17 +161,17 @@ class Rptk(BaseObject):
             if obj:
                 name = obj
             else:
-                name = self.opts["object"]
+                name = self.query_options.object
         self.log.debug(msg="trying to begin query")
         try:
-            with self.query_class(**self.opts) as q:
+            with self.query_class(**vars(self.query_options)) as q:
                 result = q.query(obj=obj)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e
         self.log.debug(msg="trying to format result for output")
         try:
-            with self.format_class(**self.opts) as f:
+            with self.format_class(**vars(self.format_options)) as f:
                 output = f.format(result=result, name=name)
                 if test:
                     return f.validate(output=output)
@@ -124,62 +180,3 @@ class Rptk(BaseObject):
             raise e
         self.log_method_exit(method=self.current_method)
         return output
-
-    @property
-    def query_class_loader(self):
-        """Get query class loader object."""
-        return self._query_class_loader
-
-    @property
-    def format_class_loader(self):
-        """Get format class loader object."""
-        return self._format_class_loader
-
-    @property
-    def query_class(self):
-        """Get the configured query class."""
-        try:
-            return self.query_class_loader.get_class(
-                name=self.opts["query"]
-            )
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
-
-    @property
-    def format_class(self):
-        """Get the configured format class."""
-        try:
-            return self.format_class_loader.get_class(
-                name=self.opts["format"]
-            )
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
-
-    def available_formats(self):
-        """Get list of available formats."""
-        return self.format_class_loader.class_info
-
-    def available_policies(self):
-        """Get list of available resolution policies."""
-        return ('strict', 'loose',)
-
-    @property
-    def opts(self):
-        """Get the current options."""
-        return self._opts
-
-    def __getattr__(self, name):
-        """Return value from self.opts dict."""
-        try:
-            return self.opts[name]
-        except KeyError as e:
-            raise AttributeError(e)
-
-    def __setattr__(self, name, value):
-        """Set value on self.opts object."""
-        try:
-            self.update(**{name: value})
-        except Exception:
-            super(Rptk, self).__setattr__(name, value)

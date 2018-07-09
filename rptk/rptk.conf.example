@@ -10,13 +10,16 @@
 ; License for the specific language governing permissions and limitations under
 ; the License.
 
-; default options
-[defaults]
-query: native
-format: json
+; query options
+[query]
+class_name: native
 host: whois.radb.net
 port: 43
 policy: strict
+
+; format options
+[format]
+class_name: json
 
 ; available query classes
 [query-classes]

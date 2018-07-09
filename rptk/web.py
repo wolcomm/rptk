@@ -28,7 +28,7 @@ def get_formats():
     """Return json doc describing the available output formats."""
     opts = flask.request.args.to_dict()
     rptk = RptkAPI(**opts)
-    formats = rptk.available_formats()
+    formats = rptk.format_class_loader.class_info
     response = flask.make_response(json.dumps(formats))
     response.headers['Content-Type'] = "application/json"
     return response
@@ -39,18 +39,19 @@ def get_policies():
     """Return json doc listing the available resolution policies."""
     opts = flask.request.args.to_dict()
     rptk = RptkAPI(**opts)
-    policies = rptk.available_policies()
+    policies = rptk.available_policies
     response = flask.make_response(json.dumps(policies))
     response.headers['Content-Type'] = "application/json"
     return response
 
 
-@app.route("/<string:fmt>/<string:obj>")
-@app.route("/<string:fmt>/<string:obj>/<string:policy>")
-def get_prefix_list(fmt=None, obj=None, policy=None):
+@app.route("/<string:format>/<string:obj>")
+@app.route("/<string:format>/<string:obj>/<string:policy>")
+def get_prefix_list(format=None, obj=None, policy=None):
     """Return prefix-lists for the requested object."""
     opts = flask.request.args.to_dict()
-    rptk = RptkAPI(object=obj, format=fmt, policy=policy, **opts)
+    rptk = RptkAPI(query_object=obj, query_policy=policy,
+                   format_class_name=format, **opts)
     result = rptk.query()
     response = flask.make_response(result)
     response.headers['Content-Type'] = "text/plain"

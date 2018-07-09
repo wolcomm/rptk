@@ -29,6 +29,13 @@ from rptk.load import ClassLoader
 class Rptk(BaseObject):
     """rptk API class."""
 
+    available_policies = {
+        "strict": "Permit only prefixes with explicitly registered 'route' or "
+                  "'route6' objects",
+        "loose": "Permit prefixes shorter than /24 (ipv4) or /48 (ipv6) with "
+                 "a registered covering 'route' or 'route6' object"
+    }
+
     def __init__(self, config_file=None, **kwargs):
         """Initialise API object."""
         super(self.__class__, self).__init__()

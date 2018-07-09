@@ -36,48 +36,72 @@ class Rptk(BaseObject):
                  "a registered covering 'route' or 'route6' object"
     }
 
+    _default_query_classes = {
+        "native": "rptk.query.native.NativeQuery",
+        "bgpq3": "rptk.query.bgpq3.Bgpq3Query"
+    }
+
+    _default_format_classes = {
+        "json": "rptk.format.jsonf.JsonFormat",
+        "yaml": "rptk.format.yamlf.YamlFormat",
+        "plain": "rptk.format.plain.PlainFormat",
+        "ios": "rptk.format.ios.IosFormat",
+        "ios_null": "rptk.format.ios_null.IosNullFormat",
+        "junos": "rptk.format.junos.JunosFormat",
+        "bird": "rptk.format.bird.BirdFormat",
+        "test": "rptk.format.test.TestFormat"
+    }
+
     def __init__(self, config_file=None, **kwargs):
         """Initialise API object."""
         super(self.__class__, self).__init__()
         self.log_init()
         self.log.debug(msg="creating options namespaces")
         self._options = {
-            "query_": argparse.Namespace(),
+            "query_": argparse.Namespace(host="whois.radb.net", port=43,
+                                         policy="strict"),
             "format_": argparse.Namespace()
         }
         self.log.debug(msg="determining config file location")
         self._config_file = config_file or self._find_config_file()
-        self.log.debug(msg="reading config file at {}"
-                           .format(self.config_file))
-        reader = self._read_config()
+        if self.config_file:
+            self.log.debug(msg="reading config file at {}"
+                               .format(self.config_file))
+            reader = self._read_config()
+        else:
+            self.log.debug(msg="no config file provided: using default values")
+            reader = None
+        if reader and reader.has_section("query-classes"):
+            self.log.debug("found 'query-classes' section in config file")
+            query_classes = reader.items(section="query-classes")
+        else:
+            query_classes = self._default_query_classes.items()
+        if reader and reader.has_section("format-classes"):
+            self.log.debug("found 'format-classes' section in config file")
+            format_classes = reader.items(section="format-classes")
+        else:
+            format_classes = self._default_format_classes.items()
         self.log.debug(msg="getting dynamic class loaders")
-        try:
-            self._query_class_loader = ClassLoader(
-                items=reader.items(section="query-classes")
-            )
-            self._format_class_loader = ClassLoader(
-                items=reader.items(section="format-classes")
-            )
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
-        self.log.debug(msg="setting configuration file options")
-        if reader.has_option("defaults", "query_class"):
-            query_class_name = reader.get("defaults", "query_class")
-            self.log.debug(msg="setting query_class_name = {}"
-                               .format(query_class_name))
-            self.query_class_name = query_class_name
-        for key, value in reader.items("query"):
-            self.log.debug(msg="setting query_{} = {}".format(key, value))
-            setattr(self.query_options, key, value)
-        if reader.has_option("defaults", "format_class"):
-            format_class_name = reader.get("defaults", "format_class")
-            self.log.debug(msg="setting format_class_name = {}"
-                               .format(format_class_name))
-            self.format_class_name = format_class_name
-        for key, value in reader.items("format"):
-            self.log.debug(msg="setting format_{} = {}".format(key, value))
-            setattr(self.format_options, key, value)
+        self._query_class_loader = ClassLoader(items=query_classes)
+        self._format_class_loader = ClassLoader(items=format_classes)
+        if reader:
+            self.log.debug(msg="setting configuration file options")
+            if reader.has_option("defaults", "query_class"):
+                query_class_name = reader.get("defaults", "query_class")
+                self.log.debug(msg="setting query_class_name = {}"
+                                   .format(query_class_name))
+                self.query_class_name = query_class_name
+            for key, value in reader.items("query"):
+                self.log.debug(msg="setting query_{} = {}".format(key, value))
+                setattr(self.query_options, key, value)
+            if reader.has_option("defaults", "format_class"):
+                format_class_name = reader.get("defaults", "format_class")
+                self.log.debug(msg="setting format_class_name = {}"
+                                   .format(format_class_name))
+                self.format_class_name = format_class_name
+            for key, value in reader.items("format"):
+                self.log.debug(msg="setting format_{} = {}".format(key, value))
+                setattr(self.format_options, key, value)
         self.log.debug(msg="updating options with user supplied values")
         self.update(**kwargs)
         self.log_init_done()
@@ -95,8 +119,11 @@ class Rptk(BaseObject):
     @property
     def query_class_name(self):
         """Get configured query class name."""
-        default = self.query_class_loader.class_names[0]
-        return self._query_class_name or default
+        if "native" in self.query_class_loader.class_names:
+            default = "native"
+        else:
+            default = self.query_class_loader.class_names[0]
+        return getattr(self, "_query_class_name", default)
 
     @query_class_name.setter
     def query_class_name(self, value):
@@ -110,8 +137,11 @@ class Rptk(BaseObject):
     @property
     def format_class_name(self):
         """Get configured format class name."""
-        default = self.format_class_loader.class_names[0]
-        return self._format_class_name or default
+        if "json" in self.format_class_loader.class_names:
+            default = "json"
+        else:
+            default = self.format_class_loader.class_names[0]
+        return getattr(self, "_format_class_name", default)
 
     @format_class_name.setter
     def format_class_name(self, value):

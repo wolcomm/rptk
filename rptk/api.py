@@ -50,15 +50,6 @@ class Rptk(BaseObject):
         self.log.debug(msg="reading config file at {}"
                            .format(self.config_file))
         reader = self._read_config()
-        self.log.debug(msg="setting configuration file options")
-        for key, value in reader.items("query"):
-            self.log.debug(msg="setting query_{} = {}".format(key, value))
-            setattr(self.query_options, key, value)
-        for key, value in reader.items("format"):
-            self.log.debug(msg="setting format_{} = {}".format(key, value))
-            setattr(self.format_options, key, value)
-        self.log.debug(msg="updating options with user supplied values")
-        self.update(**kwargs)
         self.log.debug(msg="getting dynamic class loaders")
         try:
             self._query_class_loader = ClassLoader(
@@ -70,17 +61,26 @@ class Rptk(BaseObject):
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e
+        self.log.debug(msg="setting configuration file options")
+        if reader.has_option("defaults", "query_class"):
+            query_class_name = reader.get("defaults", "query_class")
+            self.log.debug(msg="setting query_class_name = {}"
+                               .format(query_class_name))
+            self.query_class_name = query_class_name
+        for key, value in reader.items("query"):
+            self.log.debug(msg="setting query_{} = {}".format(key, value))
+            setattr(self.query_options, key, value)
+        if reader.has_option("defaults", "format_class"):
+            format_class_name = reader.get("defaults", "format_class")
+            self.log.debug(msg="setting format_class_name = {}"
+                               .format(format_class_name))
+            self.format_class_name = format_class_name
+        for key, value in reader.items("format"):
+            self.log.debug(msg="setting format_{} = {}".format(key, value))
+            setattr(self.format_options, key, value)
+        self.log.debug(msg="updating options with user supplied values")
+        self.update(**kwargs)
         self.log_init_done()
-
-    @property
-    def query_options(self):
-        """Get query_options."""
-        return self._options["query_"]
-
-    @property
-    def format_options(self):
-        """Get format opts."""
-        return self._options["format_"]
 
     @property
     def query_class_loader(self):
@@ -93,11 +93,41 @@ class Rptk(BaseObject):
         return self._format_class_loader
 
     @property
+    def query_class_name(self):
+        """Get configured query class name."""
+        default = self.query_class_loader.class_names[0]
+        return self._query_class_name or default
+
+    @query_class_name.setter
+    def query_class_name(self, value):
+        """Configure query class name."""
+        if value in self.query_class_loader.class_names:
+            self._query_class_name = value
+        else:
+            self.raise_runtime_error(msg="query class '{}' is not loaded"
+                                         .format(value))
+
+    @property
+    def format_class_name(self):
+        """Get configured format class name."""
+        default = self.format_class_loader.class_names[0]
+        return self._format_class_name or default
+
+    @format_class_name.setter
+    def format_class_name(self, value):
+        """Configure format class name."""
+        if value in self.format_class_loader.class_names:
+            self._format_class_name = value
+        else:
+            self.raise_runtime_error(msg="format class '{}' is not loaded"
+                                         .format(value))
+
+    @property
     def query_class(self):
         """Get the configured query class."""
         try:
             return self.query_class_loader.get_class(
-                name=self.query_options.class_name
+                name=self.query_class_name
             )
         except Exception as e:
             self.log.error(msg="{}".format(e))
@@ -108,11 +138,21 @@ class Rptk(BaseObject):
         """Get the configured format class."""
         try:
             return self.format_class_loader.get_class(
-                name=self.format_options.class_name
+                name=self.format_class_name
             )
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e
+
+    @property
+    def query_options(self):
+        """Get query_options."""
+        return self._options["query_"]
+
+    @property
+    def format_options(self):
+        """Get format opts."""
+        return self._options["format_"]
 
     @staticmethod
     def _find_config_file():
@@ -155,7 +195,10 @@ class Rptk(BaseObject):
             for prefix, namespace in self._options.items():
                 if key.startswith(prefix):
                     self.log.debug(msg="setting {} = {}".format(key, value))
-                    setattr(namespace, key.lstrip(prefix), value)
+                    if key.endswith("_class_name"):
+                        setattr(self, key, value)
+                    else:
+                        setattr(namespace, key.lstrip(prefix), value)
         self.log_method_exit(method=self.current_method)
         return self
 

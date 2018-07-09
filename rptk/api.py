@@ -164,6 +164,9 @@ class Rptk(BaseObject):
                 name = self.query_options.object
         self.log.debug(msg="trying to begin query")
         try:
+            self.log.debug(msg="instantiating {} object with options {}"
+                               .format(self.query_class.__name__,
+                                       self.query_options))
             with self.query_class(**vars(self.query_options)) as q:
                 result = q.query(obj=obj)
         except Exception as e:
@@ -171,6 +174,9 @@ class Rptk(BaseObject):
             raise e
         self.log.debug(msg="trying to format result for output")
         try:
+            self.log.debug(msg="instantiating {} object with options {}"
+                               .format(self.format_class.__name__,
+                                       self.format_options))
             with self.format_class(**vars(self.format_options)) as f:
                 output = f.format(result=result, name=name)
                 if test:

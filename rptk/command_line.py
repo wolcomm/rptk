@@ -39,7 +39,7 @@ def pre_parse():
                                      argument_default=argparse.SUPPRESS)
     parser.add_argument('--debug', '-d', action='store_true',
                         help="print debug logging output")
-    parser.add_argument('--config_file', '-f', type=str,
+    parser.add_argument('--config-file', '-f', type=str,
                         help="path to configuration file")
     args, args_remaining = parser.parse_known_args()
     return parser, args, args_remaining
@@ -47,22 +47,24 @@ def pre_parse():
 
 def parse(parser, args_remaining, api):
     """Parse configuration options."""
-    parser.add_argument('--query', '-Q', help="query class",
+    parser.add_argument('--query', '-Q', dest='query_class_name',
+                        help="query class",
                         choices=api.query_class_loader.class_names)
-    parser.add_argument('--format', '-F', help="format class",
+    parser.add_argument('--format', '-F', dest='format_class_name',
+                        help="format class",
                         choices=api.format_class_loader.class_names)
-    parser.add_argument('--policy', '-P', type=str,
+    parser.add_argument('--policy', '-P', dest='query_policy', type=str,
                         help="resolution policy",
                         choices=('strict', 'loose'))
-    parser.add_argument('--host', '-h', type=str,
+    parser.add_argument('--host', '-h', dest='query_host', type=str,
                         help="irrd host to connect to")
-    parser.add_argument('--port', '-p', type=int,
+    parser.add_argument('--port', '-p', dest='query_port', type=int,
                         help="irrd service tcp port")
-    parser.add_argument('--name', '-n', type=str,
+    parser.add_argument('--name', '-n', dest='format_name', type=str,
                         help="prefix-list name (default: object)")
+    parser.add_argument('query_object', type=str, help="rpsl object name")
     parser.add_argument('--help', action='help',
                         help="print usage information and exit")
-    parser.add_argument('object', type=str, help="rpsl object name")
     args = parser.parse_args(args=args_remaining)
     return args
 

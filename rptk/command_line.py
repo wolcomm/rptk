@@ -33,7 +33,7 @@ def logging_init():
     return log
 
 
-def pre_parse():
+def pre_parse(argv):
     """Parse pre-configuration options."""
     parser = argparse.ArgumentParser(add_help=False,
                                      argument_default=argparse.SUPPRESS)
@@ -41,7 +41,7 @@ def pre_parse():
                         help="print debug logging output")
     parser.add_argument('--config-file', '-f', type=str,
                         help="path to configuration file")
-    args, args_remaining = parser.parse_known_args()
+    args, args_remaining = parser.parse_known_args(argv)
     return parser, args, args_remaining
 
 
@@ -69,14 +69,15 @@ def parse(parser, args_remaining, api):
     return args
 
 
-def main():
+def main(argv=sys.argv[1:]):
     """Execute a query."""
     # setup logger
     log = logging_init()
     rc = 2
     try:
         # get config_file and debug options
-        parser, args, args_remaining = pre_parse()
+        log.debug(msg="got args: {}".format(argv))
+        parser, args, args_remaining = pre_parse(argv)
         # set log level
         try:
             if args.debug:

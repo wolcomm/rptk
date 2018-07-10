@@ -58,7 +58,7 @@ def get_prefix_list(format=None, obj=None, policy=None):
     return response
 
 
-def main():
+def main():  # pragma: no cover
     """Run the development server."""
     app.run(host='::', port=8080)
 

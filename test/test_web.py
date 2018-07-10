@@ -87,10 +87,9 @@ def validate_resp(format_checker):
     """Return a callable that will validate response data against a schema."""
     def _validate(resp, schema_file):
         schema_dir = os.path.join(os.path.dirname(__file__), "schemas")
-        data = json.loads(resp.data)
         with open(os.path.join(schema_dir, schema_file)) as f:
             schema = json.load(f)
-        jsonschema.validate(instance=data, schema=schema,
+        jsonschema.validate(instance=resp.json, schema=schema,
                             format_checker=format_checker)
         return True
     return _validate

@@ -23,6 +23,7 @@ class JsonFormat(BaseFormat):
     """Renders result object as a JSON document."""
 
     description = "JSON object"
+    content_type = "application/json"
 
     def format(self, result=None, name=None):
         """Render output as JSON."""

@@ -37,6 +37,7 @@ class BaseFormat(BaseObject):
     """Base class for the definition of output format classes."""
 
     description = None
+    content_type = "text/plain"
 
     def __init__(self, **opts):
         """Initialise new object."""

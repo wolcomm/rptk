@@ -54,7 +54,7 @@ def get_prefix_list(format=None, obj=None, policy=None):
                    format_class_name=format, **opts)
     result = rptk.query()
     response = flask.make_response(result)
-    response.headers['Content-Type'] = "text/plain"
+    response.headers['Content-Type'] = rptk.format_class.content_type
     return response
 
 

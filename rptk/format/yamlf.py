@@ -23,6 +23,7 @@ class YamlFormat(BaseFormat):
     """Renders result object as a YAML document."""
 
     description = "YAML object representation"
+    content_type = "application/x-yaml"
 
     def format(self, result=None, name=None):
         """Render output as YAML."""

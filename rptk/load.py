@@ -14,6 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import collections
 import importlib
 
 from rptk.base import BaseObject
@@ -26,8 +27,9 @@ class ClassLoader(BaseObject):
         """Initialise a new ClassLoader object."""
         super(ClassLoader, self).__init__()
         self.log_init()
-        if not isinstance(items, list):
-            raise TypeError("{} not of type {}".format(items, list))
+        if not isinstance(items, collections.Iterable):
+            raise TypeError("{} not of type {}".format(items,
+                                                       collections.Iterable))
         self._classes = dict()
         count = 0
         self.log.debug(msg="trying to load classes")

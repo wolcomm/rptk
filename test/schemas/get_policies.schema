@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "get_policies response schema",
+  "type" : "object",
+  "patternProperties" : {
+    "^\\w+": {
+      "type" : "string",
+      "minLength": 5,
+      "maxLength": 40
+    }
+  },
+  "additionalProperties": false
+}

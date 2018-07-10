@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "get_formats response schema",
+  "type" : "object",
+  "patternProperties" : {
+    "^\\w+": {
+      "type": "object",
+      "properties" : {
+        "description": {
+          "type" : "string",
+          "minLength": 5,
+          "maxLength": 40
+        }
+      },
+      "required": ["description"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

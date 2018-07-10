@@ -39,7 +39,7 @@ def format_checker():
     def coerce_to_unicode(value):
         try:
             value = unicode(value)
-        except ValueError:
+        except (ValueError, NameError):
             pass
         return value
 

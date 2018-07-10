@@ -22,6 +22,8 @@ import jsonschema
 
 import pytest
 
+import yaml
+
 from rptk.web import app
 
 
@@ -83,13 +85,13 @@ def format_checker():
 
 
 @pytest.fixture(scope="session")
-def validate_resp(format_checker):
-    """Return a callable that will validate response data against a schema."""
-    def _validate(resp, schema_file):
+def validate_schema(format_checker):
+    """Return a callable that will validate data against a schema."""
+    def _validate(data, schema_file):
         schema_dir = os.path.join(os.path.dirname(__file__), "schemas")
         with open(os.path.join(schema_dir, schema_file)) as f:
             schema = json.load(f)
-        jsonschema.validate(instance=resp.json, schema=schema,
+        jsonschema.validate(instance=data, schema=schema,
                             format_checker=format_checker)
         return True
     return _validate
@@ -98,18 +100,55 @@ def validate_resp(format_checker):
 class TestWebAPI(object):
     """Test cases for rptk web API."""
 
-    def test_get_formats(self, client, validate_resp):
-        """Test get_formats method."""
-        with client() as c:
-            resp = c.get("/formats")
-        assert resp.status_code == 200
-        assert resp.content_type == "application/json"
-        assert validate_resp(resp, "get_formats.schema")
+    obj = "AS37271"
 
-    def test_get_policies(self, client, validate_resp):
-        """Test get_policies method."""
+    def test_get_formats(self, client, validate_schema):
+        """Test get_formats method."""
+        uri = "/formats"
         with client() as c:
-            resp = c.get("/policies")
+            resp = c.get(uri)
         assert resp.status_code == 200
         assert resp.content_type == "application/json"
-        assert validate_resp(resp, "get_policies.schema")
+        data = resp.json
+        assert validate_schema(data, "get_formats.schema")
+
+    def test_get_policies(self, client, validate_schema):
+        """Test get_policies method."""
+        uri = "/policies"
+        with client() as c:
+            resp = c.get(uri)
+        assert resp.status_code == 200
+        assert resp.content_type == "application/json"
+        data = resp.json
+        assert validate_schema(data, "get_policies.schema")
+
+    def test_get_prefix_list_json(self, client, validate_schema):
+        """Test get_prefix_list method with json output."""
+        uri = "/json/{}".format(self.obj)
+        with client() as c:
+            resp = c.get(uri)
+        assert resp.status_code == 200
+        assert resp.content_type == "application/json"
+        data = resp.json
+        assert validate_schema(data, "get_prefix_list.schema")
+
+    def test_get_prefix_list_yaml(self, client, validate_schema):
+        """Test get_prefix_list method with yaml output."""
+        uri = "/yaml/{}".format(self.obj)
+        with client() as c:
+            resp = c.get(uri)
+        assert resp.status_code == 200
+        assert resp.content_type == "application/x-yaml"
+        data = yaml.load(resp.data)
+        assert validate_schema(data, "get_prefix_list.schema")
+
+    @pytest.mark.parametrize("format",
+                             ("junos", "ios", "ios_null", "plain", "bird"))
+    def test_get_prefix_list_other(self, client, validate_schema, format):
+        """Test get_prefix_list method."""
+        uri = "/{}/{}".format(format, self.obj)
+        with client() as c:
+            resp = c.get(uri)
+        assert resp.status_code == 200
+        assert resp.content_type == "text/plain"
+        assert resp.data

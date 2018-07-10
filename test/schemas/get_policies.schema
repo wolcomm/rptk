@@ -6,7 +6,7 @@
     "^\\w+": {
       "type" : "string",
       "minLength": 5,
-      "maxLength": 40
+      "maxLength": 120
     }
   },
   "additionalProperties": false

@@ -49,7 +49,6 @@ class Rptk(BaseObject):
         "ios_null": "rptk.format.ios_null.IosNullFormat",
         "junos": "rptk.format.junos.JunosFormat",
         "bird": "rptk.format.bird.BirdFormat",
-        "test": "rptk.format.test.TestFormat"
     }
 
     def __init__(self, config_file=None, **kwargs):

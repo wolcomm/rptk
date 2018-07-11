@@ -31,7 +31,6 @@ bgpq3: rptk.query.bgpq3.Bgpq3Query
 
 ; available formatter classes
 [format-classes]
-test: rptk.format.test.TestFormat
 json: rptk.format.jsonf.JsonFormat
 yaml: rptk.format.yamlf.YamlFormat
 plain: rptk.format.plain.PlainFormat

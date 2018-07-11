@@ -14,7 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from helpers import default_query_classes, default_format_classes
+from helpers import default_format_classes, default_query_classes
 
 import pytest
 

@@ -16,44 +16,21 @@ from __future__ import unicode_literals
 
 import sys
 
-from pkg_resources import load_entry_point
+from helpers import (default_query_classes,
+                     default_format_classes,
+                     available_policies,
+                     objects)
 
 import pytest
 
+query_args = [None] + ["--query={}".format(q)
+                       for q in default_query_classes().keys()]
 
-query_args = (
-    None,
-    "--query=native",
-    "--query=bgpq3"
-)
+format_args = [None] + ["--format={}".format(f)
+                        for f in default_format_classes().keys()]
 
-format_args = (
-    None,
-    "--format=junos",
-    "--format=yaml",
-    "--format=json",
-    "--format=ios",
-    "--format=ios_null",
-    "--format=plain",
-    "--format=bird"
-)
-
-policy_args = (
-    None,
-    "--policy=loose",
-    "--policy=strict",
-)
-
-object_args = (
-    "AS37271",
-    "AS37271:AS-CUSTOMERS"
-)
-
-
-@pytest.fixture(scope="module")
-def main():
-    """Get the entry point function for the rptk command-line tool."""
-    return load_entry_point(dist="rptk", group="console_scripts", name="rptk")
+policy_args = [None] + ["--policy={}".format(p)
+                        for p in available_policies().keys()]
 
 
 @pytest.mark.usefixtures("mock_query_classes")
@@ -63,13 +40,13 @@ class TestCLI(object):
     @pytest.mark.parametrize("q", query_args)
     @pytest.mark.parametrize("f", format_args)
     @pytest.mark.parametrize("p", policy_args)
-    @pytest.mark.parametrize("obj", object_args)
-    def test_cli(self, capsys, main, q, f, p, obj):
+    @pytest.mark.parametrize("obj", objects())
+    def test_cli(self, capsys, cli_entry_point, q, f, p, obj):
         """Test rptk command-line tool."""
         sys.argv[0] = "rptk"
         argv = [arg for arg in (q, f, p, obj) if arg is not None]
         try:
-            main(argv=argv)
+            cli_entry_point(argv=argv)
         except SystemExit as exit:
             captured = capsys.readouterr()
             assert exit.code == 0

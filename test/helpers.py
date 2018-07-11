@@ -13,3 +13,25 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
+
+from rptk import RptkAPI
+
+
+def objects():
+    """Return a tuple of RPSL objects to test against."""
+    return ("AS37271", "AS37271:AS-CUSTOMERS")
+
+
+def default_query_classes():
+    """Return the dict of default query classes to test with."""
+    return RptkAPI.default_query_classes
+
+
+def default_format_classes():
+    """Return the dict of default format classes to test with."""
+    return RptkAPI.default_format_classes
+
+
+def available_policies():
+    """Return the dict of available resolution policies to test with."""
+    return RptkAPI.available_policies

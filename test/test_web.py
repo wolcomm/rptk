@@ -14,87 +14,13 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import ipaddress
-import json
-import os
-
-import jsonschema
+from helpers import default_format_classes as formats
 
 import pytest
 
 import yaml
 
-from rptk.web import app
-
-
-@pytest.fixture(scope="module")
-def client():
-    """Get test http client."""
-    return app.test_client
-
-
-@pytest.fixture(scope="session")  # noqa: C901
-def format_checker():
-    """Get a custom format_checker instance."""
-    format_checker = jsonschema.FormatChecker()
-
-    def coerce_to_unicode(value):
-        try:
-            value = unicode(value)
-        except (ValueError, NameError):
-            pass
-        return value
-
-    @format_checker.checks("ipv4-prefix", raises=ValueError)
-    def is_ipv4_prefix(instance):
-        instance = coerce_to_unicode(instance)
-        try:
-            ipaddress.IPv4Network(instance, strict=True)
-            return True
-        except Exception:
-            return False
-
-    @format_checker.checks("ipv6-prefix", raises=ValueError)
-    def is_ipv6_prefix(instance):
-        instance = coerce_to_unicode(instance)
-        try:
-            ipaddress.IPv6Network(instance, strict=True)
-            return True
-        except Exception:
-            return False
-
-    @format_checker.checks("ipv4-address-prefix", raises=ValueError)
-    def is_ipv4_address_prefix(instance):
-        instance = coerce_to_unicode(instance)
-        try:
-            ipaddress.IPv4Network(instance, strict=False)
-            return True
-        except Exception:
-            return False
-
-    @format_checker.checks("ipv6-address-prefix", raises=ValueError)
-    def is_ipv6_address_prefix(instance):
-        instance = coerce_to_unicode(instance)
-        try:
-            ipaddress.IPv6Network(instance, strict=False)
-            return True
-        except Exception:
-            return False
-
-    return format_checker
-
-
-@pytest.fixture(scope="session")
-def validate_schema(format_checker):
-    """Return a callable that will validate data against a schema."""
-    def _validate(data, schema_file):
-        schema_dir = os.path.join(os.path.dirname(__file__), "schemas")
-        with open(os.path.join(schema_dir, schema_file)) as f:
-            schema = json.load(f)
-        jsonschema.validate(instance=data, schema=schema,
-                            format_checker=format_checker)
-        return True
-    return _validate
+text_formats = (f for f in formats().keys() if f not in ("json", "yaml"))
 
 
 @pytest.mark.usefixtures("mock_query_classes")
@@ -143,11 +69,10 @@ class TestWebAPI(object):
         data = yaml.load(resp.data)
         assert validate_schema(data, "get_prefix_list.schema")
 
-    @pytest.mark.parametrize("format",
-                             ("junos", "ios", "ios_null", "plain", "bird"))
-    def test_get_prefix_list_other(self, client, validate_schema, format):
+    @pytest.mark.parametrize("f", text_formats)
+    def test_get_prefix_list_text(self, client, validate_schema, f):
         """Test get_prefix_list method."""
-        uri = "/{}/{}".format(format, self.obj)
+        uri = "/{}/{}".format(f, self.obj)
         with client() as c:
             resp = c.get(uri)
         assert resp.status_code == 200

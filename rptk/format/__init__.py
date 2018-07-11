@@ -60,15 +60,6 @@ class BaseFormat(BaseObject):
         self.log_method_exit(method=self.current_method)
         return output
 
-    def validate(self, output=None):
-        """Check that output is a valid string type."""
-        self.log_method_enter(method=self.current_method)
-        if not isinstance(output, basestring):
-            self.raise_type_error(arg=output, cls=basestring)
-        self.log.debug(msg="validation successful")
-        self.log_method_exit(method=self.current_method)
-        return True
-
     @property
     def name(self):
         """Get output name."""

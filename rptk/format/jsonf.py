@@ -40,15 +40,3 @@ class JsonFormat(BaseFormat):
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise
-
-    def validate(self, output=None):
-        """Validate JSON document."""
-        self.log_method_enter(method=self.current_method)
-        super(JsonFormat, self).validate(output=output)
-        try:
-            json.loads(output)
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise
-        self.log_method_exit(method=self.current_method)
-        return True

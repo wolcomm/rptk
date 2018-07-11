@@ -231,7 +231,7 @@ class Rptk(BaseObject):
         self.log_method_exit(method=self.current_method)
         return self
 
-    def query(self, obj=None, name=None, test=False):
+    def query(self, obj=None, name=None):
         """Perform a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
         if not name:
@@ -258,8 +258,6 @@ class Rptk(BaseObject):
                                        self.format_options))
             with self.format_class(**vars(self.format_options)) as f:
                 output = f.format(result=result, name=name)
-                if test:
-                    return f.validate(output=output)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e

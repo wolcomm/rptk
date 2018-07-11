@@ -36,12 +36,12 @@ class Rptk(BaseObject):
                  "a registered covering 'route' or 'route6' object"
     }
 
-    _default_query_classes = {
+    default_query_classes = {
         "native": "rptk.query.native.NativeQuery",
         "bgpq3": "rptk.query.bgpq3.Bgpq3Query"
     }
 
-    _default_format_classes = {
+    default_format_classes = {
         "json": "rptk.format.jsonf.JsonFormat",
         "yaml": "rptk.format.yamlf.YamlFormat",
         "plain": "rptk.format.plain.PlainFormat",
@@ -75,12 +75,12 @@ class Rptk(BaseObject):
             self.log.debug("found 'query-classes' section in config file")
             query_classes = reader.items(section="query-classes")
         else:
-            query_classes = self._default_query_classes.items()
+            query_classes = self.default_query_classes.items()
         if reader and reader.has_section("format-classes"):
             self.log.debug("found 'format-classes' section in config file")
             format_classes = reader.items(section="format-classes")
         else:
-            format_classes = self._default_format_classes.items()
+            format_classes = self.default_format_classes.items()
         self.log.debug(msg="getting dynamic class loaders")
         self._query_class_loader = ClassLoader(items=query_classes)
         self._format_class_loader = ClassLoader(items=format_classes)

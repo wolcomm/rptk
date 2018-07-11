@@ -97,6 +97,7 @@ def validate_schema(format_checker):
     return _validate
 
 
+@pytest.mark.usefixtures("mock_query_classes")
 class TestWebAPI(object):
     """Test cases for rptk web API."""
 

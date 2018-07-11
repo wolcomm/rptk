@@ -56,6 +56,7 @@ def main():
     return load_entry_point(dist="rptk", group="console_scripts", name="rptk")
 
 
+@pytest.mark.usefixtures("mock_query_classes")
 class TestCLI(object):
     """Test cases for rptk command-line tool."""
 

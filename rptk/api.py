@@ -231,7 +231,7 @@ class Rptk(BaseObject):
         self.log_method_exit(method=self.current_method)
         return self
 
-    def query(self, obj=None):
+    def query(self, *objects):
         """Perform a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to begin query")
@@ -240,7 +240,7 @@ class Rptk(BaseObject):
                                .format(self.query_class.__name__,
                                        self.query_options))
             with self.query_class(**vars(self.query_options)) as q:
-                result = q.query(obj=obj)
+                result = q.query(*objects)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e

@@ -96,7 +96,7 @@ def main(argv=sys.argv[1:]):
         api.update(**vars(args))
         # execute query
         log.debug(msg="executing query")
-        result = api.query(obj=args.query_object)
+        result = api.query(args.query_object)
         log.debug(msg="got result with {} ipv4 and {} ipv6 prefixes"
                       .format(len(result["ipv4"]), len(result["ipv6"])))
         # print formatted result

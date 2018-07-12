@@ -50,10 +50,10 @@ def get_policies():
 def get_prefix_list(format=None, obj=None, policy=None):
     """Return prefix-lists for the requested object."""
     opts = flask.request.args.to_dict()
-    rptk = RptkAPI(query_object=obj, query_policy=policy,
-                   format_class_name=format, **opts)
-    result = rptk.query()
-    response = flask.make_response(result)
+    rptk = RptkAPI(query_policy=policy, format_class_name=format, **opts)
+    result = rptk.query(obj=obj)
+    output = rptk.format(result=result, name=obj)
+    response = flask.make_response(output)
     response.headers['Content-Type'] = rptk.format_class.content_type
     return response
 

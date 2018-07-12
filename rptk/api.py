@@ -234,13 +234,6 @@ class Rptk(BaseObject):
     def query(self, obj=None, name=None):
         """Perform a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
-        if not name:
-            self.log.debug(msg="name not provided using object ({})"
-                               .format(obj))
-            if obj:
-                name = obj
-            else:
-                name = self.query_options.object
         self.log.debug(msg="trying to begin query")
         try:
             self.log.debug(msg="instantiating {} object with options {}"
@@ -251,6 +244,12 @@ class Rptk(BaseObject):
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e
+        self.log_method_exit(method=self.current_method)
+        return result
+
+    def format(self, result=None, name=None):
+        """Output string representation of result using a format class."""
+        self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to format result for output")
         try:
             self.log.debug(msg="instantiating {} object with options {}"

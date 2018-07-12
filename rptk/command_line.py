@@ -94,11 +94,16 @@ def main(argv=sys.argv[1:]):
         args = parse(parser=parser, args_remaining=args_remaining, api=api)
         log.debug(msg="updating RptkAPI options")
         api.update(**vars(args))
-        # execute query and print formatted result
+        # execute query
         log.debug(msg="executing query")
-        result = api.query()
-        log.debug(msg="got result length {}".format(len(result)))
-        sys.stdout.write("{}\n".format(result))
+        result = api.query(obj=args.query_object)
+        log.debug(msg="got result with {} ipv4 and {} ipv6 prefixes"
+                      .format(len(result["ipv4"]), len(result["ipv6"])))
+        # print formatted result
+        log.debug(msg="formatting output")
+        output = api.format(result=result, name=args.query_object)
+        log.debug(msg="writing output to stdout")
+        sys.stdout.write("{}\n".format(output))
         rc = 0
     except Exception as e:
         log.error(msg="{}".format(e))

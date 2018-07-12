@@ -105,7 +105,7 @@ def main(argv=sys.argv[1:]):
         log.debug(msg="writing output to stdout")
         sys.stdout.write("{}\n".format(output))
         rc = 0
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         log.error(msg="{}".format(e))
         rc = 1
     exit(rc)

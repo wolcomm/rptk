@@ -14,20 +14,25 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from helpers import default_format_classes, default_query_classes
+from helpers import (available_policies, default_format_classes,
+                     default_query_classes, objects)
 
 import pytest
 
 
+@pytest.mark.usefixtures("mock_query_classes")
 class TestAPI(object):
     """Test cases for rptk python API."""
 
     @pytest.mark.parametrize("q", default_query_classes().keys())
     @pytest.mark.parametrize("f", default_format_classes().keys())
-    def test_api(self, api, posix, q, f):
+    @pytest.mark.parametrize("p", available_policies().keys())
+    @pytest.mark.parametrize("obj", objects())
+    def test_api(self, q, f, p, obj):
         """Test rptk python API."""
-        if api.query_class_loader.get_class(name=q).posix_only and not posix:
-            pytest.skip("skipping posix only test")
-        api.update(query_class_name=q, format_class_name=f)
-        result = api.query()
-        assert result
+        from rptk import RptkAPI
+        with RptkAPI(query_class_name=q, format_class_name=f,
+                     query_policy=p) as api:
+            result = api.query(obj=obj)
+            output = api.format(result=result, name=obj)
+        assert output

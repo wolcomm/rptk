@@ -124,14 +124,6 @@ def validate_schema(format_checker):
 
 
 @pytest.fixture(scope="session")
-def api():
-    """Construct an API instance with the test config."""
-    from rptk import RptkAPI
-    config_file = os.path.join(os.path.dirname(__file__), 'tests.conf')
-    return RptkAPI(config_file=config_file)
-
-
-@pytest.fixture(scope="session")
 def posix():
     """Check whether we are on a POSIX system."""
     return os.name == "posix"

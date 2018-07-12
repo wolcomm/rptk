@@ -44,7 +44,7 @@ class TestCLI(object):
     @pytest.mark.parametrize("f", format_args)
     @pytest.mark.parametrize("p", policy_args)
     @pytest.mark.parametrize("obj", objects())
-    def test_cli(self, capsys, cli_entry_point, d, q, f, p, err, obj):
+    def test_cli(self, capsys, cli_entry_point, d, q, f, p, obj):
         """Test rptk command-line tool."""
         sys.argv[0] = "rptk"
         argv = [arg for arg in (d, q, f, p, obj) if arg is not None]

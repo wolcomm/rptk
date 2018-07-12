@@ -247,7 +247,7 @@ class Rptk(BaseObject):
         self.log_method_exit(method=self.current_method)
         return result
 
-    def format(self, result=None, name=None):
+    def format(self, result=None):
         """Output string representation of result using a format class."""
         self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to format result for output")
@@ -256,7 +256,7 @@ class Rptk(BaseObject):
                                .format(self.format_class.__name__,
                                        self.format_options))
             with self.format_class(**vars(self.format_options)) as f:
-                output = f.format(result=result, name=name)
+                output = f.format(result=result)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e

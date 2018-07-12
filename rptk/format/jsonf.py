@@ -25,18 +25,15 @@ class JsonFormat(BaseFormat):
     description = "JSON object"
     content_type = "application/json"
 
-    def format(self, result=None, name=None):
+    def format(self, result=None):
         """Render output as JSON."""
         self.log_method_enter(method=self.current_method)
-        name = super(JsonFormat, self).format(result=result, name=name)
+        super(self.__class__, self).format(result=result)
         self.log.debug(msg="creating json output")
         try:
-            output = json.dumps(
-                {name: result},
-                indent=4
-            )
-            self.log_method_exit(method=self.current_method)
-            return output
+            output = json.dumps(result, indent=4)
         except Exception as e:
             self.log.error(msg="{}".format(e))
-            raise
+            raise e
+        self.log_method_exit(method=self.current_method)
+        return output

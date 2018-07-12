@@ -25,21 +25,16 @@ class YamlFormat(BaseFormat):
     description = "YAML object representation"
     content_type = "application/x-yaml"
 
-    def format(self, result=None, name=None):
+    def format(self, result=None):
         """Render output as YAML."""
         self.log_method_enter(method=self.current_method)
-        name = super(YamlFormat, self).format(result=result, name=name)
+        super(self.__class__, self).format(result=result)
         self.log.debug(msg="creating json output")
         try:
-            output = yaml.dump(
-                {name: result},
-                indent=4,
-                explicit_start=True,
-                explicit_end=True,
-                default_flow_style=False,
-            )
-            self.log_method_exit(method=self.current_method)
-            return output
+            output = yaml.dump(result, indent=4, explicit_start=True,
+                               explicit_end=True, default_flow_style=False)
         except Exception as e:
             self.log.error(msg="{}".format(e))
-            raise
+            raise e
+        self.log_method_exit(method=self.current_method)
+        return output

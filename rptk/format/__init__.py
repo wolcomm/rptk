@@ -46,24 +46,12 @@ class BaseFormat(BaseObject):
         self._opts = opts
         self.log_init_done()
 
-    def format(self, result=None, name=None):
+    def format(self, result=None):
         """Check the result type and name."""
         self.log_method_enter(method=self.current_method)
         if not isinstance(result, dict):
             self.raise_type_error(arg=result, cls=dict)
-        if not name:
-            self.log.debug(msg="using name from configuration")
-            name = self.name
-        if not isinstance(name, basestring):
-            self.raise_type_error(arg=name, cls=basestring)
-        output = unicode(name)
         self.log_method_exit(method=self.current_method)
-        return output
-
-    @property
-    def name(self):
-        """Get output name."""
-        return self.opts["name"]
 
 
 class JinjaFormat(BaseFormat):
@@ -107,18 +95,18 @@ class JinjaFormat(BaseFormat):
             raise
         self.log.debug("template loaded successfully")
 
-    def format(self, result=None, name=None):
+    def format(self, result=None):
         """Render output from template."""
         self.log_method_enter(method=self.current_method)
-        name = super(JinjaFormat, self).format(result=result, name=name)
+        super(self.__class__, self).format(result=result)
         if isinstance(self.template, jinja2.Template):
             try:
-                output = self.template.render(result=result, name=name,
+                output = self.template.render(result=result,
                                               now=datetime.datetime.now())
-                self.log_method_exit(method=self.current_method)
-                return output
             except Exception as e:
                 self.log.error(msg="{}".format(e))
                 raise
         else:
             self.raise_type_error(arg=self.template, cls=jinja2.Template)
+        self.log_method_exit(method=self.current_method)
+        return output

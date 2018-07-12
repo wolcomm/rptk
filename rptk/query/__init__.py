@@ -41,15 +41,14 @@ class BaseQuery(BaseObject):
         self._opts = opts
         self.log_init_done()
 
-    def query(self, obj=None):
+    def query(self, *objects):
         """Check the object name type."""
         self.log_method_enter(method=self.current_method)
-        if not obj:
-            self.log.debug(msg="using object from configuration")
-            obj = self.opts["object"]
-        if not isinstance(obj, basestring):
-            self.raise_type_error(arg=obj, cls=basestring)
-        return unicode(obj)
+        for obj in objects:
+            if not isinstance(obj, basestring):
+                self.raise_type_error(arg=obj, cls=basestring)
+            obj = unicode(obj)
+            yield obj
 
     @property
     def host(self):

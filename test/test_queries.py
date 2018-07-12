@@ -35,5 +35,5 @@ class TestQueryClass(object):
         with cls(host="whois.radb.net", port=43, policy=policy) as q:
             if q.posix_only and not posix:
                 pytest.skip("skipping posix only test")
-            result = q.query(obj=obj)
-        assert validate_schema(result, "query_result.schema")
+            result = q.query(obj)
+        assert validate_schema(result, "get_prefix_list.schema")

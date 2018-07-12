@@ -27,10 +27,9 @@ class Bgpq3Query(BaseQuery):
 
     posix_only = True
 
-    def query(self, obj=None):
+    def query(self, *objects):
         """Execute a query."""
-        obj = super(Bgpq3Query, self).query(obj=obj)
-        tmp = dict()
+        objects = super(Bgpq3Query, self).query(*objects)
         if not self.path:
             msg = "couldn't determine bgpq3 executable path"
             self.log.error(msg=msg)
@@ -39,42 +38,45 @@ class Bgpq3Query(BaseQuery):
             policy = self.opts["policy"]
         except KeyError:
             policy = None
-        if policy == "loose":
-            cmds = {
-                'ipv4': [
-                    self.path,
-                    "-h", self.target,
-                    "-l", "ipv4", "-m", "24", "-r", "8", "-R", "24",
-                    "-4Aj", obj
-                ],
-                'ipv6': [
-                    self.path,
-                    "-h", self.target,
-                    "-l", "ipv6", "-m", "48", "-r", "16", "-R", "48",
-                    "-6Aj", obj
-                ]
-            }
-        else:
-            cmds = {
-                'ipv4': [
-                    self.path,
-                    "-h", self.target,
-                    "-l", "ipv4", "-m", "24",
-                    "-4Aj", obj
-                ],
-                'ipv6': [
-                    self.path,
-                    "-h", self.target,
-                    "-l", "ipv6", "-m", "48",
-                    "-6Aj", obj
-                ]
-            }
-        for af in cmds:
-            self.log.debug(msg="running {}".format(" ".join(cmds[af])))
-            cmd_output = subprocess.check_output(cmds[af],
-                                                 universal_newlines=True)
-            tmp.update(json.loads(cmd_output))
-        result = tmp
+        result = dict()
+        for obj in objects:
+            tmp = dict()
+            if policy == "loose":
+                cmds = {
+                    'ipv4': [
+                        self.path,
+                        "-h", self.target,
+                        "-l", "ipv4", "-m", "24", "-r", "8", "-R", "24",
+                        "-4Aj", obj
+                    ],
+                    'ipv6': [
+                        self.path,
+                        "-h", self.target,
+                        "-l", "ipv6", "-m", "48", "-r", "16", "-R", "48",
+                        "-6Aj", obj
+                    ]
+                }
+            else:
+                cmds = {
+                    'ipv4': [
+                        self.path,
+                        "-h", self.target,
+                        "-l", "ipv4", "-m", "24",
+                        "-4Aj", obj
+                    ],
+                    'ipv6': [
+                        self.path,
+                        "-h", self.target,
+                        "-l", "ipv6", "-m", "48",
+                        "-6Aj", obj
+                    ]
+                }
+            for af, cmd in cmds.items():
+                self.log.debug(msg="running {}".format(" ".join(cmd)))
+                cmd_output = subprocess.check_output(cmd,
+                                                     universal_newlines=True)
+                tmp.update(json.loads(cmd_output))
+            result.update({obj: tmp})
         self.log_method_exit(method=self.current_method)
         return result
 

@@ -47,25 +47,28 @@ class NativeQuery(BaseQuery):
         self._disconnect()
         self.log_exit_done()
 
-    def query(self, obj=None):
+    def query(self, *objects):
         """Execute a query."""
-        obj = super(NativeQuery, self).query(obj=obj)
-        tmp = dict()
-        sets = {u'ipv4': set(), u'ipv6': set()}
-        self.log.debug(msg="trying to get members of {}".format(obj))
-        members = self._members(obj=obj)
-        for member in members:
-            self.log.debug(msg="trying to get routes for {}".format(member))
-            routes = self._routes(obj=member)
-            for af in routes:
-                sets[af].update(routes[af])
-        for af in sets:
-            prefixes = sorted(list(sets[af]))
-            tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True}
-                       for p in prefixes]
-            self.log.debug(msg="found {} {} prefixes for object {}"
-                               .format(len(tmp[af]), af, obj))
-        result = tmp
+        objects = super(NativeQuery, self).query(*objects)
+        result = dict()
+        for obj in objects:
+            tmp = dict()
+            sets = {u'ipv4': set(), u'ipv6': set()}
+            self.log.debug(msg="trying to get members of {}".format(obj))
+            members = self._members(obj=obj)
+            for member in members:
+                self.log.debug(msg="trying to get routes for {}"
+                                   .format(member))
+                routes = self._routes(obj=member)
+                for af in routes:
+                    sets[af].update(routes[af])
+            for af, s in sets.items():
+                prefixes = sorted(list(s))
+                tmp[af] = [{u'prefix': p.with_prefixlen, u'exact': True}
+                           for p in prefixes]
+                self.log.debug(msg="found {} {} prefixes for object {}"
+                                   .format(len(s), af, obj))
+            result.update({obj: tmp})
         self.log_method_exit(method=self.current_method)
         return result
 

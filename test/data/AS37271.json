@@ -1,22 +1,24 @@
 {
-    "ipv4": [
-        {
-            "prefix": "41.78.188.0/22",
-            "exact": true
-        },
-        {
-            "prefix": "197.157.64.0/19",
-            "exact": true
-        }
-    ],
-    "ipv6": [
-        {
-            "prefix": "2c0f:fa90::/32",
-            "exact": true
-        },
-        {
-            "prefix": "2c0f:fa90:f00::/40",
-            "exact": true
-        }
-    ]
+    "AS37271": {
+        "ipv4": [
+            {
+                "prefix": "41.78.188.0/22",
+                "exact": true
+            },
+            {
+                "prefix": "197.157.64.0/19",
+                "exact": true
+            }
+        ],
+        "ipv6": [
+            {
+                "prefix": "2c0f:fa90::/32",
+                "exact": true
+            },
+            {
+                "prefix": "2c0f:fa90:f00::/40",
+                "exact": true
+            }
+        ]
+    }
 }

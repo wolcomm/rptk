@@ -3,7 +3,7 @@
   "title": "get_prefix_list response schema",
   "type" : "object",
   "patternProperties" : {
-    "^AS(\\-\\w+|\\d+)$": {
+    "^AS(-[-\\w]+|\\d+(:AS-[-\\w]+)?)$": {
       "type" : "object",
       "properties": {
         "ipv4": {

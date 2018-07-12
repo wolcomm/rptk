@@ -16,38 +16,26 @@ from __future__ import unicode_literals
 
 import sys
 
-from helpers import (available_policies,
-                     default_format_classes,
-                     default_query_classes,
-                     objects)
+from helpers import (objects)
 
 import pytest
 
-debug_args = [None, "--debug"]
-
-query_args = [None] + ["--query={}".format(q)
-                       for q in default_query_classes().keys()]
-
-format_args = [None] + ["--format={}".format(f)
-                        for f in default_format_classes().keys()]
-
-policy_args = [None] + ["--policy={}".format(p)
-                        for p in available_policies().keys()]
+args = (
+    ["--debug"],
+    ["--policy=strict", "--query=bgpq3", "--format=yaml"]
+)
 
 
 @pytest.mark.usefixtures("mock_query_classes")
 class TestCLI(object):
     """Test cases for rptk command-line tool."""
 
-    @pytest.mark.parametrize("d", debug_args)
-    @pytest.mark.parametrize("q", query_args)
-    @pytest.mark.parametrize("f", format_args)
-    @pytest.mark.parametrize("p", policy_args)
+    @pytest.mark.parametrize("args", args)
     @pytest.mark.parametrize("obj", objects())
-    def test_cli(self, capsys, cli_entry_point, d, q, f, p, obj):
+    def test_cli(self, capsys, cli_entry_point, args, obj):
         """Test rptk command-line tool."""
         sys.argv[0] = "rptk"
-        argv = [arg for arg in (d, q, f, p, obj) if arg is not None]
+        argv = args + [obj]
         try:
             cli_entry_point(argv=argv)
         except SystemExit as exit:

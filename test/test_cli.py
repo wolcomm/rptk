@@ -16,12 +16,14 @@ from __future__ import unicode_literals
 
 import sys
 
-from helpers import (default_query_classes,
+from helpers import (available_policies,
                      default_format_classes,
-                     available_policies,
+                     default_query_classes,
                      objects)
 
 import pytest
+
+debug_args = [None, "--debug"]
 
 query_args = [None] + ["--query={}".format(q)
                        for q in default_query_classes().keys()]
@@ -37,17 +39,18 @@ policy_args = [None] + ["--policy={}".format(p)
 class TestCLI(object):
     """Test cases for rptk command-line tool."""
 
+    @pytest.mark.parametrize("d", debug_args)
     @pytest.mark.parametrize("q", query_args)
     @pytest.mark.parametrize("f", format_args)
     @pytest.mark.parametrize("p", policy_args)
     @pytest.mark.parametrize("obj", objects())
-    def test_cli(self, capsys, cli_entry_point, q, f, p, obj):
+    def test_cli(self, capsys, cli_entry_point, d, q, f, p, err, obj):
         """Test rptk command-line tool."""
         sys.argv[0] = "rptk"
-        argv = [arg for arg in (q, f, p, obj) if arg is not None]
+        argv = [arg for arg in (d, q, f, p, obj) if arg is not None]
         try:
             cli_entry_point(argv=argv)
         except SystemExit as exit:
             captured = capsys.readouterr()
             assert exit.code == 0
-            assert "AS37271" in captured.out
+            assert obj in captured.out

@@ -231,7 +231,7 @@ class Rptk(BaseObject):
         self.log_method_exit(method=self.current_method)
         return self
 
-    def query(self, obj=None, name=None):
+    def query(self, obj=None):
         """Perform a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to begin query")

@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""rptk query class test cases."""
+"""rptk format class test cases."""
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -33,8 +33,8 @@ class TestFormatClass(object):
     @pytest.mark.parametrize(("format", "path"),
                              default_format_classes().items())
     @pytest.mark.parametrize("obj", objects())
-    def test_query_class(self, format, path, obj, validate_schema):
-        """Test rptk query class."""
+    def test_format_class(self, format, path, obj, validate_schema):
+        """Test rptk format class."""
         mod_path, cls_name = path.rsplit(".", 1)
         mod = importlib.import_module(mod_path)
         cls = getattr(mod, cls_name)

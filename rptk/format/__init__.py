@@ -101,7 +101,7 @@ class JinjaFormat(BaseFormat):
         super(self.__class__, self).format(result=result)
         if isinstance(self.template, jinja2.Template):
             try:
-                output = self.template.render(result=result,
+                output = self.template.render(results=result,
                                               now=datetime.datetime.now())
             except Exception as e:
                 self.log.error(msg="{}".format(e))

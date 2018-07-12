@@ -33,6 +33,6 @@ class TestAPI(object):
         from rptk import RptkAPI
         with RptkAPI(query_class_name=q, format_class_name=f,
                      query_policy=p) as api:
-            result = api.query(obj=obj)
+            result = api.query(obj)
             output = api.format(result=result, name=obj)
         assert output

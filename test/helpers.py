@@ -14,6 +14,8 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
+
 from rptk import RptkAPI
 
 
@@ -35,3 +37,8 @@ def default_format_classes():
 def available_policies():
     """Return the dict of available resolution policies to test with."""
     return RptkAPI.available_policies
+
+
+def test_config_file():
+    """Return the path to the testing config file."""
+    return os.path.join(os.path.dirname(__file__), "test.conf")

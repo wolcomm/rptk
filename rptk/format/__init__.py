@@ -98,7 +98,7 @@ class JinjaFormat(BaseFormat):
     def format(self, result=None):
         """Render output from template."""
         self.log_method_enter(method=self.current_method)
-        super(self.__class__, self).format(result=result)
+        super(JinjaFormat, self).format(result=result)
         if isinstance(self.template, jinja2.Template):
             try:
                 output = self.template.render(results=result,

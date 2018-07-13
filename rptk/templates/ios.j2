@@ -13,6 +13,8 @@ the License.
 #}
 {# Cisco IOS prefix-list template #}
 !
+{# loop through results #}
+{% for name, result in results.items() %}
 {# loop through address families #}
 {% for afi, entries in result.items() %}
 {# change 'ipv4' to 'ip' #}
@@ -44,5 +46,6 @@ no {{ afi }} prefix-list {{ name }}
 {% endfor %}
 {% endif %}
 !
+{% endfor %}
 {% endfor %}
 end

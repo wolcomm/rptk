@@ -13,6 +13,7 @@ the License.
 #}
 {# BIRD prefix-list template #}
 {# start output #}
+{% for name, result in results.items() %}
 {{ name }} = [
 {# outer-loop through address families #}
 {% for afi, entries in result.items() %}
@@ -22,3 +23,4 @@ the License.
 {% endfor %}
 {% endfor %}
 ];
+{% endfor %}

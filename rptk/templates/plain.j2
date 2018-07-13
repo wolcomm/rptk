@@ -13,6 +13,7 @@ the License.
 #}
 {# Plaintext LOA prefix-list template #}
 {# start output #}
+{% for name, result in results.items() %}
 irr object: {{ name }}
 {# loop through address families #}
 {% for afi, entries in result.items() %}
@@ -36,4 +37,6 @@ irr object: {{ name }}
 {% else %}
  none
 {% endif %}
+{% endfor %}
+
 {% endfor %}

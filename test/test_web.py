@@ -14,21 +14,16 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from helpers import default_format_classes as formats
-from helpers import objects
+from helpers import default_format_classes, objects
 
 import pytest
 
 import yaml
 
-text_formats = (f for f in formats().keys() if f not in ("json", "yaml"))
-
 
 @pytest.mark.usefixtures("mock_query_classes")
 class TestWebAPI(object):
     """Test cases for rptk web API."""
-
-    obj = "AS37271"
 
     def test_get_formats(self, client, validate_schema):
         """Test get_formats method."""
@@ -50,36 +45,35 @@ class TestWebAPI(object):
         data = resp.json
         assert validate_schema(data, "get_policies.schema")
 
-    def test_get_prefix_list_json(self, client, validate_schema):
-        """Test get_prefix_list method with json output."""
-        uri = "/json/{}".format(self.obj)
-        with client() as c:
-            resp = c.get(uri)
-        assert resp.status_code == 200
-        assert resp.content_type == "application/json"
-        data = resp.json
-        assert validate_schema(data, "get_prefix_list.schema")
-
-    def test_get_prefix_list_yaml(self, client, validate_schema):
-        """Test get_prefix_list method with yaml output."""
-        uri = "/yaml/{}".format(self.obj)
-        with client() as c:
-            resp = c.get(uri)
-        assert resp.status_code == 200
-        assert resp.content_type == "application/x-yaml"
-        data = yaml.load(resp.data)
-        assert validate_schema(data, "get_prefix_list.schema")
-
-    @pytest.mark.parametrize("f", text_formats)
+    @pytest.mark.parametrize("f", default_format_classes().keys())
     @pytest.mark.parametrize("objects", objects())
-    def test_get_prefix_list_text(self, client, validate_schema, f, objects):
+    def test_get_prefix_list(self, client, validate_schema, f, objects):
         """Test get_prefix_list method."""
+        base_uris = [
+            "/query?format={}".format(f),
+            "/{}/query?".format(f)
+        ]
+        uris = list()
+        for uri in base_uris:
+            for obj in objects:
+                uri += "&objects={}".format(obj)
+            uris.append(uri)
         if len(objects) == 1:
-            uri = "/{}/{}".format(f, self.obj)
-        else:
-            pytest.xfail()
-        with client() as c:
-            resp = c.get(uri)
-        assert resp.status_code == 200
-        assert resp.content_type == "text/plain"
-        assert resp.data
+            uris.append("/{}/{}".format(f, objects[0]))
+        print("uris: {}".format(uris))
+        for uri in uris:
+            with client() as c:
+                resp = c.get(uri)
+            assert resp.status_code == 200
+            if f == "json":
+                assert resp.content_type == "application/json"
+                data = resp.json
+                assert validate_schema(data, "get_prefix_list.schema")
+            elif f == "yaml":
+                assert resp.content_type == "application/x-yaml"
+                data = yaml.load(resp.data)
+                assert validate_schema(data, "get_prefix_list.schema")
+            else:
+                assert resp.content_type == "text/plain"
+                for obj in objects:
+                    assert obj in resp.data

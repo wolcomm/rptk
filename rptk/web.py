@@ -46,13 +46,23 @@ def get_policies():
     return response
 
 
+@app.route("/query")
+@app.route("/<string:format>/query")
 @app.route("/<string:format>/<string:obj>")
 @app.route("/<string:format>/<string:obj>/<string:policy>")
 def get_prefix_list(format=None, obj=None, policy=None):
     """Return prefix-lists for the requested object."""
-    opts = flask.request.args.to_dict()
-    rptk = RptkAPI(query_policy=policy, format_class_name=format, **opts)
-    result = rptk.query(obj)
+    app.logger.debug(msg="got args: {}".format(flask.request.args))
+    objects = flask.request.args.getlist("objects")
+    if obj:
+        objects.append(obj)
+    objects = set(objects)
+    if not format:
+        format = flask.request.args.get("format")
+    if not policy:
+        policy = flask.request.args.get("policy")
+    rptk = RptkAPI(query_policy=policy, format_class_name=format)
+    result = rptk.query(*objects)
     output = rptk.format(result=result)
     response = flask.make_response(output)
     response.headers['Content-Type'] = rptk.format_class.content_type

@@ -164,24 +164,12 @@ class Rptk(BaseObject):
     @property
     def query_class(self):
         """Get the configured query class."""
-        try:
-            return self.query_class_loader.get_class(
-                name=self.query_class_name
-            )
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
+        return self.query_class_loader.get_class(name=self.query_class_name)
 
     @property
     def format_class(self):
         """Get the configured format class."""
-        try:
-            return self.format_class_loader.get_class(
-                name=self.format_class_name
-            )
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
+        return self.format_class_loader.get_class(name=self.format_class_name)
 
     @property
     def query_options(self):
@@ -245,15 +233,11 @@ class Rptk(BaseObject):
         """Perform a query and return the formatted output."""
         self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to begin query")
-        try:
-            self.log.debug(msg="instantiating {} object with options {}"
-                               .format(self.query_class.__name__,
-                                       self.query_options))
-            with self.query_class(**vars(self.query_options)) as q:
-                result = q.query(*objects)
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
+        self.log.debug(msg="instantiating {} object with options {}"
+                           .format(self.query_class.__name__,
+                                   self.query_options))
+        with self.query_class(**vars(self.query_options)) as q:
+            result = q.query(*objects)
         self.log_method_exit(method=self.current_method)
         return result
 
@@ -261,14 +245,10 @@ class Rptk(BaseObject):
         """Output string representation of result using a format class."""
         self.log_method_enter(method=self.current_method)
         self.log.debug(msg="trying to format result for output")
-        try:
-            self.log.debug(msg="instantiating {} object with options {}"
-                               .format(self.format_class.__name__,
-                                       self.format_options))
-            with self.format_class(**vars(self.format_options)) as f:
-                output = f.format(result=result)
-        except Exception as e:
-            self.log.error(msg="{}".format(e))
-            raise e
+        self.log.debug(msg="instantiating {} object with options {}"
+                           .format(self.format_class.__name__,
+                                   self.format_options))
+        with self.format_class(**vars(self.format_options)) as f:
+            output = f.format(result=result)
         self.log_method_exit(method=self.current_method)
         return output

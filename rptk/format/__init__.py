@@ -70,7 +70,8 @@ class JinjaFormat(BaseFormat):
             self.env.trim_blocks = True
             self.env.lstrip_blocks = True
         except Exception as e:
-            self.raise_runtime_error("{}".format(e))
+            self.log.error(msg="{}".format(e))
+            raise e
         self._template = None
         self.log_init_done()
 
@@ -92,7 +93,7 @@ class JinjaFormat(BaseFormat):
             self._template = self.env.get_template(self.template_name)
         except jinja2.TemplateError as e:
             self.log.error(msg="{}".format(e))
-            raise
+            raise e
         self.log.debug("template loaded successfully")
 
     def format(self, result=None):
@@ -105,7 +106,7 @@ class JinjaFormat(BaseFormat):
                                               now=datetime.datetime.now())
             except Exception as e:
                 self.log.error(msg="{}".format(e))
-                raise
+                raise e
         else:
             self.raise_type_error(arg=self.template, cls=jinja2.Template)
         self.log_method_exit(method=self.current_method)

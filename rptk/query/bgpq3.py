@@ -73,9 +73,12 @@ class Bgpq3Query(BaseQuery):
                 }
             for af, cmd in cmds.items():
                 self.log.debug(msg="running {}".format(" ".join(cmd)))
-                cmd_output = subprocess.check_output(cmd,
+                try:
+                    output = subprocess.check_output(cmd,
                                                      universal_newlines=True)
-                tmp.update(json.loads(cmd_output))
+                except Exception as e:
+                    self.log.error(msg="{}".format(e))
+                tmp.update(json.loads(output))
             result.update({obj: tmp})
         self.log_method_exit(method=self.current_method)
         return result

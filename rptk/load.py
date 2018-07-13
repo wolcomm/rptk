@@ -28,21 +28,22 @@ class ClassLoader(BaseObject):
         super(ClassLoader, self).__init__()
         self.log_init()
         if not isinstance(items, collections.Iterable):
-            raise TypeError("{} not of type {}".format(items,
-                                                       collections.Iterable))
+            raise TypeError("{} not of type {}"
+                            .format(items, collections.Iterable))
         self._classes = dict()
-        count = 0
         self.log.debug(msg="trying to load classes")
         for name, path in items:
             mod_path, cls_path = path.rsplit(".", 1)
             self.log.debug(msg="loading class {}".format(cls_path))
             try:
                 cls = getattr(importlib.import_module(mod_path), cls_path)
-                self._classes.update({name: cls})
-                count += 1
-            except Exception as e:
+            except ImportError as e:
                 self.log.warning(msg="{}".format(e))
-        self.log.debug(msg="loaded {} classes".format(count))
+            except Exception as e:
+                self.log.error(msg="{}".format(e))
+                raise e
+            self._classes.update({name: cls})
+        self.log.debug(msg="loaded {} classes".format(len(self._classes)))
         self.log_init_done()
 
     def get_class(self, name=None):

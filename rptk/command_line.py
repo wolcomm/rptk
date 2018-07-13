@@ -37,7 +37,7 @@ def pre_parse(argv):
     """Parse pre-configuration options."""
     parser = argparse.ArgumentParser(add_help=False,
                                      argument_default=argparse.SUPPRESS)
-    parser.add_argument('--debug', '-d', action='store_true',
+    parser.add_argument('--debug', '-d', action='store_true', default=False,
                         help="print debug logging output")
     parser.add_argument('--config-file', '-f', type=str,
                         help="path to configuration file")
@@ -80,12 +80,11 @@ def main(argv=sys.argv[1:]):
         log.debug(msg="got args: {}".format(argv))
         parser, args, args_remaining = pre_parse(argv)
         # set log level
-        try:
-            if args.debug:
-                logging.getLogger().setLevel(logging.DEBUG)
-                log.debug(msg="debug logging started")
-        except AttributeError:
-            pass
+        if args.debug:
+            logging.getLogger().setLevel(logging.DEBUG)
+            log.debug(msg="debug logging started")
+        else:
+            logging.getLogger().setLevel(logging.WARNING)
         # set up api with default options
         log.debug(msg="creating RptkAPI object")
         api = RptkAPI(**vars(args))

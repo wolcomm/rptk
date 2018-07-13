@@ -81,7 +81,7 @@ class NativeQuery(BaseQuery):
             self._socket.connect((self.host, self.port))
         except socket.error as e:
             self.log.error(msg="{}".format(e))
-            raise
+            raise e
         self.log.debug(msg="socket connected")
         if self._keepalive:
             self._socket.send(b'!!\n')
@@ -118,7 +118,7 @@ class NativeQuery(BaseQuery):
                 response_length = False
             else:
                 self.log.error(msg="{}".format(e))
-                raise
+                raise e
         if not response_length:
             return
         total_rcvd = len(chunk) or 0

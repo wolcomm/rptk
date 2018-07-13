@@ -31,6 +31,7 @@ def get_formats():
     formats = rptk.format_class_loader.class_info
     response = flask.make_response(json.dumps(formats))
     response.headers['Content-Type'] = "application/json"
+    response.headers['Server'] = "rptk-web/{}".format(rptk.version)
     return response
 
 
@@ -41,6 +42,7 @@ def get_policies():
     policies = rptk.available_policies
     response = flask.make_response(json.dumps(policies))
     response.headers['Content-Type'] = "application/json"
+    response.headers['Server'] = "rptk-web/{}".format(rptk.version)
     return response
 
 
@@ -64,6 +66,7 @@ def get_prefix_list(format=None, obj=None, policy=None):
     output = rptk.format(result=result)
     response = flask.make_response(output)
     response.headers['Content-Type'] = rptk.format_class.content_type
+    response.headers['Server'] = "rptk-web/{}".format(rptk.version)
     return response
 
 

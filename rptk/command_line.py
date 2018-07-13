@@ -39,6 +39,8 @@ def pre_parse(argv):
                                      argument_default=argparse.SUPPRESS)
     parser.add_argument('--debug', '-d', action='store_true', default=False,
                         help="print debug logging output")
+    parser.add_argument('--version', '-v', action='store_true', default=False,
+                        help="print version and exit")
     parser.add_argument('--config-file', '-f', type=str,
                         help="path to configuration file")
     args, args_remaining = parser.parse_known_args(argv)
@@ -85,6 +87,10 @@ def main(argv=sys.argv[1:]):
             log.debug(msg="debug logging started")
         else:
             logging.getLogger().setLevel(logging.WARNING)
+        # print version if requested
+        if args.version:
+            sys.stdout.write("rptk version {}\n".format(RptkAPI.version))
+            exit(0)
         # set up api with default options
         log.debug(msg="creating RptkAPI object")
         api = RptkAPI(**vars(args))

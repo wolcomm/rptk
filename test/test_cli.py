@@ -14,6 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import re
 import sys
 
 from helpers import (objects)
@@ -23,8 +24,11 @@ import pytest
 args = (
     # ["--debug"],
     [],
+    ["--version"],
     ["--policy=strict", "--query=bgpq3", "--format=yaml"]
 )
+
+version_regexp = re.compile(r"^rptk version \d+.\d+.\d(-\w+\.\d+)?$")
 
 
 @pytest.mark.usefixtures("mock_query_classes")
@@ -43,4 +47,7 @@ class TestCLI(object):
             captured = capsys.readouterr()
             assert exit.code == 0
             for obj in objects:
-                assert obj in captured.out
+                if "--version" in args:
+                    assert version_regexp.match(captured.out)
+                else:
+                    assert obj in captured.out

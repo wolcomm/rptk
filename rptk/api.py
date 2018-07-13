@@ -22,12 +22,15 @@ except ImportError:
 import os
 import sys
 
+from rptk.__meta__ import __version__
 from rptk.base import BaseObject
 from rptk.load import ClassLoader
 
 
 class Rptk(BaseObject):
     """rptk API class."""
+
+    version = __version__
 
     available_policies = {
         "strict": "Permit only prefixes with explicitly registered 'route' or "

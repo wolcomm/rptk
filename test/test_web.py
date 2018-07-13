@@ -14,11 +14,15 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import re
+
 from helpers import default_format_classes, objects
 
 import pytest
 
 import yaml
+
+server_re = re.compile(r"^rptk-web/\d+.\d+.\d(-\w+\.\d+)?$")
 
 
 @pytest.mark.usefixtures("mock_query_classes")
@@ -32,6 +36,7 @@ class TestWebAPI(object):
             resp = c.get(uri)
         assert resp.status_code == 200
         assert resp.content_type == "application/json"
+        assert server_re.match(resp.headers["Server"])
         data = resp.json
         assert validate_schema(data, "get_formats.schema")
 
@@ -42,6 +47,7 @@ class TestWebAPI(object):
             resp = c.get(uri)
         assert resp.status_code == 200
         assert resp.content_type == "application/json"
+        assert server_re.match(resp.headers["Server"])
         data = resp.json
         assert validate_schema(data, "get_policies.schema")
 
@@ -65,6 +71,7 @@ class TestWebAPI(object):
             with client() as c:
                 resp = c.get(uri)
             assert resp.status_code == 200
+            assert server_re.match(resp.headers["Server"])
             if f == "json":
                 assert resp.content_type == "application/json"
                 data = resp.json

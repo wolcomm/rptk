@@ -127,7 +127,12 @@ class Rptk(BaseObject):
     @query_class_name.setter
     def query_class_name(self, value):
         """Configure query class name."""
-        if value in self.query_class_loader.class_names:
+        if value is None:
+            try:
+                del(self._query_class_name)
+            except AttributeError:
+                pass
+        elif value in self.query_class_loader.class_names:
             self._query_class_name = value
         else:
             self.raise_runtime_error(msg="query class '{}' is not loaded"
@@ -145,7 +150,12 @@ class Rptk(BaseObject):
     @format_class_name.setter
     def format_class_name(self, value):
         """Configure format class name."""
-        if value in self.format_class_loader.class_names:
+        if value is None:
+            try:
+                del(self._format_class_name)
+            except AttributeError:
+                pass
+        elif value in self.format_class_loader.class_names:
             self._format_class_name = value
         else:
             self.raise_runtime_error(msg="format class '{}' is not loaded"

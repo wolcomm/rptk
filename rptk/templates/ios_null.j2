@@ -24,8 +24,6 @@ the License.
 {% else %}
 {% set any = "::/0 le 128" %}
 {% endif %}
-{# reset sequence number #}
-{% set i = 0 %}
 {# remove existing prefix-list #}
 no {{ afi }} prefix-list {{ name }}
 {# add prefix list description #}
@@ -34,7 +32,6 @@ no {{ afi }} prefix-list {{ name }}
 {% if entries|count > 0 %}
 {# loop through entries #}
 {% for entry in entries %}
-{% set i = i + 10 %}
 {% if entry['greater-equal'] is defined %}
 {% set ge %} ge {{ entry['greater-equal'] }}{% endset %}
 {% else %}
@@ -45,7 +42,7 @@ no {{ afi }} prefix-list {{ name }}
 {% else %}
 {% set le = "" %}
 {% endif %}
-{{ afi }} prefix-list {{ name }} seq {{ i }} permit {{ entry.prefix }}{{ ge }}{{ le }}
+{{ afi }} prefix-list {{ name }} seq {{ loop.index }} permit {{ entry.prefix }}{{ ge }}{{ le }}
 {% endfor %}
 {% else %}
 {# no entries - deny everything #}

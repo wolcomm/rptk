@@ -15,6 +15,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import json
+import logging
 
 import flask
 
@@ -60,7 +61,19 @@ def get_prefix_list(format=None, obj=None, policy=None):
 
 def main():  # pragma: no cover
     """Run the development server."""
-    app.run(host='::', port=8080)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--debug", action="store_true", default=False,
+                        help="enable debug mode")
+    args = parser.parse_args()
+    logger = logging.getLogger()
+    for h in app.logger.handlers:
+        logger.addHandler(h)
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.WARNING)
+    app.run(host='::', port=8080, debug=args.debug)
 
 
 if __name__ == "__main__":

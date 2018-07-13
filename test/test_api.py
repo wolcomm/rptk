@@ -34,5 +34,5 @@ class TestAPI(object):
         with RptkAPI(query_class_name=q, format_class_name=f,
                      query_policy=p) as api:
             result = api.query(obj)
-            output = api.format(result=result, name=obj)
+            output = api.format(result=result)
         assert output

@@ -41,7 +41,7 @@ class TestFormatClass(object):
         with open(os.path.join(self.data_dir, "{}.json".format(obj))) as f:
             result = json.load(f)
         with cls() as f:
-            output = f.format(result=result, name=obj)
+            output = f.format(result=result)
         if format == "json":
             assert validate_schema(json.loads(output),
                                    "get_prefix_list.schema")

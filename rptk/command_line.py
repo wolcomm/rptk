@@ -97,11 +97,10 @@ def main(argv=sys.argv[1:]):
         # execute query
         log.debug(msg="executing query")
         result = api.query(args.query_object)
-        log.debug(msg="got result with {} ipv4 and {} ipv6 prefixes"
-                      .format(len(result["ipv4"]), len(result["ipv6"])))
+        log.debug(msg="got result")
         # print formatted result
         log.debug(msg="formatting output")
-        output = api.format(result=result, name=args.query_object)
+        output = api.format(result=result)
         log.debug(msg="writing output to stdout")
         sys.stdout.write("{}\n".format(output))
         rc = 0

@@ -52,7 +52,7 @@ def get_prefix_list(format=None, obj=None, policy=None):
     opts = flask.request.args.to_dict()
     rptk = RptkAPI(query_policy=policy, format_class_name=format, **opts)
     result = rptk.query(obj)
-    output = rptk.format(result=result, name=obj)
+    output = rptk.format(result=result)
     response = flask.make_response(output)
     response.headers['Content-Type'] = rptk.format_class.content_type
     return response

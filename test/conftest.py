@@ -33,11 +33,13 @@ def mock_query_classes(monkeypatch):
     from rptk.query import BaseQuery
 
     class _MockQuery(BaseQuery):
-        def query(self, obj=None):
-            obj = super(self.__class__, self).query(obj=obj)
+        def query(self, *objects):
+            objects = super(self.__class__, self).query(*objects)
+            result = dict()
             data_dir = os.path.join(os.path.dirname(__file__), "data")
-            with open(os.path.join(data_dir, "{}.json".format(obj))) as f:
-                result = json.load(f)
+            for obj in objects:
+                with open(os.path.join(data_dir, "{}.json".format(obj))) as f:
+                    result.update(json.load(f))
             return result
 
     for path in RptkAPI.default_query_classes.values():

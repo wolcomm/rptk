@@ -27,8 +27,7 @@ app = flask.Flask(__name__)
 @app.route("/formats")
 def get_formats():
     """Return json doc describing the available output formats."""
-    opts = flask.request.args.to_dict()
-    rptk = RptkAPI(**opts)
+    rptk = RptkAPI()
     formats = rptk.format_class_loader.class_info
     response = flask.make_response(json.dumps(formats))
     response.headers['Content-Type'] = "application/json"
@@ -38,8 +37,7 @@ def get_formats():
 @app.route("/policies")
 def get_policies():
     """Return json doc listing the available resolution policies."""
-    opts = flask.request.args.to_dict()
-    rptk = RptkAPI(**opts)
+    rptk = RptkAPI()
     policies = rptk.available_policies
     response = flask.make_response(json.dumps(policies))
     response.headers['Content-Type'] = "application/json"

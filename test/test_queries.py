@@ -26,8 +26,8 @@ class TestQueryClass(object):
 
     @pytest.mark.parametrize("path", default_query_classes().values())
     @pytest.mark.parametrize("policy", available_policies().keys())
-    @pytest.mark.parametrize("obj", objects())
-    def test_query_class(self, posix, path, policy, obj, validate_schema):
+    @pytest.mark.parametrize("objects", objects())
+    def test_query_class(self, posix, path, policy, objects, validate_schema):
         """Test rptk query class."""
         mod_path, cls_name = path.rsplit(".", 1)
         mod = importlib.import_module(mod_path)
@@ -35,5 +35,5 @@ class TestQueryClass(object):
         with cls(host="whois.radb.net", port=43, policy=policy) as q:
             if q.posix_only and not posix:
                 pytest.skip("skipping posix only test")
-            result = q.query(obj)
+            result = q.query(*objects)
         assert validate_schema(result, "get_prefix_list.schema")

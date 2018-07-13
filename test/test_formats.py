@@ -32,14 +32,16 @@ class TestFormatClass(object):
 
     @pytest.mark.parametrize(("format", "path"),
                              default_format_classes().items())
-    @pytest.mark.parametrize("obj", objects())
-    def test_format_class(self, format, path, obj, validate_schema):
+    @pytest.mark.parametrize("objects", objects())
+    def test_format_class(self, format, path, objects, validate_schema):
         """Test rptk format class."""
         mod_path, cls_name = path.rsplit(".", 1)
         mod = importlib.import_module(mod_path)
         cls = getattr(mod, cls_name)
-        with open(os.path.join(self.data_dir, "{}.json".format(obj))) as f:
-            result = json.load(f)
+        result = dict()
+        for obj in objects:
+            with open(os.path.join(self.data_dir, "{}.json".format(obj))) as f:
+                result.update(json.load(f))
         with cls() as f:
             output = f.format(result=result)
         if format == "json":
@@ -49,4 +51,5 @@ class TestFormatClass(object):
             assert validate_schema(yaml.load(output),
                                    "get_prefix_list.schema")
         else:
-            assert obj in output
+            for obj in objects:
+                assert obj in output

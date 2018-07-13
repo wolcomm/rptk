@@ -27,12 +27,12 @@ class TestAPI(object):
     @pytest.mark.parametrize("q", default_query_classes().keys())
     @pytest.mark.parametrize("f", default_format_classes().keys())
     @pytest.mark.parametrize("p", available_policies().keys())
-    @pytest.mark.parametrize("obj", objects())
-    def test_api(self, q, f, p, obj):
+    @pytest.mark.parametrize("objects", objects())
+    def test_api(self, q, f, p, objects):
         """Test rptk python API."""
         from rptk import RptkAPI
         with RptkAPI(query_class_name=q, format_class_name=f,
                      query_policy=p) as api:
-            result = api.query(obj)
+            result = api.query(*objects)
             output = api.format(result=result)
         assert output

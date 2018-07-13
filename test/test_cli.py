@@ -32,14 +32,15 @@ class TestCLI(object):
     """Test cases for rptk command-line tool."""
 
     @pytest.mark.parametrize("args", args)
-    @pytest.mark.parametrize("obj", objects())
-    def test_cli(self, capsys, cli_entry_point, args, obj):
+    @pytest.mark.parametrize("objects", objects())
+    def test_cli(self, capsys, cli_entry_point, args, objects):
         """Test rptk command-line tool."""
         sys.argv[0] = "rptk"
-        argv = args + [obj]
+        argv = args + list(objects)
         try:
             cli_entry_point(argv=argv)
         except SystemExit as exit:
             captured = capsys.readouterr()
             assert exit.code == 0
-            assert obj in captured.out
+            for obj in objects:
+                assert obj in captured.out

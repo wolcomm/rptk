@@ -15,6 +15,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from helpers import default_format_classes as formats
+from helpers import objects
 
 import pytest
 
@@ -70,9 +71,13 @@ class TestWebAPI(object):
         assert validate_schema(data, "get_prefix_list.schema")
 
     @pytest.mark.parametrize("f", text_formats)
-    def test_get_prefix_list_text(self, client, validate_schema, f):
+    @pytest.mark.parametrize("objects", objects())
+    def test_get_prefix_list_text(self, client, validate_schema, f, objects):
         """Test get_prefix_list method."""
-        uri = "/{}/{}".format(f, self.obj)
+        if len(objects) == 1:
+            uri = "/{}/{}".format(f, self.obj)
+        else:
+            pytest.xfail()
         with client() as c:
             resp = c.get(uri)
         assert resp.status_code == 200

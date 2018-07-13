@@ -20,8 +20,9 @@ from rptk import RptkAPI
 
 
 def objects():
-    """Return a tuple of RPSL objects to test against."""
-    return ("AS37271", "AS37271:AS-CUSTOMERS")
+    """Return tuples of RPSL objects to test against."""
+    return (("AS37271",), ("AS37271:AS-CUSTOMERS",),
+            ("AS37271", "AS37271:AS-CUSTOMERS"))
 
 
 def default_query_classes():

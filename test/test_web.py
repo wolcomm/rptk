@@ -76,4 +76,4 @@ class TestWebAPI(object):
             else:
                 assert resp.content_type == "text/plain"
                 for obj in objects:
-                    assert obj in resp.data
+                    assert obj in resp.data.decode()

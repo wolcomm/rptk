@@ -62,7 +62,8 @@ def parse(parser, args_remaining, api):
                         help="irrd service tcp port")
     parser.add_argument('--name', '-n', dest='format_name', type=str,
                         help="prefix-list name (default: object)")
-    parser.add_argument('query_object', type=str, help="rpsl object name")
+    parser.add_argument('query_objects', type=str, nargs="+",
+                        help="rpsl object name")
     parser.add_argument('--help', action='help',
                         help="print usage information and exit")
     args = parser.parse_args(args=args_remaining)
@@ -96,7 +97,7 @@ def main(argv=sys.argv[1:]):
         api.update(**vars(args))
         # execute query
         log.debug(msg="executing query")
-        result = api.query(args.query_object)
+        result = api.query(*args.query_objects)
         log.debug(msg="got result")
         # print formatted result
         log.debug(msg="formatting output")

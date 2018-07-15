@@ -14,6 +14,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
 import re
 
 from helpers import default_format_classes, objects
@@ -24,7 +25,8 @@ import yaml
 
 try:
     from yaml import CLoader as Loader
-except ImportError:
+except ImportError as e:
+    logging.getLogger(__name__).warning("%s", e, exc_info=True)
     from yaml import Loader
 
 

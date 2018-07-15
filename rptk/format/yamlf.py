@@ -14,11 +14,14 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
+
 import yaml
 
 try:
     from yaml import CDumper as Dumper
-except ImportError:
+except ImportError as e:
+    logging.getLogger(__name__).warning("%s: falling back to python dumper", e)
     from yaml import Dumper
 
 from rptk.format import BaseFormat
@@ -37,8 +40,8 @@ class YamlFormat(BaseFormat):
         self.log.debug(msg="creating json output")
         try:
             output = yaml.dump(result, Dumper=Dumper, indent=4,
-			       explicit_start=True, explicit_end=True,
-			       default_flow_style=False)
+                               explicit_start=True, explicit_end=True,
+                               default_flow_style=False)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e

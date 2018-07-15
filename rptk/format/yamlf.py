@@ -16,6 +16,11 @@ from __future__ import unicode_literals
 
 import yaml
 
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper
+
 from rptk.format import BaseFormat
 
 
@@ -31,8 +36,9 @@ class YamlFormat(BaseFormat):
         super(self.__class__, self).format(result=result)
         self.log.debug(msg="creating json output")
         try:
-            output = yaml.dump(result, indent=4, explicit_start=True,
-                               explicit_end=True, default_flow_style=False)
+            output = yaml.dump(result, Dumper=Dumper, indent=4,
+			       explicit_start=True, explicit_end=True,
+			       default_flow_style=False)
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e

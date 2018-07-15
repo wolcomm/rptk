@@ -24,6 +24,11 @@ import pytest
 
 import yaml
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
 
 class TestFormatClass(object):
     """Test cases for rptk format classes."""
@@ -48,7 +53,7 @@ class TestFormatClass(object):
             assert validate_schema(json.loads(output),
                                    "get_prefix_list.schema")
         elif format == "yaml":
-            assert validate_schema(yaml.load(output),
+            assert validate_schema(yaml.load(output, Loader=Loader),
                                    "get_prefix_list.schema")
         else:
             for obj in objects:

@@ -22,6 +22,12 @@ import pytest
 
 import yaml
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
+
 server_re = re.compile(r"^rptk-web/\d+.\d+.\d(-\w+\.\d+)?$")
 
 
@@ -78,7 +84,7 @@ class TestWebAPI(object):
                 assert validate_schema(data, "get_prefix_list.schema")
             elif f == "yaml":
                 assert resp.content_type == "application/x-yaml"
-                data = yaml.load(resp.data)
+                data = yaml.load(resp.data, Loader=Loader)
                 assert validate_schema(data, "get_prefix_list.schema")
             else:
                 assert resp.content_type == "text/plain"

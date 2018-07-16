@@ -22,7 +22,7 @@ import yaml
 
 try:
     from yaml import CDumper as Dumper
-except ImportError as e:
+except ImportError as e:  # pragma: no cover
     logging.getLogger(__name__).warning("%s: falling back to python dumper", e)
     from yaml import Dumper
 

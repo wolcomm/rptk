@@ -9,19 +9,22 @@ python:
 - "nightly"
 - "pypy"
 - "pypy3"
-dist:
-- trusty
-- xenial
 sudo: required
 matrix:
   fast_finish: true
-  exclude:
+  include:
+    - python: "2.7"
+    - python: "3.4"
+    - python: "3.5"
+    - python: "3.6"
     - python: "3.7"
-      dist: trusty
+      dist: xenial
     - python: "3.8-dev"
-      dist: trusty
+      dist: xenial
     - python: "nightly"
-      dist: trusty
+      dist: xenial
+    - python: "pypy"
+    - python: "pypy3"
   allow_failures:
     - python: "3.7"
     - python: "3.8-dev"

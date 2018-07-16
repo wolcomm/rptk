@@ -16,6 +16,8 @@ from __future__ import unicode_literals
 
 import logging
 
+from rptk.format import BaseFormat
+
 import yaml
 
 try:
@@ -23,8 +25,6 @@ try:
 except ImportError as e:
     logging.getLogger(__name__).warning("%s: falling back to python dumper", e)
     from yaml import Dumper
-
-from rptk.format import BaseFormat
 
 
 class YamlFormat(BaseFormat):

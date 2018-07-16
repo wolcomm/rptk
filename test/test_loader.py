@@ -22,8 +22,6 @@ import pytest
 class_sets = (
     default_query_classes().items(),
     default_format_classes().items(),
-    pytest.param([("foo", "rptk.foo.FooClass")], marks=pytest.mark.xfail),
-    pytest.param(0, marks=pytest.mark.xfail)
 )
 
 

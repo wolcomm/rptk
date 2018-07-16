@@ -16,9 +16,9 @@ from __future__ import unicode_literals
 
 import logging
 
-import rptk.__meta__  # noqa: W0611
+import rptk.__meta__  # noqa: F401
 from rptk.api import Rptk as RptkAPI
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
-__all__ = [RptkAPI.__name__]
+__all__ = ["RptkAPI"]

@@ -12,7 +12,6 @@ matrix:
     - python: "3.8-dev"
       dist: xenial
   allow_failures:
-    - python: "3.7"
     - python: "3.8-dev"
 before_install:
 - sudo apt-get -qq update

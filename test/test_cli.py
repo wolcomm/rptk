@@ -22,8 +22,8 @@ from helpers import (objects)
 import pytest
 
 args = (
-    # ["--debug"],
     [],
+    ["--debug"],
     ["--version"],
     ["--policy=strict", "--query=bgpq3", "--format=yaml"]
 )

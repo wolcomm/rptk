@@ -1,14 +1,4 @@
 language: python
-python:
-- "2.7"
-- "3.4"
-- "3.5"
-- "3.6"
-- "3.7"
-- "3.8-dev"
-- "nightly"
-- "pypy"
-- "pypy3"
 sudo: required
 matrix:
   fast_finish: true
@@ -21,16 +11,9 @@ matrix:
       dist: xenial
     - python: "3.8-dev"
       dist: xenial
-    - python: "nightly"
-      dist: xenial
-    - python: "pypy"
-    - python: "pypy3"
   allow_failures:
     - python: "3.7"
     - python: "3.8-dev"
-    - python: "nightly"
-    - python: "pypy"
-    - python: "pypy3"
 before_install:
 - sudo apt-get -qq update
 - "./utils/install-bgpq3.sh"

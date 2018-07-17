@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-"""rptk module.query.native module."""
+"""rptk module.query.native._sync module."""
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -20,6 +20,8 @@ import socket
 
 from rptk.__meta__ import __version__ as version
 from rptk.query import BaseQuery
+from rptk.query.native.exceptions import (IRRQueryError, KeyNotFoundError,
+                                          KeyNotUniqueError, OtherError)
 
 
 try:
@@ -28,7 +30,7 @@ except NameError:
     unicode = str
 
 
-class NativeQuery(BaseQuery):
+class _NativeQuerySync(BaseQuery):
     """Performs queries directly over python sockets."""
 
     _regexp = re.compile(r'(?P<state>[ACDEF])(?P<len>\d*)(?P<msg>[\w\s]*)$')
@@ -49,7 +51,7 @@ class NativeQuery(BaseQuery):
 
     def query(self, *objects):
         """Execute a query."""
-        objects = super(NativeQuery, self).query(*objects)
+        objects = super(_NativeQuerySync, self).query(*objects)
         result = dict()
         for obj in objects:
             tmp = dict()
@@ -203,31 +205,3 @@ class NativeQuery(BaseQuery):
             self.log.debug(msg="found {} {} prefixes for object {}"
                                .format(len(routes[af]), af, obj))
         return routes
-
-
-class IRRQueryError(RuntimeError):
-    """Exception raised during query execution."""
-
-    proto_msg = ''
-
-    def __init__(self, *args, **kwargs):
-        """Initialise the Exception instance."""
-        super(IRRQueryError, self).__init__(self.proto_msg, *args, **kwargs)
-
-
-class KeyNotFoundError(IRRQueryError):
-    """The RPSL key was not found."""
-
-    proto_msg = "Key not found. (D)"
-
-
-class KeyNotUniqueError(IRRQueryError):
-    """There are multiple copies of the key in one database. (E)."""
-
-    proto_msg = "There are multiple copies of the key in one database. (E)"
-
-
-class OtherError(IRRQueryError):
-    """An unknown error occured during query execution."""
-
-    proto_msg = "Some other error, see the <optional message> for details."

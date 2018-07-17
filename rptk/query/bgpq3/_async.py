@@ -28,44 +28,43 @@ class _Bgpq3QueryAsync(_Bgpq3QuerySync):
         """Spawn bgpq3 subprocesses and return query results."""
         self.log_method_enter(method=self.current_method)
         result = collections.defaultdict(dict)
-        for batch in self._batches(all_cmds):
-            self.log.debug(msg="processing batch {}"
-                               .format([i[0] for i in batch]))
-            loop = asyncio.get_event_loop()
-            tasks = list()
-            for obj, cmds in batch:
-                for af, cmd in cmds.items():
-                    tasks.append(self._run_cmd_async(obj, af, cmd))
-            cmd_results = loop.run_until_complete(asyncio.gather(*tasks))
-            loop.close()
-            for obj, af, output in cmd_results:
-                result[obj].update(json.loads(output))
+        semaphore = asyncio.Semaphore(value=self.max_concurrency)
+        loop = asyncio.get_event_loop()
+        tasks = list()
+        for obj, cmds in all_cmds.items():
+            for af, cmd in cmds.items():
+                tasks.append(self._run_cmd_async(semaphore, obj, af, cmd))
+        cmd_results = loop.run_until_complete(asyncio.gather(*tasks))
+        loop.close()
+        for obj, af, output in cmd_results:
+            result[obj].update(json.loads(output))
         self.log_method_exit(method=self.current_method)
         return dict(result)
 
-    def _batches(self, all_cmds, batch_size=2):
-        """Create a generator of fixed size batches."""
-        self.log_method_enter(method=self.current_method)
-        items = list(all_cmds.items())
-        for i in range(0, len(all_cmds), batch_size):
-            yield items[i:i + batch_size]
-        self.log_method_exit(method=self.current_method)
-
-    async def _run_cmd_async(self, obj, af, cmd):
+    async def _run_cmd_async(self, semaphore, obj, af, cmd):
         """Spawn a subprocess and return the contents of stdout."""
         self.log_method_enter(method=self.current_method)
-        self.log.debug(msg="running {}".format(" ".join(cmd)))
         try:
-            proc = await asyncio.create_subprocess_exec(
-                *cmd, stdout=asyncio.subprocess.PIPE
-            )
-            self.log.debug(msg="started {}".format(" ".join(cmd)))
-            stdout, stderr = await proc.communicate()
-            await proc.wait()
-            self.log.debug(msg="done {}".format(" ".join(cmd)))
-            output = stdout.decode()
+            async with semaphore:
+                self.log.debug(msg="running {}".format(" ".join(cmd)))
+                proc = await asyncio.create_subprocess_exec(
+                    *cmd, stdout=asyncio.subprocess.PIPE
+                )
+                self.log.debug(msg="started {}".format(" ".join(cmd)))
+                stdout, stderr = await proc.communicate()
+                await proc.wait()
+                self.log.debug(msg="done {}".format(" ".join(cmd)))
+                output = stdout.decode()
         except Exception as e:
             self.log.error(msg="{}".format(e))
             raise e
         self.log_method_exit(method=self.current_method)
         return (obj, af, output)
+
+    @property
+    def max_concurrency(self):
+        """Get the maximum allowed number of simulateously running queries."""
+        try:
+            return self.opts["max_concurrency"]
+        except KeyError:
+            return 4

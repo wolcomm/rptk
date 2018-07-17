@@ -77,15 +77,21 @@ class _Bgpq3QuerySync(BaseQuery):
             result[obj] = dict()
             for cmd in cmds.values():
                 self.log.debug(msg="running {}".format(" ".join(cmd)))
-                try:
-                    output = subprocess.check_output(cmd,
-                                                     universal_newlines=True)
-                except Exception as e:
-                    self.log.error(msg="{}".format(e))
-                    raise e
+                output = self._run_cmd(cmd)
                 result[obj].update(json.loads(output))
         self.log_method_exit(method=self.current_method)
         return result
+
+    def _run_cmd(self, cmd):
+        """Spawn a subprocess and return the contents of stdout."""
+        self.log_method_enter(method=self.current_method)
+        try:
+            output = subprocess.check_output(cmd, universal_newlines=True)
+        except Exception as e:
+            self.log.error(msg="{}".format(e))
+            raise e
+        self.log_method_exit(method=self.current_method)
+        return output
 
     @property
     def path(self):

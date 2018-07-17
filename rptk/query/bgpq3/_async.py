@@ -35,13 +35,12 @@ class _Bgpq3QueryAsync(_Bgpq3QuerySync):
             for af, cmd in cmds.items():
                 tasks.append(self._run_cmd_async(semaphore, obj, af, cmd))
         cmd_results = loop.run_until_complete(asyncio.gather(*tasks))
-        loop.close()
         for obj, af, output in cmd_results:
             result[obj].update(json.loads(output))
         self.log_method_exit(method=self.current_method)
         return dict(result)
 
-    async def _run_cmd_async(self, semaphore, obj, af, cmd):
+    async def _run_cmd_async(self, semaphore, obj, af, cmd):  # noqa: E999
         """Spawn a subprocess and return the contents of stdout."""
         self.log_method_enter(method=self.current_method)
         try:

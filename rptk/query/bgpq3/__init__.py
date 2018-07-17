@@ -18,4 +18,4 @@ from __future__ import unicode_literals
 try:  # noqa: F401
     from rptk.query.bgpq3._async import _Bgpq3QueryAsync as Bgpq3Query
 except (ImportError, SyntaxError):
-    from rptk.query.bgpq3._sync import _Bgpq3QuerySync as Bgpq3Query  # noqa: F401
+    from rptk.query.bgpq3._sync import _Bgpq3QuerySync as Bgpq3Query  # noqa: F401, E501

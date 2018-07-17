@@ -18,6 +18,7 @@ from helpers import default_format_classes, default_query_classes
 
 import pytest
 
+from rptk.base import BaseObject
 
 class_sets = (
     default_query_classes().items(),
@@ -38,7 +39,7 @@ class TestClassLoader(object):
             assert name in loader.class_names
             assert name in loader.class_info
             assert loader.class_info[name]
-            assert loader.get_class(name=name).__name__ in path
+            assert issubclass(loader.get_class(name=name), BaseObject)
         assert isinstance(loader.classes, list)
         for cls in loader.classes:
             assert isinstance(cls, type)

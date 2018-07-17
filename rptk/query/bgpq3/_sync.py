@@ -74,7 +74,7 @@ class _Bgpq3QuerySync(BaseQuery):
         self.log_method_enter(method=self.current_method)
         result = dict()
         for obj, cmds in all_cmds.items():
-            tmp = dict()
+            result[obj] = dict()
             for cmd in cmds.values():
                 self.log.debug(msg="running {}".format(" ".join(cmd)))
                 try:
@@ -83,8 +83,7 @@ class _Bgpq3QuerySync(BaseQuery):
                 except Exception as e:
                     self.log.error(msg="{}".format(e))
                     raise e
-                tmp.update(json.loads(output))
-            result.update({obj: tmp})
+                result[obj].update(json.loads(output))
         self.log_method_exit(method=self.current_method)
         return result
 

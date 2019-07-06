@@ -18,7 +18,7 @@ import argparse
 try:
     import configparser
 except ImportError:
-    import ConfigParser as configparser
+    import ConfigParser as configparser  # noqa: N813
 import os
 import sys
 

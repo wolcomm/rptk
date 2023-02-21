@@ -100,3 +100,4 @@ ENV/
 
 # bgpq3 build artifacts
 bgpq3-*/
+.venv/

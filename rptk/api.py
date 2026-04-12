@@ -65,7 +65,7 @@ class Rptk(BaseObject):
             "format_": argparse.Namespace()
         }
         self.log.debug(msg="determining config file location")
-        self._config_file = config_file or self._find_config_file()
+        self._config_file = config_file or os.environ.get("RPTK_CONFIG") or self._find_config_file()
         if self.config_file:
             self.log.debug(msg="reading config file at {}"
                                .format(self.config_file))

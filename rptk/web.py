@@ -89,3 +89,9 @@ def main():  # pragma: no cover
 
 if __name__ == "__main__":
     main()
+else:
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    root_logger = logging.getLogger()
+    for h in gunicorn_logger.handlers:
+        root_logger.addHandler(h)
+    root_logger.setLevel(gunicorn_logger.level)

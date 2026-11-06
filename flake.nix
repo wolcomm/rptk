@@ -7,15 +7,27 @@
   outputs =
     { self, ... }@inputs:
     let
+      inherit (inputs.nixpkgs) lib;
       supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux ];
     in
     inputs.flake-utils.lib.eachSystem supportedSystems (
       system:
       let
         pkgs = import inputs.nixpkgs { inherit system; };
+        supportedPythons = {
+          default = pkgs.python3Packages;
+          inherit (pkgs)
+            python39Packages
+            python310Packages
+            python311Packages
+            ;
+        };
       in
-      {
-        packages.default = pkgs.callPackage ./default.nix { };
+      rec {
+        packages = lib.mapAttrs (
+          _: python3Packages: pkgs.callPackage ./default.nix { inherit python3Packages; }
+        ) supportedPythons;
+        checks = packages;
       }
     );
 }

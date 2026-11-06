@@ -15,10 +15,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser  # noqa: N813
+import configparser
 import os
 import sys
 
@@ -200,7 +197,7 @@ class Rptk(BaseObject):
     def _read_config(self):
         """Read the config file."""
         self.log_method_enter(method=self.current_method)
-        reader = configparser.SafeConfigParser()
+        reader = configparser.ConfigParser()
         self.log.debug(
             msg="trying to read configuration from file {}"
                 .format(self.config_file)

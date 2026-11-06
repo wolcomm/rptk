@@ -15,13 +15,12 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import importlib
+import importlib.metadata
 import ipaddress
 import json
 import os
 
 import jsonschema
-
-from pkg_resources import load_entry_point
 
 import pytest
 
@@ -51,8 +50,8 @@ def mock_query_classes(monkeypatch):
 @pytest.fixture(scope="module")
 def cli_entry_point():
     """Get the entry point function for the rptk command-line tool."""
-    return load_entry_point(dist="rptk", group="console_scripts", name="rptk")
-
+    (ep,) = importlib.metadata.entry_points(name="rptk", group="console_scripts")
+    return ep.load()
 
 @pytest.fixture(scope="module")
 def client():

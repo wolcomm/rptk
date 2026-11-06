@@ -22,14 +22,14 @@ from rptk.query import BaseQuery
 from whichcraft import which
 
 
-class _Bgpq3QuerySync(BaseQuery):
+class Bgpq3Query(BaseQuery):
     """Performs queries using bgpq3."""
 
     posix_only = True
 
     def query(self, *objects):
         """Execute a query."""
-        objects = super(_Bgpq3QuerySync, self).query(*objects)
+        objects = super(Bgpq3Query, self).query(*objects)
         if not self.path:
             msg = "couldn't determine bgpq3 executable path"
             self.log.error(msg=msg)

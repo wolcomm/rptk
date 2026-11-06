@@ -17,7 +17,6 @@
         supportedPythons = {
           default = pkgs.python3Packages;
           inherit (pkgs)
-            python39Packages
             python310Packages
             python311Packages
             ;

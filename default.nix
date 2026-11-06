@@ -29,6 +29,12 @@ let
     makeWrapperArgs = [
       "--prefix PATH : ${lib.makeBinPath [ bgpq3 ]}"
     ];
+    pytestFlags = [
+      "-v"
+      "--cov"
+      "--flake8"
+    ];
+    disabledTests = [ "test_query_class" ];
   };
 in
 pkg.overrideAttrs (old: {

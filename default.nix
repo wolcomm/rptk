@@ -15,6 +15,7 @@ let
       whichcraft
     ];
     nativeCheckInputs = with python3Packages; [
+      pip
       pytestCheckHook
       pytest-cov
       # pytest-flake8
@@ -24,6 +25,7 @@ let
       pep8-naming
       jsonschema
     ];
+    nativeBuildInputs = [ bgpq3 ];
     makeWrapperArgs = [
       "--prefix PATH : ${lib.makeBinPath [ bgpq3 ]}"
     ];
